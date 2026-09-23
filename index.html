@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>French Drills V3</title>
+<meta name="theme-color" content="#3B82F6">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="canonical" href="https://syedalimoiz.com/french-drills-v3/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇫🇷</text></svg>">
+<style>
+:root {
+  --bg: #FAFAFA;
+  --surface: #FFFFFF;
+  --text: #1A1A1A;
+  --text-dim: #6B6B6B;
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+  --accent-on: #FFFFFF;
+  --accent-faint: #EFF4FF;
+  --ok: #16A34A;
+  --ok-bg: #E8F5E9;
+  --ok-border: #86E8AB;
+  --err: #DC2626;
+  --err-bg: #FEF2F2;
+  --err-border: #FECACA;
+  --warn: #D97706;
+  --warn-bg: #FFFBEB;
+  --warn-border: #FDE68A;
+  --line: #E5E5E5;
+  --field-bg: #FFFFFF;
+  --field-border: #D4D4D4;
+  --field-focus: #2563EB;
+  --key-bg: #F5F5F5;
+  --key-hover: #E5E5E5;
+  --key-border: #D4D4D4;
+  --key-text: #1A1A1A;
+  --bar-track: #E5E5E5;
+  --bar-fill: #2563EB;
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#191919;--surface:#262626;--text:#F2F2F2;--text-dim:#8A8A8A;
+  --accent:#3B82F6;--accent-hover:#60A5FA;--accent-on:#FFFFFF;--accent-faint:#1E293B;
+  --ok:#4ADE80;--ok-bg:#14291E;--ok-border:#166534;
+  --err:#F87171;--err-bg:#2D1515;--err-border:#7F1D1D;
+  --warn:#FBBF24;--warn-bg:#2D2410;--warn-border:#854D0E;
+  --line:#333333;--field-bg:#1F1F1F;--field-border:#404040;--field-focus:#3B82F6;
+  --key-bg:#2A2A2A;--key-hover:#363636;--key-border:#404040;--key-text:#D4D4D4;
+  --bar-track:#333333;--bar-fill:#3B82F6;--card-shadow:none;
+}}
+:root[data-theme="dark"]{
+  --bg:#191919;--surface:#262626;--text:#F2F2F2;--text-dim:#8A8A8A;
+  --accent:#3B82F6;--accent-hover:#60A5FA;--accent-on:#FFFFFF;--accent-faint:#1E293B;
+  --ok:#4ADE80;--ok-bg:#14291E;--ok-border:#166534;
+  --err:#F87171;--err-bg:#2D1515;--err-border:#7F1D1D;
+  --warn:#FBBF24;--warn-bg:#2D2410;--warn-border:#854D0E;
+  --line:#333333;--field-bg:#1F1F1F;--field-border:#404040;--field-focus:#3B82F6;
+  --key-bg:#2A2A2A;--key-hover:#363636;--key-border:#404040;--key-text:#D4D4D4;
+  --bar-track:#333333;--bar-fill:#3B82F6;--card-shadow:none;
+}
+:root[data-theme="light"]{
+  --bg:#FAFAFA;--surface:#FFFFFF;--text:#1A1A1A;--text-dim:#6B6B6B;
+  --accent:#2563EB;--accent-hover:#1D4ED8;--accent-on:#FFFFFF;--accent-faint:#EFF4FF;
+  --ok:#16A34A;--ok-bg:#E8F5E9;--ok-border:#86E8AB;
+  --err:#DC2626;--err-bg:#FEF2F2;--err-border:#FECACA;
+  --warn:#D97706;--warn-bg:#FFFBEB;--warn-border:#FDE68A;
+  --line:#E5E5E5;--field-bg:#FFFFFF;--field-border:#D4D4D4;--field-focus:#2563EB;
+  --key-bg:#F5F5F5;--key-hover:#E5E5E5;--key-border:#D4D4D4;--key-text:#1A1A1A;
+  --bar-track:#E5E5E5;--bar-fill:#2563EB;--card-shadow:0 1px 3px rgba(0,0,0,0.06);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;-webkit-text-size-adjust:100%}
+.wrap{max-width:480px;margin:0 auto;padding:1.25rem 1rem}
+.serif{font-family:Georgia,"Times New Roman",serif}
+.hdr{font-size:1.375rem;font-weight:700;letter-spacing:-0.01em}
+.sub{font-size:.8125rem;color:var(--text-dim)}
+.label{font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.tabnum{font-variant-numeric:tabular-nums}
+.prog-track{height:4px;background:var(--bar-track);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--bar-fill);border-radius:2px;transition:width .35s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1.25rem;box-shadow:var(--card-shadow);margin-bottom:.75rem}
+.card-accent{border-left:3px solid var(--accent)}
+.card-ok{border-left-color:var(--ok)}
+.card-err{border-left-color:var(--err)}
+.card-title{font-weight:600;margin-bottom:.25rem}
+.card-sub{font-size:.8125rem;color:var(--text-dim)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;width:100%;font-family:inherit;font-size:1rem;font-weight:600;padding:.75rem 1.5rem;border:none;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background .15s,opacity .15s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-p{background:var(--accent);color:var(--accent-on)}
+.btn-p:hover:not(:disabled){background:var(--accent-hover)}
+.btn-g{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn-g:hover:not(:disabled){background:var(--accent-faint)}
+.btn-sm{font-size:.875rem;padding:.5rem 1rem}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-link{background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:.5rem;font-size:.875rem;text-decoration:underline;text-underline-offset:2px}
+.field{width:100%;font-family:Georgia,"Times New Roman",serif;font-size:1.125rem;padding:.75rem;background:var(--field-bg);color:var(--text);border:1.5px solid var(--field-border);border-radius:6px;outline:none;transition:border-color .15s}
+.field:focus{border-color:var(--field-focus)}
+.field:disabled{opacity:.6;cursor:not-allowed}
+.field-ok{border-color:var(--ok)!important;background:var(--ok-bg)!important}
+.field-err{border-color:var(--err)!important;background:var(--err-bg)!important}
+.field-pw{font-family:inherit;font-size:1rem}
+.keys{display:flex;flex-wrap:wrap;gap:6px;margin:.625rem 0}
+.key{font-family:Georgia,serif;font-size:1rem;min-width:38px;height:36px;display:flex;align-items:center;justify-content:center;padding:0 4px;background:var(--key-bg);color:var(--key-text);border:1px solid var(--key-border);border-radius:6px;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background .1s,transform .08s}
+.key:hover{background:var(--key-hover)}
+.key:active{transform:scale(.93)}
+.key:disabled{opacity:.3;pointer-events:none}
+.opts{display:flex;flex-direction:column;gap:.5rem;margin:.75rem 0}
+.opt{display:flex;align-items:center;gap:.75rem;width:100%;padding:.875rem 1rem;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;cursor:pointer;font-family:Georgia,serif;font-size:1.0625rem;text-align:left;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:border-color .15s,background .15s}
+.opt:hover:not(.opt-locked){border-color:var(--accent);background:var(--accent-faint)}
+.opt-letter{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent-faint);color:var(--accent);font-family:system-ui,sans-serif;font-size:.8125rem;font-weight:700;flex-shrink:0}
+.opt-locked{cursor:default;opacity:.5}
+.opt-sel{border-color:var(--accent);background:var(--accent-faint)}
+.opt-right{border-color:var(--ok)!important;background:var(--ok-bg)!important;opacity:1!important}
+.opt-right .opt-letter{background:var(--ok);color:#fff}
+.opt-wrong{border-color:var(--err)!important;background:var(--err-bg)!important;opacity:1!important}
+.opt-wrong .opt-letter{background:var(--err);color:#fff}
+.fb{padding:.875rem;border-radius:6px;font-size:.9375rem;line-height:1.5;margin-top:.75rem}
+.fb-ok{background:var(--ok-bg);border:1px solid var(--ok-border);color:var(--ok)}
+.fb-err{background:var(--err-bg);border:1px solid var(--err-border);color:var(--err)}
+.fb-warn{background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn)}
+.fb-head{font-weight:700;display:block;margin-bottom:.2rem}
+.fb-rule{display:block;margin-top:.35rem;font-size:.8125rem;opacity:.85}
+.fb-answer{font-family:Georgia,serif;font-weight:600}
+.row{display:flex;align-items:center;gap:.75rem}
+.col{display:flex;flex-direction:column;gap:.75rem}
+.mt{margin-top:1rem}.mt-sm{margin-top:.5rem}.mb{margin-bottom:1rem}
+.gap-sm{gap:.5rem}
+.center{text-align:center}
+.between{justify-content:space-between}
+.flex1{flex:1}
+.dash-section{margin-bottom:1.25rem}
+.dash-section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:.5rem;padding-left:.25rem}
+.stat-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.stat-box{flex:1;min-width:90px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:.75rem;text-align:center}
+.stat-val{font-size:1.5rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.stat-label{font-size:.6875rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;margin-top:.125rem}
+.res-score{font-family:Georgia,serif;font-size:3rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.res-msg{font-size:1.125rem;color:var(--text-dim);margin-bottom:1.5rem}
+
+.dp{min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
+.dp-top{padding:1rem 1.25rem 0;width:100%;max-width:800px;margin:0 auto}
+.dp-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 1.25rem 2rem;width:100%;max-width:800px;margin:0 auto;gap:.5rem}
+.dp .card{background:transparent;border:none;box-shadow:none;padding:0;border-radius:0;border-left:none;margin:0}
+.dp .card.card-ok{background:var(--ok-bg);border-radius:24px;padding:1.5rem;margin:-.5rem;margin-bottom:0}
+.dp .card.card-err{background:var(--err-bg);border-radius:24px;padding:1.5rem;margin:-.5rem;margin-bottom:0}
+.dp .serif{font-size:1.75rem;line-height:1.45;color:#F2F2F2;font-weight:700}
+.dp .sub{font-size:1.375rem;line-height:1.5;margin-top:.75rem;color:#CCCCCC;font-weight:500}
+@media(prefers-color-scheme:light){.dp .serif{color:#1A1A1A}.dp .sub{color:#555}}
+:root[data-theme="light"] .dp .serif{color:#1A1A1A}
+:root[data-theme="light"] .dp .sub{color:#555}
+.dp .field{font-size:clamp(1.25rem,3vw,1.5rem);padding:1.125rem 1.25rem;border-radius:18px;margin-top:1.25rem}
+.dp .keys{gap:10px;margin:.75rem 0;justify-content:center}
+.dp .key{min-width:48px;height:48px;font-size:1.25rem;border-radius:14px}
+.dp .keys-toggle{background:none;border:none;color:var(--text-dim);font-size:.875rem;cursor:pointer;padding:.5rem;margin-top:.5rem;-webkit-tap-highlight-color:transparent}
+.dp .keys-toggle:hover{color:var(--text)}
+.dp .btn{padding:1.125rem;font-size:clamp(1.0625rem,2.5vw,1.25rem);border-radius:50px}
+.dp .opts{gap:.875rem;margin-top:1.5rem}
+.dp .opt{padding:1.25rem 1.375rem;font-size:clamp(1.125rem,2.8vw,1.375rem);border-radius:20px;border-width:1.5px;background:var(--surface)}
+.dp .opt:hover:not(.opt-locked){background:var(--accent-faint)}
+.dp .opt-right{border-radius:20px!important}
+.dp .opt-wrong{border-radius:20px!important}
+.dp .opt-letter{width:36px;height:36px;font-size:.9375rem;border-radius:50%}
+.dp .fb{padding:1.25rem 1.375rem;border-radius:20px;font-size:clamp(1rem,2.5vw,1.1875rem);margin-top:1.5rem}
+.dp .fb-head{font-size:clamp(1.0625rem,2.5vw,1.25rem)}
+.dp .fb-rule{font-size:clamp(.9375rem,2.2vw,1.0625rem);line-height:1.55}
+.dp .fb-answer{font-size:clamp(1.0625rem,2.5vw,1.25rem)}
+.dp .prog-track{height:3px;border-radius:2px}
+.dp-count{font-size:.875rem;color:var(--text-dim);font-variant-numeric:tabular-nums}
+
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.015)}100%{transform:scale(1)}}
+.shake{animation:shake .35s ease}
+.pop{animation:pop .3s ease}
+@media(prefers-reduced-motion:reduce){.shake,.pop{animation:none}.prog-fill{transition:none}}
+
+.spin{display:inline-block;width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sync{display:flex;align-items:center;gap:.375rem;font-size:.75rem;color:var(--text-dim);padding:.375rem .75rem;border-radius:99px;background:var(--surface);border:1px solid var(--line)}
+.sync-ok{color:var(--ok);border-color:var(--ok-border)}
+.sync-err{color:var(--err);border-color:var(--err-border)}
+.auth-logo{font-size:2rem;margin-bottom:.25rem}
+.auth-title{font-family:Georgia,serif;font-size:1.5rem;font-weight:700;margin-bottom:.25rem}
+.auth-sub{color:var(--text-dim);font-size:.875rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-label{display:block;font-size:.8125rem;font-weight:600;margin-bottom:.375rem;color:var(--text-dim)}
+.form-help{font-size:.75rem;color:var(--text-dim);margin-top:.25rem}
+.error-msg{color:var(--err);font-size:.875rem;font-weight:500;margin-bottom:.75rem}
+.checkbox-row{display:flex;align-items:center;gap:.5rem;font-size:.875rem;margin:.75rem 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.checkbox-row input{width:18px;height:18px;accent-color:var(--accent)}
+.streak-badge{display:inline-flex;align-items:center;gap:.375rem;font-size:.875rem;font-weight:700;color:var(--warn);padding:.25rem .75rem;background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:99px}
+
+.fuel-row{display:flex;align-items:center;gap:.75rem;padding:.625rem 0;border-bottom:1px solid var(--line)}
+.fuel-row:last-child{border-bottom:none}
+.fuel-label{flex:1;font-size:.875rem;font-weight:500}
+.fuel-count{font-size:.875rem;font-weight:700;font-variant-numeric:tabular-nums;min-width:2.5rem;text-align:right}
+.fuel-bar{flex:2;height:6px;border-radius:3px;background:var(--bar-track);overflow:hidden}
+.fuel-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+.fuel-ok{background:var(--ok)}
+.fuel-low{background:var(--warn)}
+.fuel-empty{background:var(--err)}
+
+.zone-indicator{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-radius:8px;font-size:.875rem;font-weight:600}
+.zone-sweet{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-border)}
+.zone-easy{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
+.zone-hard{background:var(--err-bg);color:var(--err);border:1px solid var(--err-border)}
+
+.type-badge{display:inline-block;font-size:.6875rem;font-weight:600;padding:.125rem .5rem;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
+.type-grammar{background:var(--accent-faint);color:var(--accent)}
+.type-vocab{background:var(--ok-bg);color:var(--ok)}
+.type-reading{background:var(--warn-bg);color:var(--warn)}
+.type-writing{background:#F3E8FF;color:#7C3AED}
+@media(prefers-color-scheme:dark){.type-writing{background:#2D1B4E;color:#A78BFA}}
+:root[data-theme="dark"] .type-writing{background:#2D1B4E;color:#A78BFA}
+:root[data-theme="light"] .type-writing{background:#F3E8FF;color:#7C3AED}
+.type-reach{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
+.reach-label{font-size:.75rem;color:var(--warn);font-weight:600;letter-spacing:.04em}
+.writing-fb-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem;margin-bottom:.75rem;border-left:3px solid #7C3AED}
+.writing-fb-original{font-style:italic;color:var(--text-dim);font-size:.875rem;margin-bottom:.5rem}
+.writing-fb-correction{font-size:.9375rem;line-height:1.6}
+.writing-fb-correction mark{background:var(--ok-bg);color:var(--ok);border-radius:2px;padding:0 .125rem}
+</style>
+</head>
+<body>
+<div id="app"><div class="wrap center" style="padding-top:40vh"><div class="spin"></div></div></div>
+<script>
+'use strict';
+
+
+/* ═══════════════════════════════════════════════════════════════
+   CONFIG
+   ═══════════════════════════════════════════════════════════════ */
+
+const CFG = { owner: 'syedalimoiz', repo: 'french-drills-v3' };
+const ACCENTS = ['é','è','ê','ë','à','â','î','ï','ô','ù','û','ç'];
+
+
+/* ═══════════════════════════════════════════════════════════════
+   CRYPTO — AES-256-GCM password encryption for PAT
+   ═══════════════════════════════════════════════════════════════ */
+
+const Cry = {
+  async deriveKey(pw, salt) {
+    const raw = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name:'PBKDF2', salt, iterations:100000, hash:'SHA-256' }, raw, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']);
+  },
+  async encrypt(pw, text) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await this.deriveKey(pw, salt);
+    const enc = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, key, new TextEncoder().encode(text));
+    return { s: this.b64(salt), i: this.b64(iv), d: this.b64(new Uint8Array(enc)) };
+  },
+  async decrypt(pw, bundle) {
+    const salt = this.unb64(bundle.s), iv = this.unb64(bundle.i), data = this.unb64(bundle.d);
+    const key = await this.deriveKey(pw, salt);
+    const dec = await crypto.subtle.decrypt({ name:'AES-GCM', iv }, key, data);
+    return new TextDecoder().decode(dec);
+  },
+  b64(u8) { return btoa(String.fromCharCode(...u8)); },
+  unb64(s) { return new Uint8Array(atob(s).split('').map(c => c.charCodeAt(0))); }
+};
+
+
+/* ═══════════════════════════════════════════════════════════════
+   GITHUB API — Read/write files to the repo
+   ═══════════════════════════════════════════════════════════════ */
+
+class GH {
+  constructor(token) {
+    this.token = token;
+    this.api = `https://api.github.com/repos/${CFG.owner}/${CFG.repo}/contents`;
+    this.shas = {};
+  }
+  headers() {
+    const h = { 'Accept': 'application/vnd.github.v3+json' };
+    if (this.token) h['Authorization'] = `Bearer ${this.token}`;
+    return h;
+  }
+  encodePath(path) {
+    return path.split('/').map(s => encodeURIComponent(s)).join('/');
+  }
+  async get(path) {
+    const r = await fetch(`${this.api}/${this.encodePath(path)}`, { headers: this.headers() });
+    if (r.status === 404) return null;
+    if (!r.ok) throw new Error(`GitHub ${r.status}: ${(await r.json()).message}`);
+    const d = await r.json();
+    this.shas[path] = d.sha;
+    const bin = atob(d.content.replace(/\n/g, ''));
+    return new TextDecoder().decode(new Uint8Array([...bin].map(c => c.charCodeAt(0))));
+  }
+  async put(path, content, msg) {
+    const bytes = new TextEncoder().encode(content);
+    const b64 = btoa(String.fromCharCode(...bytes));
+    const body = { message: msg, content: b64 };
+    if (this.shas[path]) body.sha = this.shas[path];
+    const r = await fetch(`${this.api}/${this.encodePath(path)}`, {
+      method: 'PUT',
+      headers: { ...this.headers(), 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) {
+      const e = await r.json();
+      if (r.status === 409 && !this.shas[path]) {
+        await this.get(path);
+        return this.put(path, content, msg);
+      }
+      throw new Error(`GitHub ${r.status}: ${e.message}`);
+    }
+    const d = await r.json();
+    this.shas[path] = d.content.sha;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SRS ENGINE — SM-2 spaced repetition for vocabulary
+   ═══════════════════════════════════════════════════════════════ */
+
+const SRS = {
+  defaultCard() {
+    return { ef: 2.5, interval: 0, reps: 0, nextReview: null, lastReview: null };
+  },
+
+  update(card, grade) {
+    const today = todayStr();
+    card.lastReview = today;
+    if (grade >= 3) {
+      if (card.reps === 0) card.interval = 1;
+      else if (card.reps === 1) card.interval = 3;
+      else card.interval = Math.round(card.interval * card.ef);
+      card.ef = Math.max(1.3, card.ef + 0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
+      card.reps++;
+    } else {
+      card.reps = 0;
+      card.interval = 1;
+    }
+    const d = new Date(today + 'T00:00:00');
+    d.setDate(d.getDate() + card.interval);
+    card.nextReview = d.toISOString().slice(0, 10);
+    return card;
+  },
+
+  isDue(card) {
+    if (!card.nextReview) return true;
+    return card.nextReview <= todayStr();
+  },
+
+  daysOverdue(card) {
+    if (!card.nextReview) return 999;
+    const diff = Math.floor((new Date(todayStr() + 'T00:00:00') - new Date(card.nextReview + 'T00:00:00')) / 86400000);
+    return Math.max(0, diff);
+  },
+
+  gradeFromPct(pct) {
+    if (pct >= 1.0) return 5;
+    if (pct >= 0.8) return 4;
+    if (pct >= 0.6) return 3;
+    if (pct >= 0.4) return 2;
+    if (pct >= 0.2) return 1;
+    return 0;
+  }
+};
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ANSWER CHECKING — accent-tolerant matching
+   ═══════════════════════════════════════════════════════════════ */
+
+function normText(s) {
+  return s.trim().normalize('NFC').replace(/['’ʼ`′]/g, "'").replace(/\s+/g, ' ').replace(/[.!?,;…]+$/, '').toLowerCase();
+}
+
+function stripAccents(s) {
+  return s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function checkAnswer(given, correct, alternates) {
+  const g = normText(given), c = normText(correct);
+  if (g === c || stripAccents(g) === stripAccents(c)) return true;
+  if (alternates) {
+    for (const alt of alternates) {
+      const a = normText(alt);
+      if (g === a || stripAccents(g) === stripAccents(a)) return true;
+    }
+  }
+  return false;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PROGRESS — V3 data model
+   ═══════════════════════════════════════════════════════════════ */
+
+function defaultProgress() {
+  return {
+    v: 3,
+    updated: null,
+    exercises: {},
+    srs: {},
+    errorPatterns: {},
+    writingSubmissions: [],
+    sessions: [],
+    streak: { current: 0, best: 0, lastDate: null },
+    batch: { id: null, loaded: null },
+    exhaustedIds: []
+  };
+}
+
+function recordExercise(id, correct, tags) {
+  const p = S.progress;
+  if (!p.exercises[id]) p.exercises[id] = { attempts: 0, correct: 0, lastSeen: null };
+  const rec = p.exercises[id];
+  rec.attempts++;
+  if (correct) rec.correct++;
+  rec.lastSeen = todayStr();
+  if (!correct && tags) {
+    for (const tag of tags) {
+      p.errorPatterns[tag] = (p.errorPatterns[tag] || 0) + 1;
+    }
+  }
+}
+
+function getVocabCard(wordId) {
+  if (!S.progress.srs[wordId]) S.progress.srs[wordId] = SRS.defaultCard();
+  return S.progress.srs[wordId];
+}
+
+function updateStreak() {
+  const p = S.progress;
+  const today = todayStr();
+  if (p.streak.lastDate === today) return;
+  const yesterday = new Date(today + 'T00:00:00');
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yStr = yesterday.toISOString().slice(0, 10);
+  if (p.streak.lastDate === yStr) {
+    p.streak.current++;
+  } else if (p.streak.lastDate !== today) {
+    p.streak.current = 1;
+  }
+  if (p.streak.current > p.streak.best) p.streak.best = p.streak.current;
+  p.streak.lastDate = today;
+}
+
+function recordSession(correct, total, durationMs) {
+  const errorRate = total > 0 ? Math.round(((total - correct) / total) * 100) : 0;
+  S.progress.sessions.push({
+    date: todayStr(),
+    duration: Math.round(durationMs / 1000),
+    exercises: total,
+    correct: correct,
+    errorRate: errorRate
+  });
+  if (S.progress.sessions.length > 30) S.progress.sessions = S.progress.sessions.slice(-30);
+  updateStreak();
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   BATCH MANAGEMENT — load and query exercise batches
+   ═══════════════════════════════════════════════════════════════ */
+
+const Batch = {
+  current: null,
+
+  load(json) {
+    this.current = typeof json === 'string' ? JSON.parse(json) : json;
+  },
+
+  fuel() {
+    if (!this.current) return { grammar: 0, vocab: 0, reading: 0, writing: 0 };
+    const ex = S.progress.exhaustedIds;
+    const gCount = (this.current.grammar || []).filter(q => !ex.includes(q.id)).length;
+    const vCount = (this.current.vocabulary || []).filter(q => !ex.includes(q.id)).length;
+    const rCount = (this.current.reading || []).filter(q => !ex.includes(q.id)).length;
+    const wCount = (this.current.writing || []).filter(q => !ex.includes(q.id)).length;
+    return { grammar: gCount, vocab: vCount, reading: rCount, writing: wCount };
+  },
+
+  totalFuel() {
+    const f = this.fuel();
+    return f.grammar + f.vocab + f.reading + f.writing;
+  },
+
+  getReachExercises(tag) {
+    if (!this.current || !this.current.reach || !this.current.reach[tag]) return [];
+    return this.current.reach[tag].filter(q => !S.progress.exhaustedIds.includes(q.id));
+  },
+
+  reachFuel() {
+    if (!this.current || !this.current.reach) return {};
+    const result = {};
+    for (const [tag, exs] of Object.entries(this.current.reach)) {
+      result[tag] = exs.filter(q => !S.progress.exhaustedIds.includes(q.id)).length;
+    }
+    return result;
+  },
+
+  needsRefuel() {
+    const f = this.fuel();
+    return !this.current || f.grammar <= 5 || f.vocab <= 3 || f.reading === 0 || f.writing === 0;
+  }
+};
+
+
+/* ═══════════════════════════════════════════════════════════════
+   REFUEL.md GENERATOR — self-contained handoff for any Claude session
+   ═══════════════════════════════════════════════════════════════ */
+
+function generateRefuel() {
+  const p = S.progress;
+  const fuel = Batch.fuel();
+  const reachFuel = Batch.reachFuel();
+  const curriculum = Batch.current ? Batch.current.curriculum : { chapter: 1, section: 'unknown', phase: 'LEARN' };
+
+  const recentSessions = p.sessions.slice(-5);
+  const avgErrorRate = recentSessions.length > 0
+    ? Math.round(recentSessions.reduce((s, r) => s + r.errorRate, 0) / recentSessions.length)
+    : 0;
+
+  const topErrors = Object.entries(p.errorPatterns)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([tag, count]) => `${tag} (${count} errors)`)
+    .join(', ');
+
+  const weakReachTags = Object.entries(reachFuel)
+    .filter(([, count]) => count <= 2)
+    .map(([tag]) => tag);
+
+  const srsJson = JSON.stringify(p.srs, null, 2);
+
+  const pendingWriting = p.writingSubmissions
+    .map(ws => `### ${ws.id} (submitted ${ws.submitted})\n${ws.text}`)
+    .join('\n\n');
+
+  const exhaustedStr = p.exhaustedIds.join(', ');
+
+  const grammarTarget = Math.max(0, 25 - fuel.grammar);
+  const vocabTarget = Math.max(0, 10 - fuel.vocab);
+  const readingTarget = Math.max(0, 2 - fuel.reading);
+  const writingTarget = Math.max(0, 1 - fuel.writing);
+
+  return `# French Drill App — Refuel Request
+
+## What This Is
+Paste this into a Claude Code session. Run \`/french-batch\` or tell Claude to generate the next batch.
+The app repo is at \`~/Projects/french-drills-v3/\`. Push the generated batch to \`batches/current.json\`.
+
+## Current Position
+- Chapter: ${curriculum.chapter}, Section: ${curriculum.section}, Phase: ${curriculum.phase}
+- Batch ID: ${p.batch.id || 'none'}
+
+## Performance (last ${recentSessions.length} sessions)
+- Average error rate: ${avgErrorRate}%${avgErrorRate >= 15 && avgErrorRate <= 25 ? ' (sweet zone)' : avgErrorRate < 15 ? ' (too easy — increase difficulty)' : ' (too hard — review basics)'}
+- Top error patterns: ${topErrors || 'none yet'}
+
+## What's Running Low
+- Grammar exercises remaining: ${fuel.grammar} ${fuel.grammar <= 5 ? '⚠️' : ''}
+- Vocab words remaining: ${fuel.vocab} ${fuel.vocab <= 3 ? '⚠️' : ''}
+- Reading passages remaining: ${fuel.reading} ${fuel.reading === 0 ? '⚠️' : ''}
+- Writing prompts remaining: ${fuel.writing} ${fuel.writing === 0 ? '⚠️' : ''}
+${weakReachTags.length > 0 ? `- Reach bank low for: ${weakReachTags.join(', ')}` : ''}
+
+## Vocabulary SRS State
+\`\`\`json
+${srsJson}
+\`\`\`
+
+${pendingWriting ? `## Writing Submissions Awaiting Review\n${pendingWriting}\n` : ''}
+## Exhausted Exercise IDs
+${exhaustedStr || 'none'}
+
+## Batch Target
+Generate: ${grammarTarget} grammar, 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab, ${readingTarget} reading, ${writingTarget} writing${pendingWriting ? ', feedback for pending writing' : ''}.
+Push to: github.com/SyedAliMoiz/french-drills-v3 → batches/current.json
+`;
+}
+
+async function copyRefuel() {
+  const md = generateRefuel();
+  try {
+    await navigator.clipboard.writeText(md);
+    return true;
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = md;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   APP STATE
+   ═══════════════════════════════════════════════════════════════ */
+
+const S = {
+  screen: 'loading',
+  gh: null,
+  progress: null,
+  error: null,
+  queue: [],
+  qi: 0,
+  answered: false,
+  currentAnswer: null,
+  sessionCorrect: 0,
+  sessionTotal: 0,
+  sessionStartTime: null,
+  reachQueue: [],
+};
+
+
+/* ═══════════════════════════════════════════════════════════════
+   UI HELPERS
+   ═══════════════════════════════════════════════════════════════ */
+
+const $ = id => document.getElementById(id);
+const app = () => document.getElementById('app');
+const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function formatDuration(ms) {
+  const secs = Math.floor(ms / 1000);
+  if (secs < 60) return secs + 's';
+  const mins = Math.floor(secs / 60);
+  const rem = secs % 60;
+  return mins + 'm ' + (rem < 10 ? '0' : '') + rem + 's';
+}
+
+let _activeInput = null;
+
+function insertAccent(ch) {
+  if (!_activeInput || _activeInput.disabled) return;
+  const s = _activeInput.selectionStart, e = _activeInput.selectionEnd;
+  _activeInput.value = _activeInput.value.slice(0, s) + ch + _activeInput.value.slice(e);
+  _activeInput.selectionStart = _activeInput.selectionEnd = s + 1;
+  _activeInput.focus();
+}
+
+function renderAccentBar(disabled) {
+  return (!disabled ? '<div class="center"><button class="keys-toggle" id="keys-toggle">accents ↑</button></div>' : '') +
+    '<div class="keys" id="keys">' +
+    ACCENTS.map(c => '<button class="key" data-c="' + c + '"' + (disabled ? ' disabled' : '') + '>' + c + '</button>').join('') +
+    '</div>';
+}
+
+function bindAccentKeys() {
+  const inputs = document.querySelectorAll('.field:not(:disabled)');
+  inputs.forEach(inp => inp.addEventListener('focus', () => { _activeInput = inp; }));
+  if (inputs.length > 0) {
+    setTimeout(() => inputs[0].focus(), 60);
+    _activeInput = inputs[0];
+  }
+  const toggle = $('keys-toggle'), keysEl = $('keys');
+  if (toggle && keysEl) {
+    toggle.onclick = () => {
+      const open = keysEl.style.display === 'none';
+      keysEl.style.display = open ? 'flex' : 'none';
+      toggle.textContent = open ? 'accents ↑' : 'accents ↓';
+    };
+  }
+  document.querySelectorAll('.key').forEach(k => {
+    k.addEventListener('mousedown', e => e.preventDefault());
+    k.onclick = () => insertAccent(k.dataset.c);
+  });
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SCREEN ROUTING
+   ═══════════════════════════════════════════════════════════════ */
+
+function render() {
+  ({
+    loading: renderLoading,
+    setup: renderSetup,
+    login: renderLogin,
+    home: renderHome,
+    session: renderSession,
+    results: renderResults,
+  }[S.screen] || renderLoading)();
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LOADING
+   ═══════════════════════════════════════════════════════════════ */
+
+function renderLoading() {
+  app().innerHTML = '<div class="wrap center" style="padding-top:40vh"><div class="spin"></div><p class="sub mt-sm">Loading...</p></div>';
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SETUP — first-time PAT entry
+   ═══════════════════════════════════════════════════════════════ */
+
+function renderSetup() {
+  app().innerHTML = `
+    <div class="wrap" style="padding-top:10vh">
+      <div class="center mb">
+        <div class="auth-logo">\u{1F1EB}\u{1F1F7}</div>
+        <div class="auth-title serif">French Drills V3</div>
+        <div class="auth-sub">First-time setup</div>
+      </div>
+      ${S.error ? `<div class="error-msg">${esc(S.error)}</div>` : ''}
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label">Create a password</label>
+          <input type="password" class="field field-pw" id="pw1" placeholder="Your password" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm password</label>
+          <input type="password" class="field field-pw" id="pw2" placeholder="Confirm password" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label">GitHub Personal Access Token</label>
+          <input type="password" class="field field-pw" id="pat" placeholder="github_pat_..." autocomplete="off">
+          <div class="form-help">Fine-grained PAT scoped to <strong>${CFG.owner}/${CFG.repo}</strong> with Contents read/write.</div>
+        </div>
+        <button class="btn btn-p mt" id="setup-btn">Set Up</button>
+      </div>
+    </div>`;
+  $('setup-btn').onclick = doSetup;
+  $('pw1').focus();
+  [$('pw1'), $('pw2'), $('pat')].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') doSetup(); }));
+}
+
+async function doSetup() {
+  const pw1 = $('pw1').value, pw2 = $('pw2').value, pat = $('pat').value;
+  S.error = null;
+  if (!pw1 || pw1.length < 4) { S.error = 'Password must be at least 4 characters.'; render(); return; }
+  if (pw1 !== pw2) { S.error = "Passwords don't match."; render(); return; }
+  if (!pat || !pat.startsWith('github_pat_')) { S.error = 'Please enter a valid fine-grained PAT (starts with github_pat_).'; render(); return; }
+  $('setup-btn').disabled = true;
+  $('setup-btn').innerHTML = '<span class="spin"></span> Setting up...';
+  try {
+    const gh = new GH(pat);
+    try { await gh.get('README.md'); } catch (e) { /* may not exist */ }
+    const enc = await Cry.encrypt(pw1, pat);
+    await gh.put('config.enc', JSON.stringify(enc), 'Setup: encrypted config');
+    const prog = defaultProgress();
+    prog.updated = new Date().toISOString();
+    await gh.put('PROGRESS.json', JSON.stringify(prog, null, 2), 'Setup: initial progress');
+    localStorage.setItem('fdv3_token', pat);
+    localStorage.setItem('fdv3_setup', '1');
+    S.gh = gh;
+    S.progress = prog;
+    S.error = null;
+    await loadBatch();
+    S.screen = 'home';
+    render();
+  } catch (e) {
+    S.error = `Setup failed: ${e.message}`;
+    render();
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LOGIN — returning user
+   ═══════════════════════════════════════════════════════════════ */
+
+function renderLogin() {
+  app().innerHTML = `
+    <div class="wrap" style="padding-top:15vh">
+      <div class="center mb">
+        <div class="auth-logo">\u{1F1EB}\u{1F1F7}</div>
+        <div class="auth-title serif">French Drills V3</div>
+        <div class="auth-sub">Enter your password to continue</div>
+      </div>
+      ${S.error ? `<div class="error-msg">${esc(S.error)}</div>` : ''}
+      <div class="card">
+        <div class="form-group">
+          <input type="password" class="field field-pw" id="pw" placeholder="Password" autocomplete="current-password">
+        </div>
+        <label class="checkbox-row"><input type="checkbox" id="remember" checked> Stay logged in on this device</label>
+        <button class="btn btn-p mt-sm" id="login-btn">Unlock</button>
+      </div>
+    </div>`;
+  $('login-btn').onclick = doLogin;
+  $('pw').focus();
+  $('pw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+}
+
+async function doLogin() {
+  const pw = $('pw').value;
+  S.error = null;
+  if (!pw) { S.error = 'Enter your password.'; render(); return; }
+  $('login-btn').disabled = true;
+  $('login-btn').innerHTML = '<span class="spin"></span> Unlocking...';
+  try {
+    const gh = new GH(null);
+    const raw = await gh.get('config.enc');
+    if (!raw) { S.error = 'No config found. Need to set up again.'; localStorage.removeItem('fdv3_setup'); S.screen = 'setup'; render(); return; }
+    const bundle = JSON.parse(raw);
+    let pat;
+    try { pat = await Cry.decrypt(pw, bundle); } catch (e) { S.error = 'Wrong password.'; render(); return; }
+    gh.token = pat;
+    if ($('remember').checked) localStorage.setItem('fdv3_token', pat);
+    const progRaw = await gh.get('PROGRESS.json');
+    S.progress = progRaw ? JSON.parse(progRaw) : defaultProgress();
+    S.gh = gh;
+    S.error = null;
+    await loadBatch();
+    S.screen = 'home';
+    render();
+  } catch (e) {
+    S.error = `Login failed: ${e.message}`;
+    render();
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   BATCH LOADING — fetch current batch from repo
+   ═══════════════════════════════════════════════════════════════ */
+
+async function loadBatch() {
+  if (!S.gh) return;
+  try {
+    const raw = await S.gh.get('batches/current.json');
+    if (raw) {
+      Batch.load(raw);
+      S.progress.batch.id = Batch.current.batch_id;
+      S.progress.batch.loaded = new Date().toISOString();
+    }
+  } catch (e) {
+    // no batch yet
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   WRITING FEEDBACK — show corrections from Claude's batch review
+   ═══════════════════════════════════════════════════════════════ */
+
+function renderWritingFeedback() {
+  if (!Batch.current || !Batch.current.writing_feedback || Batch.current.writing_feedback.length === 0) return '';
+  const feedback = Batch.current.writing_feedback;
+  return `
+    <div class="dash-section mt">
+      <div class="dash-section-title">Writing Feedback</div>
+      ${feedback.map(fb => `
+        <div class="writing-fb-card">
+          <div class="row between" style="margin-bottom:.5rem">
+            <div class="card-title" style="margin:0">${esc(fb.prompt || 'Your Writing')}</div>
+            <button class="btn-link dismiss-fb" style="padding:0;font-size:.75rem">Dismiss</button>
+          </div>
+          ${fb.original ? `<div class="writing-fb-original">"${esc(fb.original)}"</div>` : ''}
+          ${fb.corrected ? `<div class="writing-fb-correction">${esc(fb.corrected)}</div>` : ''}
+          ${fb.comments ? `<div class="sub mt-sm">${esc(fb.comments)}</div>` : ''}
+          ${fb.errors ? `
+            <div class="mt-sm">
+              ${fb.errors.map(e => `<div class="fb fb-err" style="margin-top:.375rem;padding:.5rem .75rem;font-size:.8125rem"><span class="fb-head" style="font-size:.8125rem">${esc(e.type || 'Error')}</span>${esc(e.explanation || '')}</div>`).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME — dashboard with fuel status, streak, start button
+   ═══════════════════════════════════════════════════════════════ */
+
+function renderHome() {
+  const fuel = Batch.fuel();
+  const total = Batch.totalFuel();
+  const streak = S.progress.streak.current;
+  const lastSession = S.progress.sessions.length > 0 ? S.progress.sessions[S.progress.sessions.length - 1] : null;
+  const hasBatch = Batch.current !== null;
+  const todayDone = lastSession && lastSession.date === todayStr();
+
+  const fuelBarPct = (count, max) => Math.min(100, Math.round((count / Math.max(max, 1)) * 100));
+  const fuelClass = count => count === 0 ? 'fuel-empty' : count <= 3 ? 'fuel-low' : 'fuel-ok';
+
+  let zoneHTML = '';
+  if (lastSession) {
+    const rate = lastSession.errorRate;
+    let cls, label;
+    if (rate >= 15 && rate <= 25) { cls = 'zone-sweet'; label = 'Sweet zone (' + rate + '% errors)'; }
+    else if (rate < 15) { cls = 'zone-easy'; label = 'Too easy (' + rate + '% errors) — increase difficulty'; }
+    else { cls = 'zone-hard'; label = 'Too hard (' + rate + '% errors) — review basics'; }
+    zoneHTML = `<div class="zone-indicator ${cls}">${label}</div>`;
+  }
+
+  app().innerHTML = `
+    <div class="wrap">
+      <div class="row between mb">
+        <div>
+          <div class="hdr">French Drills</div>
+          <div class="sub">V3 — All-in-one</div>
+        </div>
+        ${streak > 0 ? `<div class="streak-badge">\u{1F525} ${streak} day${streak > 1 ? 's' : ''}</div>` : ''}
+      </div>
+
+      ${todayDone ? `
+        <div class="card card-ok" style="border-left:3px solid var(--ok)">
+          <div class="card-title">Done for today</div>
+          <div class="card-sub">${lastSession.correct}/${lastSession.exercises} correct · ${formatDuration(lastSession.duration * 1000)}</div>
+        </div>
+      ` : ''}
+
+      ${!hasBatch ? `
+        <div class="card card-err" style="border-left:3px solid var(--err)">
+          <div class="card-title">No exercises loaded</div>
+          <div class="card-sub">Generate a batch in Claude Code and push to the repo.</div>
+        </div>
+      ` : `
+        <div class="dash-section">
+          <div class="dash-section-title">Fuel Status</div>
+          <div class="card">
+            <div class="fuel-row">
+              <span class="type-badge type-grammar">Grammar</span>
+              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.grammar)}" style="width:${fuelBarPct(fuel.grammar, 25)}%"></div></div>
+              <span class="fuel-count">${fuel.grammar}</span>
+            </div>
+            <div class="fuel-row">
+              <span class="type-badge type-vocab">Vocab</span>
+              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.vocab)}" style="width:${fuelBarPct(fuel.vocab, 10)}%"></div></div>
+              <span class="fuel-count">${fuel.vocab}</span>
+            </div>
+            <div class="fuel-row">
+              <span class="type-badge type-reading">Reading</span>
+              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.reading)}" style="width:${fuelBarPct(fuel.reading, 2)}%"></div></div>
+              <span class="fuel-count">${fuel.reading}</span>
+            </div>
+            <div class="fuel-row">
+              <span class="type-badge type-writing">Writing</span>
+              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.writing)}" style="width:${fuelBarPct(fuel.writing, 2)}%"></div></div>
+              <span class="fuel-count">${fuel.writing}</span>
+            </div>
+          </div>
+          ${Batch.needsRefuel() ? `
+            <div class="card" style="border-left:3px solid var(--warn);margin-top:.5rem">
+              <div class="card-title" style="color:var(--warn)">Time to refuel</div>
+              <div class="card-sub">Exercises are running low. Copy the refuel file and paste it into a Claude Code session.</div>
+              <button class="btn btn-g btn-sm mt-sm" id="refuel-btn" style="width:auto;padding:.5rem 1rem">Copy REFUEL.md</button>
+              <span class="sub" id="refuel-status" style="margin-left:.5rem"></span>
+            </div>
+          ` : ''}
+        </div>
+
+        <button class="btn btn-p" id="start-btn" ${total === 0 ? 'disabled' : ''}>
+          ${todayDone ? 'Practice Again' : 'Start Session'}
+        </button>
+      `}
+
+      ${zoneHTML ? `<div class="mt">${zoneHTML}</div>` : ''}
+
+      ${S.progress.sessions.length > 1 ? `
+        <div class="dash-section mt">
+          <div class="dash-section-title">Recent Sessions</div>
+          <div class="card">
+            ${S.progress.sessions.slice(-5).reverse().map(s => `
+              <div class="fuel-row">
+                <span class="sub">${s.date.slice(5)}</span>
+                <div class="fuel-bar"><div class="fuel-bar-fill ${s.errorRate <= 25 ? 'fuel-ok' : 'fuel-low'}" style="width:${100 - s.errorRate}%"></div></div>
+                <span class="fuel-count">${s.correct}/${s.exercises}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      ${renderWritingFeedback()}
+
+      <div class="mt center">
+        <button class="btn-link" id="logout-btn">Lock app</button>
+      </div>
+    </div>`;
+
+  if ($('start-btn')) $('start-btn').onclick = startSession;
+  if ($('refuel-btn')) $('refuel-btn').onclick = async () => {
+    const ok = await copyRefuel();
+    $('refuel-status').textContent = ok ? 'Copied!' : 'Copy failed';
+    $('refuel-btn').textContent = ok ? 'Copied' : 'Try again';
+    if (ok) setTimeout(() => { if ($('refuel-status')) $('refuel-status').textContent = ''; }, 3000);
+  };
+  document.querySelectorAll('.dismiss-fb').forEach(el => {
+    el.onclick = () => { el.closest('.writing-fb-card').remove(); };
+  });
+  $('logout-btn').onclick = () => {
+    localStorage.removeItem('fdv3_token');
+    S.gh = null;
+    S.progress = null;
+    Batch.current = null;
+    S.screen = 'login';
+    render();
+  };
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SESSION — drill exercises one at a time
+   ═══════════════════════════════════════════════════════════════ */
+
+function startSession() {
+  if (!Batch.current) return;
+  S.sessionCorrect = 0;
+  S.sessionTotal = 0;
+  S.sessionStartTime = Date.now();
+  S.queue = buildSessionQueue();
+  S.qi = 0;
+  S.answered = false;
+  S.currentAnswer = null;
+  S.reachQueue = [];
+  if (S.queue.length === 0) { S.screen = 'home'; render(); return; }
+  S.screen = 'session';
+  render();
+}
+
+function buildSessionQueue() {
+  if (!Batch.current) return [];
+  const ex = S.progress.exhaustedIds;
+  const grammar = (Batch.current.grammar || []).filter(q => !ex.includes(q.id));
+  const vocab = (Batch.current.vocabulary || []).filter(q => !ex.includes(q.id));
+  const reading = (Batch.current.reading || []).filter(q => !ex.includes(q.id));
+  const writing = (Batch.current.writing || []).filter(q => !ex.includes(q.id));
+
+  const queue = [];
+
+  const errored = grammar.filter(q => {
+    const rec = S.progress.exercises[q.id];
+    return rec && rec.attempts > 0 && rec.correct < rec.attempts;
+  });
+  shuffle(errored);
+  queue.push(...errored.slice(0, 5));
+
+  const fresh = grammar.filter(q => !S.progress.exercises[q.id] && !queue.includes(q));
+  shuffle(fresh);
+  queue.push(...fresh.slice(0, 5));
+
+  const dueVocab = vocab.filter(q => {
+    const card = getVocabCard(q.id);
+    return SRS.isDue(card);
+  });
+  shuffle(dueVocab);
+  queue.push(...dueVocab.slice(0, 5));
+
+  const newVocab = vocab.filter(q => !getVocabCard(q.id).lastReview && !queue.includes(q));
+  queue.push(...newVocab.slice(0, 3));
+
+  queue.push(...reading.slice(0, 1));
+  queue.push(...writing.slice(0, 1));
+
+  return queue;
+}
+
+function queueReach(tags) {
+  if (!tags || !Batch.current || !Batch.current.reach) return;
+  for (const tag of tags) {
+    const pool = Batch.getReachExercises(tag);
+    if (pool.length > 0) {
+      const ex = { ...pool[0], _isReach: true };
+      S.queue.splice(S.qi + 1, 0, ex);
+      if (!S.progress.exhaustedIds.includes(pool[0].id)) S.progress.exhaustedIds.push(pool[0].id);
+      return;
+    }
+  }
+}
+
+function renderSession() {
+  if (S.qi >= S.queue.length) {
+    endSession();
+    return;
+  }
+  const q = S.queue[S.qi];
+  const progress = Math.round(((S.qi) / S.queue.length) * 100);
+
+  if (q.type === 'mcq') renderMCQ(q, progress);
+  else if (q.type === 'blank' || q.type === 'open') renderBlank(q, progress);
+  else if (q.type === 'why') renderMCQ(q, progress);
+  else if (q.word) renderVocabCard(q, progress);
+  else if (q.passage) renderReading(q, progress);
+  else if (q.prompt && q.guidelines) renderWriting(q, progress);
+  else advanceSession();
+}
+
+function renderSessionHeader(progress, typeLabel, typeClass) {
+  const q = S.queue[S.qi];
+  const isReach = q && q._isReach;
+  return `
+    <div class="dp-top">
+      <div class="row between">
+        <div class="dp-count">${S.qi + 1} / ${S.queue.length}</div>
+        <div class="row gap-sm">
+          ${isReach ? '<span class="type-badge type-reach">REACH</span>' : ''}
+          <span class="type-badge ${typeClass}">${typeLabel}</span>
+        </div>
+      </div>
+      <div class="prog-track mt-sm"><div class="prog-fill" style="width:${progress}%"></div></div>
+    </div>`;
+}
+
+function renderMCQ(q, progress) {
+  const letters = ['A', 'B', 'C', 'D'];
+  app().innerHTML = `
+    <div class="dp">
+      ${renderSessionHeader(progress, 'Grammar', 'type-grammar')}
+      <div class="dp-body">
+        <div class="card${S.answered ? (S.currentAnswer === q.correct ? ' card-ok' : ' card-err') : ''}">
+          <div class="serif">${esc(q.stem)}</div>
+          ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
+        </div>
+        <div class="opts" id="opts">
+          ${q.options.map((opt, i) => {
+            let cls = 'opt';
+            if (S.answered) {
+              cls += ' opt-locked';
+              if (i === q.correct) cls += ' opt-right';
+              else if (i === S.currentAnswer) cls += ' opt-wrong';
+            }
+            return `<button class="${cls}" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${esc(opt)}</span></button>`;
+          }).join('')}
+        </div>
+        ${S.answered ? `
+          <div class="fb ${S.currentAnswer === q.correct ? 'fb-ok' : 'fb-err'}">
+            <span class="fb-head">${S.currentAnswer === q.correct ? 'Correct' : 'Wrong'}</span>
+            ${q.rule ? `<span class="fb-rule">${esc(q.rule)}</span>` : ''}
+          </div>
+          <button class="btn btn-p mt" id="next-btn">Continue</button>
+        ` : ''}
+      </div>
+    </div>`;
+
+  if (!S.answered) {
+    document.querySelectorAll('.opt').forEach(el => {
+      el.onclick = () => {
+        const i = parseInt(el.dataset.i);
+        S.currentAnswer = i;
+        S.answered = true;
+        S.sessionTotal++;
+        const correct = i === q.correct;
+        if (correct) S.sessionCorrect++;
+        recordExercise(q.id, correct, q.tags);
+        if (!correct && !q._isReach) queueReach(q.tags);
+        render();
+      };
+    });
+  } else {
+    $('next-btn').onclick = advanceSession;
+    $('next-btn').focus();
+    document.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Enter' && !e.repeat) { document.removeEventListener('keydown', handler); advanceSession(); }
+    });
+  }
+}
+
+function renderBlank(q, progress) {
+  app().innerHTML = `
+    <div class="dp">
+      ${renderSessionHeader(progress, 'Grammar', 'type-grammar')}
+      <div class="dp-body">
+        <div class="card${S.answered ? (S.currentAnswer ? ' card-ok' : ' card-err') : ''}">
+          <div class="serif">${esc(q.stem)}</div>
+          ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
+        </div>
+        <input type="text" class="field" id="answer" placeholder="Type your answer..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''}>
+        ${renderAccentBar(S.answered)}
+        ${!S.answered ? '<button class="btn btn-p mt" id="check-btn">Check</button>' : ''}
+        ${S.answered ? `
+          <div class="fb ${S.currentAnswer ? 'fb-ok' : 'fb-err'}">
+            <span class="fb-head">${S.currentAnswer ? 'Correct' : 'Wrong'}</span>
+            <span class="fb-answer">${esc(typeof q.correct === 'number' ? q.options[q.correct] : q.correct)}</span>
+            ${q.rule ? `<span class="fb-rule">${esc(q.rule)}</span>` : ''}
+          </div>
+          <button class="btn btn-p mt" id="next-btn">Continue</button>
+        ` : ''}
+      </div>
+    </div>`;
+
+  if (!S.answered) {
+    bindAccentKeys();
+    const checkFn = () => {
+      const val = $('answer').value;
+      if (!val.trim()) return;
+      const correctStr = typeof q.correct === 'number' ? q.options[q.correct] : q.correct;
+      const ok = checkAnswer(val, correctStr, q.alternates);
+      S.currentAnswer = ok;
+      S.answered = true;
+      S.sessionTotal++;
+      if (ok) S.sessionCorrect++;
+      recordExercise(q.id, ok, q.tags);
+      if (!ok) { $('answer').classList.add('field-err'); if (!q._isReach) queueReach(q.tags); }
+      else $('answer').classList.add('field-ok');
+      render();
+    };
+    $('check-btn').onclick = checkFn;
+    $('answer').addEventListener('keydown', e => { if (e.key === 'Enter') checkFn(); });
+  } else {
+    $('next-btn').onclick = advanceSession;
+    $('next-btn').focus();
+    document.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Enter' && !e.repeat) { document.removeEventListener('keydown', handler); advanceSession(); }
+    });
+  }
+}
+
+function renderVocabCard(q, progress) {
+  const card = getVocabCard(q.id);
+  app().innerHTML = `
+    <div class="dp">
+      ${renderSessionHeader(progress, 'Vocab', 'type-vocab')}
+      <div class="dp-body">
+        <div class="card${S.answered ? (S.currentAnswer ? ' card-ok' : ' card-err') : ''}">
+          <div class="serif">${esc(q.meaning)}</div>
+          <div class="sub">What is this in French?${q.gender ? ' (' + q.gender + ')' : ''}</div>
+        </div>
+        <input type="text" class="field" id="answer" placeholder="Type the French word..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''}>
+        ${renderAccentBar(S.answered)}
+        ${!S.answered ? '<button class="btn btn-p mt" id="check-btn">Check</button>' : ''}
+        ${S.answered ? `
+          <div class="fb ${S.currentAnswer ? 'fb-ok' : 'fb-err'}">
+            <span class="fb-head">${S.currentAnswer ? 'Correct' : 'Wrong'}</span>
+            <span class="fb-answer">${esc(q.word)}</span>
+            ${q.pronunciation ? `<span class="fb-rule">${esc(q.pronunciation)}</span>` : ''}
+            ${q.sentence_fr ? `<span class="fb-rule">${esc(q.sentence_fr)}</span>` : ''}
+          </div>
+          <button class="btn btn-p mt" id="next-btn">Continue</button>
+        ` : ''}
+      </div>
+    </div>`;
+
+  if (!S.answered) {
+    bindAccentKeys();
+    const checkFn = () => {
+      const val = $('answer').value;
+      if (!val.trim()) return;
+      const ok = checkAnswer(val, q.word, q.alternates);
+      S.currentAnswer = ok;
+      S.answered = true;
+      S.sessionTotal++;
+      if (ok) S.sessionCorrect++;
+      const grade = ok ? 4 : 1;
+      SRS.update(card, grade);
+      render();
+    };
+    $('check-btn').onclick = checkFn;
+    $('answer').addEventListener('keydown', e => { if (e.key === 'Enter') checkFn(); });
+  } else {
+    $('next-btn').onclick = advanceSession;
+    $('next-btn').focus();
+    document.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Enter' && !e.repeat) { document.removeEventListener('keydown', handler); advanceSession(); }
+    });
+  }
+}
+
+function renderReading(q, progress) {
+  const rq = q.questions || [];
+  app().innerHTML = `
+    <div class="dp">
+      ${renderSessionHeader(progress, 'Reading', 'type-reading')}
+      <div class="dp-body" style="justify-content:flex-start;padding-top:1.5rem">
+        <div class="card" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;box-shadow:var(--card-shadow)">
+          <div style="font-weight:600;margin-bottom:.5rem">${esc(q.title || 'Reading')}</div>
+          <div class="serif" style="font-size:1.125rem;line-height:1.7;font-weight:400">${esc(q.passage)}</div>
+          ${q.vocab_highlights ? `<div class="mt-sm sub">${Object.entries(q.vocab_highlights).map(([fr, en]) => `<strong>${esc(fr)}</strong> = ${esc(en)}`).join(' · ')}</div>` : ''}
+        </div>
+        ${rq.length > 0 ? `
+          <div class="mt">
+            ${rq.map((rqi, idx) => `
+              <div class="card" style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem;box-shadow:var(--card-shadow);margin-bottom:.5rem">
+                <div style="font-weight:600;font-size:.9375rem;margin-bottom:.5rem">${esc(rqi.q)}</div>
+                ${rqi.type === 'mcq' ? `
+                  <div class="opts" style="margin:0">
+                    ${rqi.options.map((o, oi) => `<button class="opt rq-opt" data-qi="${idx}" data-oi="${oi}"><span class="opt-letter">${['A','B','C','D'][oi]}</span><span>${esc(o)}</span></button>`).join('')}
+                  </div>
+                ` : ''}
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+        <button class="btn btn-p mt" id="reading-done-btn">${rq.length > 0 ? 'Check Answers' : 'Done Reading'}</button>
+      </div>
+    </div>`;
+
+  $('reading-done-btn').onclick = () => {
+    S.sessionTotal++;
+    S.sessionCorrect++;
+    if (!S.progress.exhaustedIds.includes(q.id)) S.progress.exhaustedIds.push(q.id);
+    advanceSession();
+  };
+}
+
+function renderWriting(q, progress) {
+  app().innerHTML = `
+    <div class="dp">
+      ${renderSessionHeader(progress, 'Writing', 'type-writing')}
+      <div class="dp-body" style="justify-content:flex-start;padding-top:1.5rem">
+        <div class="card" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;box-shadow:var(--card-shadow)">
+          <div class="serif" style="font-size:1.25rem">${esc(q.prompt)}</div>
+          <div class="sub mt-sm">${esc(q.guidelines)}</div>
+          <div class="sub" style="margin-top:.25rem">Level: ${esc(q.level || 'A1')}</div>
+        </div>
+        <textarea class="field mt" id="writing-area" rows="6" placeholder="Write in French..." style="resize:vertical;font-size:1rem;line-height:1.6"></textarea>
+        ${renderAccentBar(false)}
+        <button class="btn btn-p mt" id="submit-writing-btn">Submit</button>
+        <button class="btn-link" id="skip-writing-btn">Skip for now</button>
+      </div>
+    </div>`;
+
+  bindAccentKeys();
+  $('submit-writing-btn').onclick = () => {
+    const text = $('writing-area').value.trim();
+    if (!text) return;
+    S.progress.writingSubmissions.push({ id: q.id, text, submitted: new Date().toISOString() });
+    if (!S.progress.exhaustedIds.includes(q.id)) S.progress.exhaustedIds.push(q.id);
+    S.sessionTotal++;
+    S.sessionCorrect++;
+    advanceSession();
+  };
+  $('skip-writing-btn').onclick = advanceSession;
+}
+
+function advanceSession() {
+  S.qi++;
+  S.answered = false;
+  S.currentAnswer = null;
+  if (S.qi >= S.queue.length) {
+    endSession();
+  } else {
+    render();
+  }
+}
+
+function endSession() {
+  const duration = Date.now() - (S.sessionStartTime || Date.now());
+  recordSession(S.sessionCorrect, S.sessionTotal, duration);
+  saveLocal();
+  syncToGitHub();
+  S.screen = 'results';
+  render();
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   RESULTS — end-of-session summary
+   ═══════════════════════════════════════════════════════════════ */
+
+function renderResults() {
+  const total = S.sessionTotal;
+  const correct = S.sessionCorrect;
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+  const errorRate = total > 0 ? 100 - pct : 0;
+  const duration = Date.now() - (S.sessionStartTime || Date.now());
+
+  let zoneClass, zoneLabel;
+  if (errorRate >= 15 && errorRate <= 25) { zoneClass = 'zone-sweet'; zoneLabel = 'Sweet zone — right level of challenge'; }
+  else if (errorRate < 15) { zoneClass = 'zone-easy'; zoneLabel = 'Too easy — difficulty should increase'; }
+  else { zoneClass = 'zone-hard'; zoneLabel = 'Too hard — review the basics first'; }
+
+  app().innerHTML = `
+    <div class="wrap" style="padding-top:8vh">
+      <div class="center mb">
+        <div class="res-score">${pct}%</div>
+        <div class="res-msg">${correct} of ${total} correct · ${formatDuration(duration)}</div>
+      </div>
+
+      <div class="zone-indicator ${zoneClass}">${zoneLabel}</div>
+      <div class="sub mt-sm center">Coyle's 20% Rule: aim for 15–25% errors. That's where growth happens.</div>
+
+      ${S.progress.streak.current > 0 ? `
+        <div class="center mt">
+          <div class="streak-badge">\u{1F525} ${S.progress.streak.current} day streak</div>
+        </div>
+      ` : ''}
+
+      <div class="stat-row mt">
+        <div class="stat-box">
+          <div class="stat-val">${errorRate}%</div>
+          <div class="stat-label">Error Rate</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">${total}</div>
+          <div class="stat-label">Exercises</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">${formatDuration(duration)}</div>
+          <div class="stat-label">Time</div>
+        </div>
+      </div>
+
+      ${Batch.needsRefuel() ? `
+        <div class="card mt" style="border-left:3px solid var(--warn)">
+          <div class="card-title" style="color:var(--warn)">Fuel is low</div>
+          <div class="card-sub">Copy the refuel file and paste it into Claude Code to generate more exercises.</div>
+          <button class="btn btn-g btn-sm mt-sm" id="res-refuel-btn" style="width:auto;padding:.5rem 1rem">Copy REFUEL.md</button>
+          <span class="sub" id="res-refuel-status" style="margin-left:.5rem"></span>
+        </div>
+      ` : ''}
+
+      <button class="btn btn-p mt" id="home-btn">Back to Home</button>
+      ${Batch.totalFuel() > 0 ? '<button class="btn btn-g mt-sm" id="again-btn">Practice More</button>' : ''}
+    </div>`;
+
+  $('home-btn').onclick = () => { S.screen = 'home'; render(); };
+  if ($('again-btn')) $('again-btn').onclick = startSession;
+  if ($('res-refuel-btn')) $('res-refuel-btn').onclick = async () => {
+    const ok = await copyRefuel();
+    $('res-refuel-status').textContent = ok ? 'Copied!' : 'Copy failed';
+    $('res-refuel-btn').textContent = ok ? 'Copied' : 'Try again';
+  };
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SAVE & SYNC — localStorage + GitHub
+   ═══════════════════════════════════════════════════════════════ */
+
+function saveLocal() {
+  if (!S.progress) return;
+  S.progress.updated = new Date().toISOString();
+  try { localStorage.setItem('fdv3_progress', JSON.stringify(S.progress)); } catch (e) { /* storage full */ }
+}
+
+function loadLocal() {
+  try {
+    const raw = localStorage.getItem('fdv3_progress');
+    if (raw) return JSON.parse(raw);
+  } catch (e) { /* corrupted */ }
+  return null;
+}
+
+async function syncToGitHub() {
+  if (!S.gh || !S.progress) return;
+  try {
+    S.progress.updated = new Date().toISOString();
+    await S.gh.put('PROGRESS.json', JSON.stringify(S.progress, null, 2), `Progress update ${todayStr()}`);
+  } catch (e) {
+    // silent fail
+  }
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) saveLocal();
+});
+
+
+/* ═══════════════════════════════════════════════════════════════
+   BOOT — check auth, load data, show appropriate screen
+   ═══════════════════════════════════════════════════════════════ */
+
+async function init() {
+  const savedToken = localStorage.getItem('fdv3_token');
+  const wasSetUp = localStorage.getItem('fdv3_setup');
+
+  if (savedToken) {
+    try {
+      const gh = new GH(savedToken);
+      const progRaw = await gh.get('PROGRESS.json');
+      S.gh = gh;
+      S.progress = progRaw ? JSON.parse(progRaw) : defaultProgress();
+      const localProg = loadLocal();
+      if (localProg && localProg.updated && S.progress.updated && localProg.updated > S.progress.updated) {
+        S.progress = localProg;
+      }
+      await loadBatch();
+      S.screen = 'home';
+    } catch (e) {
+      localStorage.removeItem('fdv3_token');
+      S.screen = wasSetUp ? 'login' : 'setup';
+    }
+  } else {
+    S.screen = wasSetUp ? 'login' : 'setup';
+  }
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
