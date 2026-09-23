@@ -3444,6 +3444,11 @@
         "verb",
         "chapter-1",
         "set-0"
+      ],
+      "sentence_blank_en": "He ___s",
+      "distractors": [
+        "to tidy",
+        "to play"
       ]
     },
     {
@@ -3456,6 +3461,11 @@
         "verb",
         "chapter-1",
         "set-0"
+      ],
+      "sentence_blank_en": "I ___ a cat",
+      "distractors": [
+        "to erase",
+        "to dance"
       ]
     },
     {
@@ -3468,6 +3478,11 @@
         "verb",
         "chapter-1",
         "set-0"
+      ],
+      "sentence_blank_en": "He speaks (___)",
+      "distractors": [
+        "to encourage",
+        "to adore"
       ]
     },
     {
@@ -3481,6 +3496,11 @@
         "noun",
         "chapter-1",
         "set-0"
+      ],
+      "sentence_blank_en": "a big ___",
+      "distractors": [
+        "street",
+        "friend"
       ]
     },
     {
@@ -3494,6 +3514,11 @@
         "noun",
         "chapter-1",
         "set-0"
+      ],
+      "sentence_blank_en": "a big ___",
+      "distractors": [
+        "country",
+        "kitchen"
       ]
     },
     {
@@ -3507,6 +3532,11 @@
         "noun",
         "chapter-1",
         "set-0"
+      ],
+      "sentence_blank_en": "a big cat (___)",
+      "distractors": [
+        "door",
+        "street"
       ]
     },
     {
@@ -3519,6 +3549,11 @@
         "adjective",
         "chapter-1",
         "set-0"
+      ],
+      "sentence_blank_en": "a ___ house",
+      "distractors": [
+        "purple",
+        "last"
       ]
     },
     {
@@ -3531,6 +3566,11 @@
         "adjective",
         "chapter-1",
         "set-0"
+      ],
+      "sentence_blank_en": "a happy cat (___)",
+      "distractors": [
+        "kind",
+        "happy"
       ]
     },
     {
@@ -3543,6 +3583,11 @@
         "adjective",
         "chapter-1",
         "set-0"
+      ],
+      "sentence_blank_en": "a big house (___)",
+      "distractors": [
+        "sweet/soft",
+        "purple"
       ]
     },
     {
@@ -3555,6 +3600,11 @@
         "verb",
         "chapter-1",
         "set-1"
+      ],
+      "sentence_blank_en": "We ___",
+      "distractors": [
+        "to pass/spend",
+        "to begin"
       ]
     },
     {
@@ -3567,6 +3617,11 @@
         "verb",
         "chapter-1",
         "set-1"
+      ],
+      "sentence_blank_en": "He walks (___)",
+      "distractors": [
+        "to travel",
+        "to like/love"
       ]
     },
     {
@@ -3579,6 +3634,11 @@
         "verb",
         "chapter-1",
         "set-1"
+      ],
+      "sentence_blank_en": "We sing (___)",
+      "distractors": [
+        "to carry/wear",
+        "to like/love"
       ]
     },
     {
@@ -3592,6 +3652,11 @@
         "noun",
         "chapter-1",
         "set-1"
+      ],
+      "sentence_blank_en": "a strong boy (___)",
+      "distractors": [
+        "meal",
+        "street"
       ]
     },
     {
@@ -3605,6 +3670,11 @@
         "noun",
         "chapter-1",
         "set-1"
+      ],
+      "sentence_blank_en": "a smart girl (___)",
+      "distractors": [
+        "friend",
+        "street"
       ]
     },
     {
@@ -3618,6 +3688,11 @@
         "noun",
         "chapter-1",
         "set-1"
+      ],
+      "sentence_blank_en": "a strong boy (___)",
+      "distractors": [
+        "cat",
+        "school"
       ]
     },
     {
@@ -3630,6 +3705,11 @@
         "adjective",
         "chapter-1",
         "set-1"
+      ],
+      "sentence_blank_en": "a ___ boy",
+      "distractors": [
+        "blonde",
+        "big/tall"
       ]
     },
     {
@@ -3642,6 +3722,11 @@
         "adjective",
         "chapter-1",
         "set-1"
+      ],
+      "sentence_blank_en": "blonde girls (___)",
+      "distractors": [
+        "white",
+        "strong"
       ]
     },
     {
@@ -3654,6 +3739,11 @@
         "adjective",
         "chapter-1",
         "set-1"
+      ],
+      "sentence_blank_en": "a strong boy (___)",
+      "distractors": [
+        "bad",
+        "white"
       ]
     },
     {
@@ -3666,6 +3756,11 @@
         "verb",
         "chapter-1",
         "set-2"
+      ],
+      "sentence_blank_en": "I ___ a friend",
+      "distractors": [
+        "to cut",
+        "to encourage"
       ]
     },
     {
@@ -3678,6 +3773,11 @@
         "verb",
         "chapter-1",
         "set-2"
+      ],
+      "sentence_blank_en": "He closes a door (___)",
+      "distractors": [
+        "to arrive",
+        "to throw"
       ]
     },
     {
@@ -3690,6 +3790,11 @@
         "verb",
         "chapter-1",
         "set-2"
+      ],
+      "sentence_blank_en": "I watch a friend (___)",
+      "distractors": [
+        "to watch",
+        "to throw"
       ]
     },
     {
@@ -3703,6 +3808,11 @@
         "noun",
         "chapter-1",
         "set-2"
+      ],
+      "sentence_blank_en": "a pretty ___",
+      "distractors": [
+        "person",
+        "cake"
       ]
     },
     {
@@ -3716,6 +3826,11 @@
         "noun",
         "chapter-1",
         "set-2"
+      ],
+      "sentence_blank_en": "a French school (___)",
+      "distractors": [
+        "newspaper",
+        "boat"
       ]
     },
     {
@@ -3729,6 +3844,11 @@
         "noun",
         "chapter-1",
         "set-2"
+      ],
+      "sentence_blank_en": "a pretty door (___)",
+      "distractors": [
+        "color",
+        "country"
       ]
     },
     {
@@ -3741,6 +3861,11 @@
         "adjective",
         "chapter-1",
         "set-2"
+      ],
+      "sentence_blank_en": "a ___ door",
+      "distractors": [
+        "correct",
+        "bad"
       ]
     },
     {
@@ -3753,6 +3878,11 @@
         "adjective",
         "chapter-1",
         "set-2"
+      ],
+      "sentence_blank_en": "French schools (___)",
+      "distractors": [
+        "light",
+        "direct"
       ]
     },
     {
@@ -3765,6 +3895,11 @@
         "adjective",
         "chapter-1",
         "set-2"
+      ],
+      "sentence_blank_en": "a pretty door (___)",
+      "distractors": [
+        "important",
+        "direct"
       ]
     },
     {
@@ -3777,6 +3912,11 @@
         "verb",
         "chapter-1",
         "set-3"
+      ],
+      "sentence_blank_en": "I ___ a garden",
+      "distractors": [
+        "to dance",
+        "to hate"
       ]
     },
     {
@@ -3789,6 +3929,11 @@
         "verb",
         "chapter-1",
         "set-3"
+      ],
+      "sentence_blank_en": "He carries an animal (___)",
+      "distractors": [
+        "to arrive",
+        "to begin"
       ]
     },
     {
@@ -3801,6 +3946,11 @@
         "verb",
         "chapter-1",
         "set-3"
+      ],
+      "sentence_blank_en": "I look for a garden (___)",
+      "distractors": [
+        "to move",
+        "to show"
       ]
     },
     {
@@ -3814,6 +3964,11 @@
         "noun",
         "chapter-1",
         "set-3"
+      ],
+      "sentence_blank_en": "a new ___",
+      "distractors": [
+        "bird",
+        "shop"
       ]
     },
     {
@@ -3827,6 +3982,11 @@
         "noun",
         "chapter-1",
         "set-3"
+      ],
+      "sentence_blank_en": "a beautiful ___",
+      "distractors": [
+        "color",
+        "house"
       ]
     },
     {
@@ -3840,6 +4000,11 @@
         "noun",
         "chapter-1",
         "set-3"
+      ],
+      "sentence_blank_en": "a new garden (___)",
+      "distractors": [
+        "window",
+        "boat"
       ]
     },
     {
@@ -3852,6 +4017,11 @@
         "adjective",
         "chapter-1",
         "set-3"
+      ],
+      "sentence_blank_en": "a ___ bedroom",
+      "distractors": [
+        "sweet/soft",
+        "white"
       ]
     },
     {
@@ -3864,6 +4034,11 @@
         "adjective",
         "chapter-1",
         "set-3"
+      ],
+      "sentence_blank_en": "long animals (___)",
+      "distractors": [
+        "correct",
+        "good"
       ]
     },
     {
@@ -3876,6 +4051,11 @@
         "adjective",
         "chapter-1",
         "set-3"
+      ],
+      "sentence_blank_en": "a new bedroom (___)",
+      "distractors": [
+        "good",
+        "fresh/cool"
       ]
     },
     {
@@ -3888,6 +4068,11 @@
         "verb",
         "chapter-1",
         "set-4"
+      ],
+      "sentence_blank_en": "I ___ a song",
+      "distractors": [
+        "to prepare",
+        "to swim"
       ]
     },
     {
@@ -3900,6 +4085,11 @@
         "verb",
         "chapter-1",
         "set-4"
+      ],
+      "sentence_blank_en": "He arrives (___)",
+      "distractors": [
+        "to arrive",
+        "to watch"
       ]
     },
     {
@@ -3912,6 +4102,11 @@
         "verb",
         "chapter-1",
         "set-4"
+      ],
+      "sentence_blank_en": "I play a song (___)",
+      "distractors": [
+        "to eat",
+        "to carry/wear"
       ]
     },
     {
@@ -3925,6 +4120,11 @@
         "noun",
         "chapter-1",
         "set-4"
+      ],
+      "sentence_blank_en": "an old ___",
+      "distractors": [
+        "cake",
+        "canal"
       ]
     },
     {
@@ -3938,6 +4138,11 @@
         "noun",
         "chapter-1",
         "set-4"
+      ],
+      "sentence_blank_en": "a white ___",
+      "distractors": [
+        "pipe",
+        "house"
       ]
     },
     {
@@ -3951,6 +4156,11 @@
         "noun",
         "chapter-1",
         "set-4"
+      ],
+      "sentence_blank_en": "an old hat (___)",
+      "distractors": [
+        "hat",
+        "color"
       ]
     },
     {
@@ -3963,6 +4173,11 @@
         "adjective",
         "chapter-1",
         "set-4"
+      ],
+      "sentence_blank_en": "___ birds",
+      "distractors": [
+        "last",
+        "big/tall"
       ]
     },
     {
@@ -3975,6 +4190,11 @@
         "adjective",
         "chapter-1",
         "set-4"
+      ],
+      "sentence_blank_en": "big hats (___)",
+      "distractors": [
+        "young",
+        "cruel"
       ]
     },
     {
@@ -3987,6 +4207,11 @@
         "adjective",
         "chapter-1",
         "set-4"
+      ],
+      "sentence_blank_en": "old birds (___)",
+      "distractors": [
+        "smart",
+        "new"
       ]
     },
     {
@@ -3999,6 +4224,11 @@
         "verb",
         "chapter-1",
         "set-5"
+      ],
+      "sentence_blank_en": "We ___",
+      "distractors": [
+        "to look for",
+        "to walk"
       ]
     },
     {
@@ -4011,6 +4241,11 @@
         "verb",
         "chapter-1",
         "set-5"
+      ],
+      "sentence_blank_en": "He dances (___)",
+      "distractors": [
+        "to fall",
+        "to wash"
       ]
     },
     {
@@ -4023,6 +4258,11 @@
         "verb",
         "chapter-1",
         "set-5"
+      ],
+      "sentence_blank_en": "We eat (___)",
+      "distractors": [
+        "to watch",
+        "to speak"
       ]
     },
     {
@@ -4036,6 +4276,11 @@
         "noun",
         "chapter-1",
         "set-5"
+      ],
+      "sentence_blank_en": "a happy ___",
+      "distractors": [
+        "boy",
+        "table"
       ]
     },
     {
@@ -4049,6 +4294,11 @@
         "noun",
         "chapter-1",
         "set-5"
+      ],
+      "sentence_blank_en": "a sweet ___",
+      "distractors": [
+        "book",
+        "friend"
       ]
     },
     {
@@ -4062,6 +4312,11 @@
         "noun",
         "chapter-1",
         "set-5"
+      ],
+      "sentence_blank_en": "a happy country (___)",
+      "distractors": [
+        "curtain",
+        "animal"
       ]
     },
     {
@@ -4074,6 +4329,11 @@
         "adjective",
         "chapter-1",
         "set-5"
+      ],
+      "sentence_blank_en": "a ___ country",
+      "distractors": [
+        "beautiful",
+        "bad"
       ]
     },
     {
@@ -4086,6 +4346,11 @@
         "adjective",
         "chapter-1",
         "set-5"
+      ],
+      "sentence_blank_en": "active voices (___)",
+      "distractors": [
+        "smart",
+        "young"
       ]
     },
     {
@@ -4098,6 +4363,11 @@
         "adjective",
         "chapter-1",
         "set-5"
+      ],
+      "sentence_blank_en": "a happy country (___)",
+      "distractors": [
+        "smart",
+        "pretty"
       ]
     },
     {
@@ -4110,6 +4380,11 @@
         "verb",
         "chapter-1",
         "set-6"
+      ],
+      "sentence_blank_en": "We ___",
+      "distractors": [
+        "to begin",
+        "to trace/draw"
       ]
     },
     {
@@ -4122,6 +4397,11 @@
         "verb",
         "chapter-1",
         "set-6"
+      ],
+      "sentence_blank_en": "He swims (___)",
+      "distractors": [
+        "to close",
+        "to eat"
       ]
     },
     {
@@ -4134,6 +4414,11 @@
         "verb",
         "chapter-1",
         "set-6"
+      ],
+      "sentence_blank_en": "We travel (___)",
+      "distractors": [
+        "to trace/draw",
+        "to draw"
       ]
     },
     {
@@ -4147,6 +4432,11 @@
         "noun",
         "chapter-1",
         "set-6"
+      ],
+      "sentence_blank_en": "a kind boat (___)",
+      "distractors": [
+        "window",
+        "meal"
       ]
     },
     {
@@ -4160,6 +4450,11 @@
         "noun",
         "chapter-1",
         "set-6"
+      ],
+      "sentence_blank_en": "a fresh flower (___)",
+      "distractors": [
+        "nose",
+        "person"
       ]
     },
     {
@@ -4173,6 +4468,11 @@
         "noun",
         "chapter-1",
         "set-6"
+      ],
+      "sentence_blank_en": "a kind boat (___)",
+      "distractors": [
+        "person",
+        "cake"
       ]
     },
     {
@@ -4185,6 +4485,11 @@
         "adjective",
         "chapter-1",
         "set-6"
+      ],
+      "sentence_blank_en": "a ___ flower",
+      "distractors": [
+        "direct",
+        "big/fat"
       ]
     },
     {
@@ -4197,6 +4502,11 @@
         "adjective",
         "chapter-1",
         "set-6"
+      ],
+      "sentence_blank_en": "fresh flowers (___)",
+      "distractors": [
+        "light",
+        "natural"
       ]
     },
     {
@@ -4209,6 +4519,11 @@
         "adjective",
         "chapter-1",
         "set-6"
+      ],
+      "sentence_blank_en": "a kind flower (___)",
+      "distractors": [
+        "public",
+        "direct"
       ]
     },
     {
@@ -4221,6 +4536,11 @@
         "verb",
         "chapter-1",
         "set-7"
+      ],
+      "sentence_blank_en": "I ___ a meal",
+      "distractors": [
+        "to show",
+        "to travel"
       ]
     },
     {
@@ -4233,6 +4553,11 @@
         "verb",
         "chapter-1",
         "set-7"
+      ],
+      "sentence_blank_en": "He hates a kitchen (___)",
+      "distractors": [
+        "to tidy",
+        "to play"
       ]
     },
     {
@@ -4245,6 +4570,11 @@
         "verb",
         "chapter-1",
         "set-7"
+      ],
+      "sentence_blank_en": "I prepare a meal (___)",
+      "distractors": [
+        "to tidy",
+        "to travel"
       ]
     },
     {
@@ -4258,6 +4588,11 @@
         "noun",
         "chapter-1",
         "set-7"
+      ],
+      "sentence_blank_en": "a good ___",
+      "distractors": [
+        "metal",
+        "city"
       ]
     },
     {
@@ -4271,6 +4606,11 @@
         "noun",
         "chapter-1",
         "set-7"
+      ],
+      "sentence_blank_en": "a young child (___)",
+      "distractors": [
+        "city",
+        "child"
       ]
     },
     {
@@ -4284,6 +4624,11 @@
         "noun",
         "chapter-1",
         "set-7"
+      ],
+      "sentence_blank_en": "a good kitchen (___)",
+      "distractors": [
+        "color",
+        "metal"
       ]
     },
     {
@@ -4296,6 +4641,11 @@
         "adjective",
         "chapter-1",
         "set-7"
+      ],
+      "sentence_blank_en": "a ___ meal",
+      "distractors": [
+        "French",
+        "normal"
       ]
     },
     {
@@ -4308,6 +4658,11 @@
         "adjective",
         "chapter-1",
         "set-7"
+      ],
+      "sentence_blank_en": "young kitchens (___)",
+      "distractors": [
+        "direct",
+        "French"
       ]
     },
     {
@@ -4320,6 +4675,11 @@
         "adjective",
         "chapter-1",
         "set-7"
+      ],
+      "sentence_blank_en": "a good meal (___)",
+      "distractors": [
+        "old/former",
+        "French"
       ]
     },
     {
@@ -4332,6 +4692,11 @@
         "verb",
         "chapter-1",
         "set-8"
+      ],
+      "sentence_blank_en": "We ___",
+      "distractors": [
+        "to look for",
+        "to play"
       ]
     },
     {
@@ -4344,6 +4709,11 @@
         "verb",
         "chapter-1",
         "set-8"
+      ],
+      "sentence_blank_en": "I draw a window (___)",
+      "distractors": [
+        "to look for",
+        "to encourage"
       ]
     },
     {
@@ -4356,6 +4726,11 @@
         "verb",
         "chapter-1",
         "set-8"
+      ],
+      "sentence_blank_en": "We invite (___)",
+      "distractors": [
+        "to trace/draw",
+        "to adore"
       ]
     },
     {
@@ -4369,6 +4744,11 @@
         "noun",
         "chapter-1",
         "set-8"
+      ],
+      "sentence_blank_en": "a last ___",
+      "distractors": [
+        "metal",
+        "key"
       ]
     },
     {
@@ -4382,6 +4762,11 @@
         "noun",
         "chapter-1",
         "set-8"
+      ],
+      "sentence_blank_en": "a first window (___)",
+      "distractors": [
+        "nose",
+        "pit/core"
       ]
     },
     {
@@ -4395,6 +4780,11 @@
         "noun",
         "chapter-1",
         "set-8"
+      ],
+      "sentence_blank_en": "a last street (___)",
+      "distractors": [
+        "street",
+        "kitchen"
       ]
     },
     {
@@ -4407,6 +4797,11 @@
         "adjective",
         "chapter-1",
         "set-8"
+      ],
+      "sentence_blank_en": "a ___ window",
+      "distractors": [
+        "fresh/cool",
+        "active"
       ]
     },
     {
@@ -4419,6 +4814,11 @@
         "adjective",
         "chapter-1",
         "set-8"
+      ],
+      "sentence_blank_en": "first windows (___)",
+      "distractors": [
+        "original",
+        "important"
       ]
     },
     {
@@ -4431,6 +4831,11 @@
         "adjective",
         "chapter-1",
         "set-8"
+      ],
+      "sentence_blank_en": "a light window (___)",
+      "distractors": [
+        "direct",
+        "dry"
       ]
     },
     {
@@ -4443,6 +4848,11 @@
         "verb",
         "chapter-1",
         "set-9"
+      ],
+      "sentence_blank_en": "I ___ a wall",
+      "distractors": [
+        "to give",
+        "to close"
       ]
     },
     {
@@ -4455,6 +4865,11 @@
         "verb",
         "chapter-1",
         "set-9"
+      ],
+      "sentence_blank_en": "They fall (___)",
+      "distractors": [
+        "to arrive",
+        "to share"
       ]
     },
     {
@@ -4467,6 +4882,11 @@
         "verb",
         "chapter-1",
         "set-9"
+      ],
+      "sentence_blank_en": "I wash a wall (___)",
+      "distractors": [
+        "to watch",
+        "to pass/spend"
       ]
     },
     {
@@ -4480,6 +4900,11 @@
         "noun",
         "chapter-1",
         "set-9"
+      ],
+      "sentence_blank_en": "a natural wall (___)",
+      "distractors": [
+        "school",
+        "street"
       ]
     },
     {
@@ -4493,6 +4918,11 @@
         "noun",
         "chapter-1",
         "set-9"
+      ],
+      "sentence_blank_en": "an old key (___)",
+      "distractors": [
+        "child",
+        "bedroom"
       ]
     },
     {
@@ -4506,6 +4936,11 @@
         "noun",
         "chapter-1",
         "set-9"
+      ],
+      "sentence_blank_en": "a natural wall (___)",
+      "distractors": [
+        "cat",
+        "castle"
       ]
     },
     {
@@ -4518,6 +4953,11 @@
         "adjective",
         "chapter-1",
         "set-9"
+      ],
+      "sentence_blank_en": "___ colors",
+      "distractors": [
+        "big/tall",
+        "important"
       ]
     },
     {
@@ -4530,6 +4970,11 @@
         "adjective",
         "chapter-1",
         "set-9"
+      ],
+      "sentence_blank_en": "old colors (___)",
+      "distractors": [
+        "smart",
+        "big/tall"
       ]
     },
     {
@@ -4542,6 +4987,11 @@
         "adjective",
         "chapter-1",
         "set-9"
+      ],
+      "sentence_blank_en": "natural colors (___)",
+      "distractors": [
+        "big/fat",
+        "old"
       ]
     },
     {
@@ -4554,6 +5004,11 @@
         "verb",
         "chapter-1",
         "set-10"
+      ],
+      "sentence_blank_en": "We ___ a cake",
+      "distractors": [
+        "to dive",
+        "to live (in)"
       ]
     },
     {
@@ -4566,6 +5021,11 @@
         "verb",
         "chapter-1",
         "set-10"
+      ],
+      "sentence_blank_en": "I erase a gift (___)",
+      "distractors": [
+        "to eat",
+        "to throw"
       ]
     },
     {
@@ -4578,6 +5038,11 @@
         "verb",
         "chapter-1",
         "set-10"
+      ],
+      "sentence_blank_en": "We throw a cake (___)",
+      "distractors": [
+        "to close",
+        "to begin"
       ]
     },
     {
@@ -4591,6 +5056,11 @@
         "noun",
         "chapter-1",
         "set-10"
+      ],
+      "sentence_blank_en": "a dry gift (___)",
+      "distractors": [
+        "gift",
+        "color"
       ]
     },
     {
@@ -4604,6 +5074,11 @@
         "noun",
         "chapter-1",
         "set-10"
+      ],
+      "sentence_blank_en": "a dry city (___)",
+      "distractors": [
+        "country",
+        "girl"
       ]
     },
     {
@@ -4617,6 +5092,11 @@
         "noun",
         "chapter-1",
         "set-10"
+      ],
+      "sentence_blank_en": "a dry gift (___)",
+      "distractors": [
+        "hat",
+        "boy"
       ]
     },
     {
@@ -4629,6 +5109,11 @@
         "adjective",
         "chapter-1",
         "set-10"
+      ],
+      "sentence_blank_en": "___ cities",
+      "distractors": [
+        "original",
+        "kind"
       ]
     },
     {
@@ -4641,6 +5126,11 @@
         "adjective",
         "chapter-1",
         "set-10"
+      ],
+      "sentence_blank_en": "dry gifts (___)",
+      "distractors": [
+        "kind",
+        "old/former"
       ]
     },
     {
@@ -4653,6 +5143,11 @@
         "adjective",
         "chapter-1",
         "set-10"
+      ],
+      "sentence_blank_en": "false cities (___)",
+      "distractors": [
+        "purple",
+        "public"
       ]
     },
     {
@@ -4665,6 +5160,11 @@
         "verb",
         "chapter-1",
         "set-11"
+      ],
+      "sentence_blank_en": "I ___ a castle",
+      "distractors": [
+        "to speak",
+        "to look for"
       ]
     },
     {
@@ -4677,6 +5177,11 @@
         "verb",
         "chapter-1",
         "set-11"
+      ],
+      "sentence_blank_en": "We dive (___)",
+      "distractors": [
+        "to listen",
+        "to throw"
       ]
     },
     {
@@ -4689,6 +5194,11 @@
         "verb",
         "chapter-1",
         "set-11"
+      ],
+      "sentence_blank_en": "I share a castle (___)",
+      "distractors": [
+        "to place",
+        "to look for"
       ]
     },
     {
@@ -4702,6 +5212,11 @@
         "noun",
         "chapter-1",
         "set-11"
+      ],
+      "sentence_blank_en": "a public ___",
+      "distractors": [
+        "castle",
+        "flower"
       ]
     },
     {
@@ -4715,6 +5230,11 @@
         "noun",
         "chapter-1",
         "set-11"
+      ],
+      "sentence_blank_en": "a mute person (___)",
+      "distractors": [
+        "window",
+        "curtain"
       ]
     },
     {
@@ -4728,6 +5248,11 @@
         "noun",
         "chapter-1",
         "set-11"
+      ],
+      "sentence_blank_en": "a public hospital (___)",
+      "distractors": [
+        "cat",
+        "hat"
       ]
     },
     {
@@ -4740,6 +5265,11 @@
         "adjective",
         "chapter-1",
         "set-11"
+      ],
+      "sentence_blank_en": "___ hospitals",
+      "distractors": [
+        "original",
+        "strong"
       ]
     },
     {
@@ -4752,6 +5282,11 @@
         "adjective",
         "chapter-1",
         "set-11"
+      ],
+      "sentence_blank_en": "mute hospitals (___)",
+      "distractors": [
+        "active",
+        "white"
       ]
     },
     {
@@ -4764,6 +5299,11 @@
         "adjective",
         "chapter-1",
         "set-11"
+      ],
+      "sentence_blank_en": "public hospitals (___)",
+      "distractors": [
+        "pretty",
+        "fresh/cool"
       ]
     },
     {
@@ -4776,6 +5316,11 @@
         "verb",
         "chapter-1",
         "set-12"
+      ],
+      "sentence_blank_en": "We ___ a painting",
+      "distractors": [
+        "to walk",
+        "to announce"
       ]
     },
     {
@@ -4788,6 +5333,11 @@
         "verb",
         "chapter-1",
         "set-12"
+      ],
+      "sentence_blank_en": "They trace a curtain (___)",
+      "distractors": [
+        "to throw",
+        "to sing"
       ]
     },
     {
@@ -4800,6 +5350,11 @@
         "verb",
         "chapter-1",
         "set-12"
+      ],
+      "sentence_blank_en": "We correct a painting (___)",
+      "distractors": [
+        "to move",
+        "to look for"
       ]
     },
     {
@@ -4813,6 +5368,11 @@
         "noun",
         "chapter-1",
         "set-12"
+      ],
+      "sentence_blank_en": "a clean ___",
+      "distractors": [
+        "boat",
+        "window"
       ]
     },
     {
@@ -4826,6 +5386,11 @@
         "noun",
         "chapter-1",
         "set-12"
+      ],
+      "sentence_blank_en": "a correct canal (___)",
+      "distractors": [
+        "pit/core",
+        "window"
       ]
     },
     {
@@ -4839,6 +5404,11 @@
         "noun",
         "chapter-1",
         "set-12"
+      ],
+      "sentence_blank_en": "a clean curtain (___)",
+      "distractors": [
+        "board/painting",
+        "door"
       ]
     },
     {
@@ -4851,6 +5421,11 @@
         "adjective",
         "chapter-1",
         "set-12"
+      ],
+      "sentence_blank_en": "___ paintings",
+      "distractors": [
+        "natural",
+        "small"
       ]
     },
     {
@@ -4863,6 +5438,11 @@
         "adjective",
         "chapter-1",
         "set-12"
+      ],
+      "sentence_blank_en": "correct canals (___)",
+      "distractors": [
+        "last",
+        "red-haired"
       ]
     },
     {
@@ -4875,6 +5455,11 @@
         "adjective",
         "chapter-1",
         "set-12"
+      ],
+      "sentence_blank_en": "clean paintings (___)",
+      "distractors": [
+        "direct",
+        "small"
       ]
     },
     {
@@ -4887,6 +5472,11 @@
         "verb",
         "chapter-1",
         "set-13"
+      ],
+      "sentence_blank_en": "We ___ a metal",
+      "distractors": [
+        "to throw",
+        "to speak"
       ]
     },
     {
@@ -4899,6 +5489,11 @@
         "verb",
         "chapter-1",
         "set-13"
+      ],
+      "sentence_blank_en": "He encourages a metal (___)",
+      "distractors": [
+        "to throw",
+        "to erase"
       ]
     },
     {
@@ -4911,6 +5506,11 @@
         "verb",
         "chapter-1",
         "set-13"
+      ],
+      "sentence_blank_en": "We announce a metal (___)",
+      "distractors": [
+        "to walk",
+        "to show"
       ]
     },
     {
@@ -4924,6 +5524,11 @@
         "noun",
         "chapter-1",
         "set-13"
+      ],
+      "sentence_blank_en": "a loyal ___",
+      "distractors": [
+        "song",
+        "boy"
       ]
     },
     {
@@ -4937,6 +5542,11 @@
         "noun",
         "chapter-1",
         "set-13"
+      ],
+      "sentence_blank_en": "an original metal (___)",
+      "distractors": [
+        "song",
+        "person"
       ]
     },
     {
@@ -4950,6 +5560,11 @@
         "noun",
         "chapter-1",
         "set-13"
+      ],
+      "sentence_blank_en": "a loyal core (___)",
+      "distractors": [
+        "voice",
+        "friend"
       ]
     },
     {
@@ -4962,6 +5577,11 @@
         "adjective",
         "chapter-1",
         "set-13"
+      ],
+      "sentence_blank_en": "___ metals",
+      "distractors": [
+        "smart",
+        "red-haired"
       ]
     },
     {
@@ -4974,6 +5594,11 @@
         "adjective",
         "chapter-1",
         "set-13"
+      ],
+      "sentence_blank_en": "original pipes (___)",
+      "distractors": [
+        "correct",
+        "sweet/soft"
       ]
     },
     {
@@ -4986,6 +5611,11 @@
         "adjective",
         "chapter-1",
         "set-13"
+      ],
+      "sentence_blank_en": "loyal metals (___)",
+      "distractors": [
+        "favorite",
+        "pretty"
       ]
     }
   ],

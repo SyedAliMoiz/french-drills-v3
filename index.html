@@ -392,36 +392,113 @@ function checkAnswer(given, correct, alternates) {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   PROGRESS — V3 data model
+   PROGRESS — V4 data model (spaced retrieval + tag mastery)
    ═══════════════════════════════════════════════════════════════ */
 
 function defaultProgress() {
   return {
-    v: 3,
+    v: 4,
     updated: null,
     exercises: {},
     srs: {},
     errorPatterns: {},
+    tagMastery: {},
     writingSubmissions: [],
     sessions: [],
     streak: { current: 0, best: 0, lastDate: null },
     batch: { id: null, loaded: null },
-    exhaustedIds: []
+    seenIds: []
   };
+}
+
+function migrateProgress(p) {
+  if (p.v <= 3) {
+    if (p.exhaustedIds) { p.seenIds = p.exhaustedIds; delete p.exhaustedIds; }
+    if (!p.tagMastery) p.tagMastery = {};
+    for (const [id, rec] of Object.entries(p.exercises || {})) {
+      if (!rec.streak) rec.streak = rec.correct > 0 ? 1 : 0;
+      if (!rec.nextDue) rec.nextDue = todayStr();
+      if (!rec.mastery) rec.mastery = rec.streak >= 4 ? 'locked' : rec.streak >= 2 ? 'familiar' : 'learning';
+    }
+    p.v = 4;
+  }
+  if (!p.seenIds) p.seenIds = [];
+  if (!p.tagMastery) p.tagMastery = {};
+  return p;
+}
+
+function exerciseInterval(streak) {
+  if (streak <= 1) return 0;
+  if (streak === 2) return 1;
+  if (streak === 3) return 3;
+  if (streak === 4) return 7;
+  return Math.min(30, 7 * Math.pow(1.5, streak - 4));
 }
 
 function recordExercise(id, correct, tags) {
   const p = S.progress;
-  if (!p.exercises[id]) p.exercises[id] = { attempts: 0, correct: 0, lastSeen: null };
+  if (!p.exercises[id]) p.exercises[id] = { attempts: 0, correct: 0, streak: 0, lastSeen: null, nextDue: null, mastery: 'learning' };
   const rec = p.exercises[id];
   rec.attempts++;
-  if (correct) rec.correct++;
-  rec.lastSeen = todayStr();
-  if (!correct && tags) {
-    for (const tag of tags) {
-      p.errorPatterns[tag] = (p.errorPatterns[tag] || 0) + 1;
-    }
+  if (correct) {
+    rec.correct++;
+    rec.streak++;
+  } else {
+    rec.streak = 0;
   }
+  rec.lastSeen = todayStr();
+  if (rec.streak >= 4) rec.mastery = 'locked';
+  else if (rec.streak >= 2) rec.mastery = 'familiar';
+  else rec.mastery = 'learning';
+  const interval = exerciseInterval(rec.streak);
+  const d = new Date(todayStr() + 'T00:00:00');
+  d.setDate(d.getDate() + interval);
+  rec.nextDue = d.toISOString().slice(0, 10);
+  if (!p.seenIds.includes(id)) p.seenIds.push(id);
+  if (tags) {
+    if (!correct) {
+      for (const tag of tags) p.errorPatterns[tag] = (p.errorPatterns[tag] || 0) + 1;
+    }
+    updateTagMastery(tags, correct, S.queue[S.qi]);
+  }
+  saveLocal();
+}
+
+function updateTagMastery(tags, correct, exercise) {
+  if (!exercise || !exercise.type) return;
+  const p = S.progress;
+  const type = exercise.type;
+  for (const tag of tags) {
+    if (!p.tagMastery[tag]) p.tagMastery[tag] = {};
+    const tm = p.tagMastery[tag];
+    const key = (type === 'mcq' || type === 'why') ? 'mcq' : (type === 'blank') ? 'blank' : 'open';
+    if (!tm[key]) tm[key] = { attempts: 0, correct: 0 };
+    tm[key].attempts++;
+    if (correct) tm[key].correct++;
+  }
+}
+
+function tagUnlockedType(tag) {
+  const tm = S.progress.tagMastery[tag];
+  if (!tm) return 'mcq';
+  const mcq = tm.mcq || { attempts: 0, correct: 0 };
+  const blank = tm.blank || { attempts: 0, correct: 0 };
+  if (blank.attempts >= 4 && blank.correct / blank.attempts >= 0.75) return 'open';
+  if (mcq.attempts >= 6 && mcq.correct / mcq.attempts >= 0.75) return 'blank';
+  return 'mcq';
+}
+
+function exercisePassesGate(exercise) {
+  if (!exercise.tags || exercise.tags.length === 0) return true;
+  if (exercise.type === 'why') return true;
+  const maxUnlocked = exercise.tags.reduce((best, tag) => {
+    const level = tagUnlockedType(tag);
+    const rank = { mcq: 0, blank: 1, open: 2 };
+    return rank[level] > rank[best] ? level : best;
+  }, 'mcq');
+  const typeRank = { mcq: 0, blank: 1, open: 2 };
+  const exType = (exercise.type === 'mcq' || exercise.type === 'why') ? 'mcq' : (exercise.type === 'blank') ? 'blank' : 'open';
+  return typeRank[exType] <= typeRank[maxUnlocked];
 }
 
 function getVocabCard(wordId) {
@@ -472,7 +549,7 @@ const Batch = {
 
   fuel() {
     if (!this.current) return { grammar: 0, vocab: 0, reading: 0, writing: 0 };
-    const ex = S.progress.exhaustedIds;
+    const ex = S.progress.seenIds;
     const gCount = (this.current.grammar || []).filter(q => !ex.includes(q.id)).length;
     const vCount = (this.current.vocabulary || []).filter(q => !ex.includes(q.id)).length;
     const rCount = (this.current.reading || []).filter(q => !ex.includes(q.id)).length;
@@ -487,14 +564,14 @@ const Batch = {
 
   getReachExercises(tag) {
     if (!this.current || !this.current.reach || !this.current.reach[tag]) return [];
-    return this.current.reach[tag].filter(q => !S.progress.exhaustedIds.includes(q.id));
+    return this.current.reach[tag].filter(q => !S.progress.seenIds.includes(q.id));
   },
 
   reachFuel() {
     if (!this.current || !this.current.reach) return {};
     const result = {};
     for (const [tag, exs] of Object.entries(this.current.reach)) {
-      result[tag] = exs.filter(q => !S.progress.exhaustedIds.includes(q.id)).length;
+      result[tag] = exs.filter(q => !S.progress.seenIds.includes(q.id)).length;
     }
     return result;
   },
@@ -537,12 +614,43 @@ function generateRefuel() {
     .map(ws => `### ${ws.id} (submitted ${ws.submitted})\n${ws.text}`)
     .join('\n\n');
 
-  const exhaustedStr = p.exhaustedIds.join(', ');
+  const exhaustedStr = p.seenIds.join(', ');
 
   const grammarTarget = Math.max(0, 25 - fuel.grammar);
   const vocabTarget = Math.max(0, 10 - fuel.vocab);
   const readingTarget = Math.max(0, 2 - fuel.reading);
   const writingTarget = Math.max(0, 1 - fuel.writing);
+
+  let difficultyDirective;
+  const last3 = p.sessions.slice(-3);
+  const avg3 = last3.length > 0 ? Math.round(last3.reduce((s, r) => s + r.errorRate, 0) / last3.length) : 0;
+  if (last3.length < 2) {
+    difficultyDirective = 'NOT ENOUGH DATA — use difficulty 2 (moderate) as default.';
+  } else if (avg3 < 15) {
+    difficultyDirective = `TOO EASY (${avg3}% errors). Increase difficulty to 3-4. Reduce MCQ to 30%, blank 40%, open 30%. Harder distractors. Less context hints.`;
+  } else if (avg3 <= 25) {
+    difficultyDirective = `SWEET ZONE (${avg3}% errors). Maintain current difficulty. Keep the mix balanced.`;
+  } else {
+    difficultyDirective = `TOO HARD (${avg3}% errors). Decrease difficulty to 1-2. Increase MCQ to 60%. Add more context hints. Reduce batch to 15 grammar.`;
+  }
+
+  const tagMasteryLines = Object.entries(p.tagMastery).map(([tag, tm]) => {
+    const mcq = tm.mcq || { attempts: 0, correct: 0 };
+    const blank = tm.blank || { attempts: 0, correct: 0 };
+    const open = tm.open || { attempts: 0, correct: 0 };
+    const mcqPct = mcq.attempts > 0 ? Math.round(mcq.correct / mcq.attempts * 100) : 0;
+    const blankPct = blank.attempts > 0 ? Math.round(blank.correct / blank.attempts * 100) : 0;
+    const unlocked = tagUnlockedType(tag);
+    const types = unlocked === 'open' ? 'MCQ+Blank+Open' : unlocked === 'blank' ? 'MCQ+Blank' : 'MCQ only';
+    return `- ${tag}: MCQ ${mcqPct}% (${mcq.attempts}), Blank ${blankPct}% (${blank.attempts}). Generate: ${types}`;
+  }).join('\n');
+
+  const exerciseStats = Object.values(p.exercises);
+  const totalSeen = exerciseStats.length;
+  const learning = exerciseStats.filter(e => e.mastery === 'learning').length;
+  const familiar = exerciseStats.filter(e => e.mastery === 'familiar').length;
+  const locked = exerciseStats.filter(e => e.mastery === 'locked').length;
+  const dueToday = exerciseStats.filter(e => e.nextDue && e.nextDue <= todayStr()).length;
 
   return `# French Drill App — Refuel Request
 
@@ -554,9 +662,22 @@ The app repo is at \`~/Projects/french-drills-v3/\`. Push the generated batch to
 - Chapter: ${curriculum.chapter}, Section: ${curriculum.section}, Phase: ${curriculum.phase}
 - Batch ID: ${p.batch.id || 'none'}
 
+## Difficulty Directive
+${difficultyDirective}
+
 ## Performance (last ${recentSessions.length} sessions)
-- Average error rate: ${avgErrorRate}%${avgErrorRate >= 15 && avgErrorRate <= 25 ? ' (sweet zone)' : avgErrorRate < 15 ? ' (too easy — increase difficulty)' : ' (too hard — review basics)'}
+- Average error rate: ${avgErrorRate}%
 - Top error patterns: ${topErrors || 'none yet'}
+
+## Tag Mastery (determines which exercise types to generate per pattern)
+${tagMasteryLines || 'No tag data yet — generate MCQ-only for all patterns.'}
+
+## Exercise Pool State
+- Total exercises seen: ${totalSeen}
+- Due for review today: ${dueToday}
+- Learning (every session): ${learning}
+- Familiar (2-3 day intervals): ${familiar}
+- Locked (7+ day intervals): ${locked}
 
 ## What's Running Low
 - Grammar exercises remaining: ${fuel.grammar} ${fuel.grammar <= 5 ? '⚠️' : ''}
@@ -571,11 +692,11 @@ ${srsJson}
 \`\`\`
 
 ${pendingWriting ? `## Writing Submissions Awaiting Review\n${pendingWriting}\n` : ''}
-## Exhausted Exercise IDs
+## Seen Exercise IDs (do NOT regenerate these)
 ${exhaustedStr || 'none'}
 
 ## Batch Target
-Generate: ${grammarTarget} grammar, 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab, ${readingTarget} reading, ${writingTarget} writing${pendingWriting ? ', feedback for pending writing' : ''}.
+Generate: ${grammarTarget} grammar, 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab (include distractors + sentence_blank_en for each), ${readingTarget} reading, ${writingTarget} writing${pendingWriting ? ', feedback for pending writing' : ''}.
 Push to: github.com/SyedAliMoiz/french-drills-v3 → batches/current.json
 `;
 }
@@ -612,10 +733,12 @@ const S = {
   qi: 0,
   answered: false,
   currentAnswer: null,
+  selfExplainPhase: false,
   sessionCorrect: 0,
   sessionTotal: 0,
   sessionStartTime: null,
   reachQueue: [],
+  readingSelections: {},
 };
 
 
@@ -817,7 +940,7 @@ async function doLogin() {
     gh.token = pat;
     if ($('remember').checked) localStorage.setItem('fdv3_token', pat);
     const progRaw = await gh.get('PROGRESS.json');
-    S.progress = progRaw ? JSON.parse(progRaw) : defaultProgress();
+    S.progress = progRaw ? migrateProgress(JSON.parse(progRaw)) : defaultProgress();
     S.gh = gh;
     S.error = null;
     await loadBatch();
@@ -1032,39 +1155,74 @@ function startSession() {
 
 function buildSessionQueue() {
   if (!Batch.current) return [];
-  const ex = S.progress.exhaustedIds;
-  const grammar = (Batch.current.grammar || []).filter(q => !ex.includes(q.id));
-  const vocab = (Batch.current.vocabulary || []).filter(q => !ex.includes(q.id));
-  const reading = (Batch.current.reading || []).filter(q => !ex.includes(q.id));
-  const writing = (Batch.current.writing || []).filter(q => !ex.includes(q.id));
+  const today = todayStr();
+  const allGrammar = (Batch.current.grammar || []).filter(q => exercisePassesGate(q));
+  const vocab = Batch.current.vocabulary || [];
+  const reading = Batch.current.reading || [];
+  const writing = Batch.current.writing || [];
 
-  const queue = [];
-
-  const errored = grammar.filter(q => {
+  const due = [], errored = [], fresh = [];
+  for (const q of allGrammar) {
     const rec = S.progress.exercises[q.id];
-    return rec && rec.attempts > 0 && rec.correct < rec.attempts;
-  });
-  shuffle(errored);
-  queue.push(...errored.slice(0, 5));
+    if (!rec) { fresh.push(q); continue; }
+    if (rec.streak === 0 && rec.attempts > 0) { errored.push(q); continue; }
+    if (rec.nextDue && rec.nextDue <= today) { due.push(q); continue; }
+  }
 
-  const fresh = grammar.filter(q => !S.progress.exercises[q.id] && !queue.includes(q));
-  shuffle(fresh);
-  queue.push(...fresh.slice(0, 5));
-
-  const dueVocab = vocab.filter(q => {
-    const card = getVocabCard(q.id);
-    return SRS.isDue(card);
+  due.sort((a, b) => {
+    const ra = S.progress.exercises[a.id], rb = S.progress.exercises[b.id];
+    return (ra.nextDue || '').localeCompare(rb.nextDue || '');
   });
+
+  const grammarPool = [
+    ...interleaveByTag(errored).slice(0, 5),
+    ...interleaveByTag(due).slice(0, 5),
+    ...interleaveByTag(fresh).slice(0, 5)
+  ];
+
+  const dueVocab = vocab.filter(q => SRS.isDue(getVocabCard(q.id)));
   shuffle(dueVocab);
-  queue.push(...dueVocab.slice(0, 5));
+  const newVocab = vocab.filter(q => !getVocabCard(q.id).lastReview && !dueVocab.includes(q));
 
-  const newVocab = vocab.filter(q => !getVocabCard(q.id).lastReview && !queue.includes(q));
-  queue.push(...newVocab.slice(0, 3));
+  const hasPendingWriting = S.progress.writingSubmissions.some(ws => {
+    const fb = (Batch.current.writing_feedback || []).find(f => f.id === ws.id);
+    return !fb;
+  });
 
-  queue.push(...reading.slice(0, 1));
-  queue.push(...writing.slice(0, 1));
+  const queue = [
+    ...grammarPool,
+    ...dueVocab.slice(0, 5),
+    ...newVocab.slice(0, 3),
+    ...reading.filter(q => !S.progress.exercises[q.id]).slice(0, 1),
+    ...(!hasPendingWriting ? writing.filter(q => !S.progress.exercises[q.id]).slice(0, 1) : [])
+  ];
 
   return queue;
+}
+
+function interleaveByTag(exercises) {
+  if (exercises.length <= 1) return exercises;
+  const groups = {};
+  for (const q of exercises) {
+    const tag = (q.tags && q.tags[0]) || '_none';
+    if (!groups[tag]) groups[tag] = [];
+    groups[tag].push(q);
+  }
+  for (const tag in groups) shuffle(groups[tag]);
+  const tags = Object.keys(groups);
+  const result = [];
+  let round = 0, added = true;
+  while (added) {
+    added = false;
+    for (const tag of tags) {
+      if (round < groups[tag].length) {
+        result.push(groups[tag][round]);
+        added = true;
+      }
+    }
+    round++;
+  }
+  return result;
 }
 
 function queueReach(tags) {
@@ -1074,7 +1232,7 @@ function queueReach(tags) {
     if (pool.length > 0) {
       const ex = { ...pool[0], _isReach: true };
       S.queue.splice(S.qi + 1, 0, ex);
-      if (!S.progress.exhaustedIds.includes(pool[0].id)) S.progress.exhaustedIds.push(pool[0].id);
+      if (!S.progress.seenIds.includes(pool[0].id)) S.progress.seenIds.push(pool[0].id);
       return;
     }
   }
@@ -1115,11 +1273,15 @@ function renderSessionHeader(progress, typeLabel, typeClass) {
 
 function renderMCQ(q, progress) {
   const letters = ['A', 'B', 'C', 'D'];
+  const isCorrect = S.answered && S.currentAnswer === q.correct;
+  const isWrong = S.answered && S.currentAnswer !== q.correct;
+  const showFull = S.answered && (isCorrect || !S.selfExplainPhase);
+
   app().innerHTML = `
     <div class="dp">
       ${renderSessionHeader(progress, 'Grammar', 'type-grammar')}
       <div class="dp-body">
-        <div class="card${S.answered ? (S.currentAnswer === q.correct ? ' card-ok' : ' card-err') : ''}">
+        <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
           <div class="serif">${esc(q.stem)}</div>
           ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
         </div>
@@ -1128,15 +1290,23 @@ function renderMCQ(q, progress) {
             let cls = 'opt';
             if (S.answered) {
               cls += ' opt-locked';
-              if (i === q.correct) cls += ' opt-right';
-              else if (i === S.currentAnswer) cls += ' opt-wrong';
+              if (showFull && i === q.correct) cls += ' opt-right';
+              if (i === S.currentAnswer && isWrong) cls += ' opt-wrong';
             }
             return `<button class="${cls}" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${esc(opt)}</span></button>`;
           }).join('')}
         </div>
-        ${S.answered ? `
-          <div class="fb ${S.currentAnswer === q.correct ? 'fb-ok' : 'fb-err'}">
-            <span class="fb-head">${S.currentAnswer === q.correct ? 'Correct' : 'Wrong'}</span>
+        ${isWrong && S.selfExplainPhase ? `
+          <div class="fb fb-warn">
+            <span class="fb-head">Think about it</span>
+            <span class="fb-rule">Why did you choose "${esc(q.options[S.currentAnswer])}"? What rule were you applying?</span>
+          </div>
+          <button class="btn btn-g mt" id="reveal-btn" disabled>Show Answer</button>
+        ` : ''}
+        ${showFull ? `
+          <div class="fb ${isCorrect ? 'fb-ok' : 'fb-err'}">
+            <span class="fb-head">${isCorrect ? 'Correct' : 'Wrong'}</span>
+            ${isWrong ? `<span class="fb-answer">${esc(q.options[q.correct])}</span>` : ''}
             ${q.rule ? `<span class="fb-rule">${esc(q.rule)}</span>` : ''}
           </div>
           <button class="btn btn-p mt" id="next-btn">Continue</button>
@@ -1153,11 +1323,16 @@ function renderMCQ(q, progress) {
         S.sessionTotal++;
         const correct = i === q.correct;
         if (correct) S.sessionCorrect++;
+        else S.selfExplainPhase = true;
         recordExercise(q.id, correct, q.tags);
         if (!correct && !q._isReach) queueReach(q.tags);
         render();
       };
     });
+  } else if (S.selfExplainPhase) {
+    const btn = $('reveal-btn');
+    setTimeout(() => { if (btn) btn.disabled = false; }, 1500);
+    if (btn) btn.onclick = () => { S.selfExplainPhase = false; render(); };
   } else {
     $('next-btn').onclick = advanceSession;
     $('next-btn').focus();
@@ -1168,21 +1343,33 @@ function renderMCQ(q, progress) {
 }
 
 function renderBlank(q, progress) {
+  const isCorrect = S.answered && S.currentAnswer === true;
+  const isWrong = S.answered && S.currentAnswer === false;
+  const showFull = S.answered && (isCorrect || !S.selfExplainPhase);
+  const correctStr = typeof q.correct === 'number' ? q.options[q.correct] : q.correct;
+
   app().innerHTML = `
     <div class="dp">
       ${renderSessionHeader(progress, 'Grammar', 'type-grammar')}
       <div class="dp-body">
-        <div class="card${S.answered ? (S.currentAnswer ? ' card-ok' : ' card-err') : ''}">
+        <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
           <div class="serif">${esc(q.stem)}</div>
           ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
         </div>
-        <input type="text" class="field" id="answer" placeholder="Type your answer..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''}>
+        <input type="text" class="field${isWrong ? ' field-err' : isCorrect ? ' field-ok' : ''}" id="answer" placeholder="Type your answer..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''} ${S.answered && S._lastTyped ? `value="${esc(S._lastTyped)}"` : ''}>
         ${renderAccentBar(S.answered)}
         ${!S.answered ? '<button class="btn btn-p mt" id="check-btn">Check</button>' : ''}
-        ${S.answered ? `
-          <div class="fb ${S.currentAnswer ? 'fb-ok' : 'fb-err'}">
-            <span class="fb-head">${S.currentAnswer ? 'Correct' : 'Wrong'}</span>
-            <span class="fb-answer">${esc(typeof q.correct === 'number' ? q.options[q.correct] : q.correct)}</span>
+        ${isWrong && S.selfExplainPhase ? `
+          <div class="fb fb-warn">
+            <span class="fb-head">Think about it</span>
+            <span class="fb-rule">What rule should apply here? Think before looking at the answer.</span>
+          </div>
+          <button class="btn btn-g mt" id="reveal-btn" disabled>Show Answer</button>
+        ` : ''}
+        ${showFull ? `
+          <div class="fb ${isCorrect ? 'fb-ok' : 'fb-err'}">
+            <span class="fb-head">${isCorrect ? 'Correct' : 'Wrong'}</span>
+            <span class="fb-answer">${esc(correctStr)}</span>
             ${q.rule ? `<span class="fb-rule">${esc(q.rule)}</span>` : ''}
           </div>
           <button class="btn btn-p mt" id="next-btn">Continue</button>
@@ -1195,19 +1382,23 @@ function renderBlank(q, progress) {
     const checkFn = () => {
       const val = $('answer').value;
       if (!val.trim()) return;
-      const correctStr = typeof q.correct === 'number' ? q.options[q.correct] : q.correct;
+      S._lastTyped = val;
       const ok = checkAnswer(val, correctStr, q.alternates);
       S.currentAnswer = ok;
       S.answered = true;
       S.sessionTotal++;
       if (ok) S.sessionCorrect++;
+      else S.selfExplainPhase = true;
       recordExercise(q.id, ok, q.tags);
-      if (!ok) { $('answer').classList.add('field-err'); if (!q._isReach) queueReach(q.tags); }
-      else $('answer').classList.add('field-ok');
+      if (!ok && !q._isReach) queueReach(q.tags);
       render();
     };
     $('check-btn').onclick = checkFn;
     $('answer').addEventListener('keydown', e => { if (e.key === 'Enter') checkFn(); });
+  } else if (S.selfExplainPhase) {
+    const btn = $('reveal-btn');
+    setTimeout(() => { if (btn) btn.disabled = false; }, 1500);
+    if (btn) btn.onclick = () => { S.selfExplainPhase = false; render(); };
   } else {
     $('next-btn').onclick = advanceSession;
     $('next-btn').focus();
@@ -1217,22 +1408,108 @@ function renderBlank(q, progress) {
   }
 }
 
+function vocabMode(q) {
+  const card = getVocabCard(q.id);
+  if (card.reps >= 2 && (q.sentence_blank_en || q.sentence_en)) return 'production';
+  return 'recognition';
+}
+
 function renderVocabCard(q, progress) {
   const card = getVocabCard(q.id);
+  const mode = vocabMode(q);
+
+  if (mode === 'recognition') return renderVocabRecognition(q, card, progress);
+  return renderVocabProduction(q, card, progress);
+}
+
+function renderVocabRecognition(q, card, progress) {
+  const distractors = q.distractors || [];
+  const options = shuffle([q.meaning, ...distractors.slice(0, 2)]);
+  const correctIdx = options.indexOf(q.meaning);
+  const sentence = q.sentence_fr || '';
+  const highlighted = sentence.replace(new RegExp(`\\b${q.word}\\b`, 'gi'), `<strong>${q.word}</strong>`);
+
   app().innerHTML = `
     <div class="dp">
       ${renderSessionHeader(progress, 'Vocab', 'type-vocab')}
       <div class="dp-body">
-        <div class="card${S.answered ? (S.currentAnswer ? ' card-ok' : ' card-err') : ''}">
-          <div class="serif">${esc(q.meaning)}</div>
-          <div class="sub">What is this in French?${q.gender ? ' (' + q.gender + ')' : ''}</div>
+        <div class="card${S.answered ? (S.currentAnswer === correctIdx ? ' card-ok' : ' card-err') : ''}">
+          ${sentence ? `<div class="serif" style="font-size:1.25rem;line-height:1.5">${highlighted}</div>` : `<div class="serif">${esc(q.word)}</div>`}
+          <div class="sub mt-sm">What does <strong>${esc(q.word)}</strong> mean?${q.gender ? ' (' + q.gender + ')' : ''}</div>
         </div>
-        <input type="text" class="field" id="answer" placeholder="Type the French word..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''}>
+        <div class="opts">
+          ${options.map((opt, i) => {
+            let cls = 'opt';
+            if (S.answered) {
+              cls += ' opt-locked';
+              if (i === correctIdx) cls += ' opt-right';
+              else if (i === S.currentAnswer) cls += ' opt-wrong';
+            }
+            return `<button class="${cls}" data-i="${i}"><span class="opt-letter">${['A','B','C'][i]}</span><span>${esc(opt)}</span></button>`;
+          }).join('')}
+        </div>
+        ${S.answered ? `
+          <div class="fb ${S.currentAnswer === correctIdx ? 'fb-ok' : 'fb-err'}">
+            <span class="fb-head">${S.currentAnswer === correctIdx ? 'Correct' : 'Wrong'}</span>
+            <span class="fb-answer">${esc(q.word)} = ${esc(q.meaning)}</span>
+            ${q.pronunciation ? `<span class="fb-rule">${esc(q.pronunciation)}</span>` : ''}
+            ${q.sentence_en ? `<span class="fb-rule">${esc(q.sentence_en)}</span>` : ''}
+          </div>
+          <button class="btn btn-p mt" id="next-btn">Continue</button>
+        ` : ''}
+      </div>
+    </div>`;
+
+  if (!S.answered) {
+    document.querySelectorAll('.opt').forEach(el => {
+      el.onclick = () => {
+        const i = parseInt(el.dataset.i);
+        S.currentAnswer = i;
+        S.answered = true;
+        S.sessionTotal++;
+        const ok = i === correctIdx;
+        if (ok) S.sessionCorrect++;
+        SRS.update(card, ok ? 4 : 1);
+        saveLocal();
+        render();
+      };
+    });
+  } else {
+    $('next-btn').onclick = advanceSession;
+    $('next-btn').focus();
+    document.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Enter' && !e.repeat) { document.removeEventListener('keydown', handler); advanceSession(); }
+    });
+  }
+}
+
+function renderVocabProduction(q, card, progress) {
+  const contextEn = q.sentence_blank_en || (q.sentence_en ? q.sentence_en.replace(new RegExp(q.meaning.split('/')[0].trim(), 'gi'), '___') : '');
+  const isCorrect = S.answered && S.currentAnswer === true;
+  const isWrong = S.answered && S.currentAnswer === false;
+  const showFull = S.answered && (isCorrect || !S.selfExplainPhase);
+
+  app().innerHTML = `
+    <div class="dp">
+      ${renderSessionHeader(progress, 'Vocab', 'type-vocab')}
+      <div class="dp-body">
+        <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
+          ${contextEn ? `<div class="serif" style="font-size:1.25rem">${esc(contextEn)}</div>` : `<div class="serif">${esc(q.meaning)}</div>`}
+          <div class="sub mt-sm">Fill in the French word.${q.gender ? ' (' + q.gender + ')' : ''}</div>
+        </div>
+        <input type="text" class="field${isWrong ? ' field-err' : isCorrect ? ' field-ok' : ''}" id="answer" placeholder="Type the French word..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''} ${S.answered && S._lastTyped ? `value="${esc(S._lastTyped)}"` : ''}>
         ${renderAccentBar(S.answered)}
         ${!S.answered ? '<button class="btn btn-p mt" id="check-btn">Check</button>' : ''}
-        ${S.answered ? `
-          <div class="fb ${S.currentAnswer ? 'fb-ok' : 'fb-err'}">
-            <span class="fb-head">${S.currentAnswer ? 'Correct' : 'Wrong'}</span>
+        ${isWrong && S.selfExplainPhase ? `
+          <div class="fb fb-warn">
+            <span class="fb-head">Think about it</span>
+            <span class="fb-rule">Picture the context. What French word fits here?</span>
+          </div>
+          <button class="btn btn-g mt" id="reveal-btn" disabled>Show Answer</button>
+        ` : ''}
+        ${showFull ? `
+          <div class="fb ${isCorrect ? 'fb-ok' : 'fb-err'}">
+            <span class="fb-head">${isCorrect ? 'Correct' : 'Wrong'}</span>
             <span class="fb-answer">${esc(q.word)}</span>
             ${q.pronunciation ? `<span class="fb-rule">${esc(q.pronunciation)}</span>` : ''}
             ${q.sentence_fr ? `<span class="fb-rule">${esc(q.sentence_fr)}</span>` : ''}
@@ -1247,17 +1524,23 @@ function renderVocabCard(q, progress) {
     const checkFn = () => {
       const val = $('answer').value;
       if (!val.trim()) return;
+      S._lastTyped = val;
       const ok = checkAnswer(val, q.word, q.alternates);
       S.currentAnswer = ok;
       S.answered = true;
       S.sessionTotal++;
       if (ok) S.sessionCorrect++;
-      const grade = ok ? 4 : 1;
-      SRS.update(card, grade);
+      else S.selfExplainPhase = true;
+      SRS.update(card, ok ? 4 : 1);
+      saveLocal();
       render();
     };
     $('check-btn').onclick = checkFn;
     $('answer').addEventListener('keydown', e => { if (e.key === 'Enter') checkFn(); });
+  } else if (S.selfExplainPhase) {
+    const btn = $('reveal-btn');
+    setTimeout(() => { if (btn) btn.disabled = false; }, 1500);
+    if (btn) btn.onclick = () => { S.selfExplainPhase = false; render(); };
   } else {
     $('next-btn').onclick = advanceSession;
     $('next-btn').focus();
@@ -1269,6 +1552,9 @@ function renderVocabCard(q, progress) {
 
 function renderReading(q, progress) {
   const rq = q.questions || [];
+  const checked = S.answered;
+  const sel = S.readingSelections;
+
   app().innerHTML = `
     <div class="dp">
       ${renderSessionHeader(progress, 'Reading', 'type-reading')}
@@ -1285,23 +1571,62 @@ function renderReading(q, progress) {
                 <div style="font-weight:600;font-size:.9375rem;margin-bottom:.5rem">${esc(rqi.q)}</div>
                 ${rqi.type === 'mcq' ? `
                   <div class="opts" style="margin:0">
-                    ${rqi.options.map((o, oi) => `<button class="opt rq-opt" data-qi="${idx}" data-oi="${oi}"><span class="opt-letter">${['A','B','C','D'][oi]}</span><span>${esc(o)}</span></button>`).join('')}
+                    ${rqi.options.map((o, oi) => {
+                      let cls = 'opt rq-opt';
+                      if (checked) {
+                        cls += ' opt-locked';
+                        if (oi === rqi.correct) cls += ' opt-right';
+                        else if (sel[idx] === oi) cls += ' opt-wrong';
+                      } else if (sel[idx] === oi) {
+                        cls += ' opt-sel';
+                      }
+                      return `<button class="${cls}" data-qi="${idx}" data-oi="${oi}"><span class="opt-letter">${['A','B','C','D'][oi]}</span><span>${esc(o)}</span></button>`;
+                    }).join('')}
                   </div>
                 ` : ''}
               </div>
             `).join('')}
           </div>
         ` : ''}
-        <button class="btn btn-p mt" id="reading-done-btn">${rq.length > 0 ? 'Check Answers' : 'Done Reading'}</button>
+        ${!checked ? `
+          <button class="btn btn-p mt" id="reading-check-btn" ${rq.length > 0 && Object.keys(sel).length < rq.length ? 'disabled' : ''}>
+            ${rq.length > 0 ? 'Check Answers' : 'Done Reading'}
+          </button>
+        ` : `
+          <div class="fb ${S.currentAnswer >= rq.length ? 'fb-ok' : 'fb-err'}">
+            <span class="fb-head">${S.currentAnswer}/${rq.length} correct</span>
+          </div>
+          <button class="btn btn-p mt" id="next-btn">Continue</button>
+        `}
       </div>
     </div>`;
 
-  $('reading-done-btn').onclick = () => {
-    S.sessionTotal++;
-    S.sessionCorrect++;
-    if (!S.progress.exhaustedIds.includes(q.id)) S.progress.exhaustedIds.push(q.id);
-    advanceSession();
-  };
+  if (!checked) {
+    document.querySelectorAll('.rq-opt').forEach(el => {
+      el.onclick = () => {
+        const qi = parseInt(el.dataset.qi), oi = parseInt(el.dataset.oi);
+        S.readingSelections[qi] = oi;
+        render();
+      };
+    });
+    const checkBtn = $('reading-check-btn');
+    if (checkBtn) checkBtn.onclick = () => {
+      let correct = 0;
+      for (let i = 0; i < rq.length; i++) {
+        if (sel[i] === rq[i].correct) correct++;
+      }
+      S.currentAnswer = correct;
+      S.answered = true;
+      S.sessionTotal += rq.length || 1;
+      S.sessionCorrect += correct || (rq.length === 0 ? 1 : 0);
+      if (!S.progress.seenIds.includes(q.id)) S.progress.seenIds.push(q.id);
+      recordExercise(q.id, correct === rq.length, ['reading']);
+      render();
+    };
+  } else {
+    $('next-btn').onclick = advanceSession;
+    $('next-btn').focus();
+  }
 }
 
 function renderWriting(q, progress) {
@@ -1326,7 +1651,7 @@ function renderWriting(q, progress) {
     const text = $('writing-area').value.trim();
     if (!text) return;
     S.progress.writingSubmissions.push({ id: q.id, text, submitted: new Date().toISOString() });
-    if (!S.progress.exhaustedIds.includes(q.id)) S.progress.exhaustedIds.push(q.id);
+    if (!S.progress.seenIds.includes(q.id)) S.progress.seenIds.push(q.id);
     S.sessionTotal++;
     S.sessionCorrect++;
     advanceSession();
@@ -1338,6 +1663,9 @@ function advanceSession() {
   S.qi++;
   S.answered = false;
   S.currentAnswer = null;
+  S.selfExplainPhase = false;
+  S.readingSelections = {};
+  S._lastTyped = '';
   if (S.qi >= S.queue.length) {
     endSession();
   } else {
@@ -1471,10 +1799,13 @@ async function init() {
       const gh = new GH(savedToken);
       const progRaw = await gh.get('PROGRESS.json');
       S.gh = gh;
-      S.progress = progRaw ? JSON.parse(progRaw) : defaultProgress();
+      S.progress = progRaw ? migrateProgress(JSON.parse(progRaw)) : defaultProgress();
       const localProg = loadLocal();
-      if (localProg && localProg.updated && S.progress.updated && localProg.updated > S.progress.updated) {
-        S.progress = localProg;
+      if (localProg) {
+        const migrated = migrateProgress(localProg);
+        if (migrated.updated && S.progress.updated && migrated.updated > S.progress.updated) {
+          S.progress = migrated;
+        }
       }
       await loadBatch();
       S.screen = 'home';

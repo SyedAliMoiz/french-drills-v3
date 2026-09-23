@@ -34,7 +34,7 @@ All-in-one French learning app. Replaces V1 (grammar) and V2 (vocab SRS).
   ],
   "reach": { "tag": [exercises for follow-up after errors] },
   "vocabulary": [
-    { "id": "v001", "word": "...", "gender": "m|f", "meaning": "...", "pronunciation": "...", "sentence_fr": "...", "sentence_en": "...", "tags": [...] }
+    { "id": "v001", "word": "...", "gender": "m|f", "meaning": "...", "pronunciation": "...", "sentence_fr": "...", "sentence_en": "...", "sentence_blank_en": "...", "distractors": ["meaning1", "meaning2"], "tags": [...] }
   ],
   "reading": [
     { "id": "r001", "title": "...", "passage": "...", "level": "A1", "questions": [...], "vocab_highlights": {...} }
