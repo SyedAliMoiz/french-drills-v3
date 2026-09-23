@@ -222,6 +222,20 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background
 .writing-fb-original{font-style:italic;color:var(--text-dim);font-size:.875rem;margin-bottom:.5rem}
 .writing-fb-correction{font-size:.9375rem;line-height:1.6}
 .writing-fb-correction mark{background:var(--ok-bg);color:var(--ok);border-radius:2px;padding:0 .125rem}
+
+.speak-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;background:var(--accent-faint);color:var(--accent);border-radius:50%;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background .15s,transform .08s;flex-shrink:0;vertical-align:middle;margin-left:.25rem}
+.speak-btn:hover{background:var(--accent);color:var(--accent-on)}
+.speak-btn:active{transform:scale(.9)}
+.speak-btn svg{width:16px;height:16px;fill:currentColor}
+.dp .speak-btn{width:40px;height:40px}
+.dp .speak-btn svg{width:20px;height:20px}
+.speak-lg{width:72px!important;height:72px!important;margin:0}
+.speak-lg svg{width:36px!important;height:36px!important}
+.dictation-controls{display:flex;align-items:center;justify-content:center;gap:1rem;margin:.75rem 0}
+.type-dictation{background:#ECFDF5;color:#059669}
+@media(prefers-color-scheme:dark){.type-dictation{background:#052E16;color:#34D399}}
+:root[data-theme="dark"] .type-dictation{background:#052E16;color:#34D399}
+:root[data-theme="light"] .type-dictation{background:#ECFDF5;color:#059669}
 </style>
 </head>
 <body>
@@ -236,6 +250,39 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background
 
 const CFG = { owner: 'syedalimoiz', repo: 'french-drills-v3' };
 const ACCENTS = ['é','è','ê','ë','à','â','î','ï','ô','ù','û','ç'];
+const SPEAK_SVG = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.5v7a4.49 4.49 0 002.5-3.5zM14 3.23v2.06a7.007 7.007 0 010 13.42v2.06c4.73-.91 8.31-5.06 8.31-9.77s-3.58-8.86-8.31-9.77z"/></svg>';
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SPEECH SYNTHESIS — French TTS via Web Speech API
+   ═══════════════════════════════════════════════════════════════ */
+
+const Speech = {
+  voice: null,
+  ready: false,
+  init() {
+    if (!window.speechSynthesis) return;
+    const pick = () => {
+      const voices = speechSynthesis.getVoices();
+      this.voice = voices.find(v => v.lang === 'fr-FR') ||
+                   voices.find(v => v.lang.startsWith('fr')) || null;
+      this.ready = voices.length > 0;
+    };
+    pick();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = pick;
+    }
+  },
+  speak(text, rate) {
+    if (!window.speechSynthesis || !text) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'fr-FR';
+    if (this.voice) u.voice = this.voice;
+    u.rate = rate || 1;
+    speechSynthesis.speak(u);
+  }
+};
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -541,44 +588,66 @@ function recordSession(correct, total, durationMs) {
    ═══════════════════════════════════════════════════════════════ */
 
 const Batch = {
-  current: null,
+  batches: [],
+  registry: null,
 
-  load(json) {
-    this.current = typeof json === 'string' ? JSON.parse(json) : json;
+  addBatch(json) {
+    const batch = typeof json === 'string' ? JSON.parse(json) : json;
+    if (!this.batches.find(b => b.batch_id === batch.batch_id)) {
+      this.batches.push(batch);
+    }
+  },
+
+  get current() {
+    return this.batches.length > 0 ? this.batches[this.batches.length - 1] : null;
+  },
+
+  all(type) {
+    return this.batches.flatMap(b => b[type] || []);
   },
 
   fuel() {
-    if (!this.current) return { grammar: 0, vocab: 0, reading: 0, writing: 0 };
-    const ex = S.progress.seenIds;
-    const gCount = (this.current.grammar || []).filter(q => !ex.includes(q.id)).length;
-    const vCount = (this.current.vocabulary || []).filter(q => !ex.includes(q.id)).length;
-    const rCount = (this.current.reading || []).filter(q => !ex.includes(q.id)).length;
-    const wCount = (this.current.writing || []).filter(q => !ex.includes(q.id)).length;
-    return { grammar: gCount, vocab: vCount, reading: rCount, writing: wCount };
+    if (this.batches.length === 0) return { grammar: 0, vocab: 0, reading: 0, writing: 0, dictation: 0 };
+    const seen = S.progress.seenIds;
+    return {
+      grammar: this.all('grammar').filter(q => !seen.includes(q.id)).length,
+      vocab: this.all('vocabulary').filter(q => !seen.includes(q.id)).length,
+      reading: this.all('reading').filter(q => !seen.includes(q.id)).length,
+      writing: this.all('writing').filter(q => !seen.includes(q.id)).length,
+      dictation: this.all('dictation').filter(q => !seen.includes(q.id)).length,
+    };
   },
 
   totalFuel() {
     const f = this.fuel();
-    return f.grammar + f.vocab + f.reading + f.writing;
+    return f.grammar + f.vocab + f.reading + f.writing + f.dictation;
   },
 
   getReachExercises(tag) {
-    if (!this.current || !this.current.reach || !this.current.reach[tag]) return [];
-    return this.current.reach[tag].filter(q => !S.progress.seenIds.includes(q.id));
+    for (const batch of [...this.batches].reverse()) {
+      if (batch.reach && batch.reach[tag]) {
+        const pool = batch.reach[tag].filter(q => !S.progress.seenIds.includes(q.id));
+        if (pool.length > 0) return pool;
+      }
+    }
+    return [];
   },
 
   reachFuel() {
-    if (!this.current || !this.current.reach) return {};
     const result = {};
-    for (const [tag, exs] of Object.entries(this.current.reach)) {
-      result[tag] = exs.filter(q => !S.progress.seenIds.includes(q.id)).length;
+    for (const batch of this.batches) {
+      if (!batch.reach) continue;
+      for (const [tag, exs] of Object.entries(batch.reach)) {
+        if (!result[tag]) result[tag] = 0;
+        result[tag] += exs.filter(q => !S.progress.seenIds.includes(q.id)).length;
+      }
     }
     return result;
   },
 
   needsRefuel() {
     const f = this.fuel();
-    return !this.current || f.grammar <= 5 || f.vocab <= 3 || f.reading === 0 || f.writing === 0;
+    return this.batches.length === 0 || f.grammar <= 5 || f.vocab <= 3 || f.reading === 0 || f.writing === 0;
   }
 };
 
@@ -620,6 +689,7 @@ function generateRefuel() {
   const vocabTarget = Math.max(0, 10 - fuel.vocab);
   const readingTarget = Math.max(0, 2 - fuel.reading);
   const writingTarget = Math.max(0, 1 - fuel.writing);
+  const dictationTarget = Math.max(0, 5 - (fuel.dictation || 0));
 
   let difficultyDirective;
   const last3 = p.sessions.slice(-3);
@@ -684,6 +754,7 @@ ${tagMasteryLines || 'No tag data yet — generate MCQ-only for all patterns.'}
 - Vocab words remaining: ${fuel.vocab} ${fuel.vocab <= 3 ? '⚠️' : ''}
 - Reading passages remaining: ${fuel.reading} ${fuel.reading === 0 ? '⚠️' : ''}
 - Writing prompts remaining: ${fuel.writing} ${fuel.writing === 0 ? '⚠️' : ''}
+- Dictation sentences remaining: ${fuel.dictation || 0} ${(fuel.dictation || 0) <= 2 ? '⚠️' : ''}
 ${weakReachTags.length > 0 ? `- Reach bank low for: ${weakReachTags.join(', ')}` : ''}
 
 ## Vocabulary SRS State
@@ -696,8 +767,9 @@ ${pendingWriting ? `## Writing Submissions Awaiting Review\n${pendingWriting}\n`
 ${exhaustedStr || 'none'}
 
 ## Batch Target
-Generate: ${grammarTarget} grammar, 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab (include distractors + sentence_blank_en for each), ${readingTarget} reading, ${writingTarget} writing${pendingWriting ? ', feedback for pending writing' : ''}.
-Push to: github.com/SyedAliMoiz/french-drills-v3 → batches/current.json
+Generate: ${grammarTarget} grammar, 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab (include distractors + sentence_blank_en for each), ${readingTarget} reading, ${writingTarget} writing, ${dictationTarget} dictation (sentence_fr + sentence_en + level + tags)${pendingWriting ? ', feedback for pending writing' : ''}.
+Batches: ${Batch.batches.length} loaded (${Batch.batches.map(b => b.batch_id).join(', ')}).
+Push to: github.com/SyedAliMoiz/french-drills-v3 → batches/ (new batch file + update registry.json)
 `;
 }
 
@@ -806,6 +878,11 @@ function bindAccentKeys() {
   });
 }
 
+function speakBtn(text, cls) {
+  if (!text) return '';
+  return `<button class="speak-btn${cls ? ' ' + cls : ''}" data-speak="${esc(text)}">${SPEAK_SVG}</button>`;
+}
+
 
 /* ═══════════════════════════════════════════════════════════════
    SCREEN ROUTING
@@ -888,7 +965,7 @@ async function doSetup() {
     S.gh = gh;
     S.progress = prog;
     S.error = null;
-    await loadBatch();
+    await loadBatches();
     S.screen = 'home';
     render();
   } catch (e) {
@@ -943,7 +1020,7 @@ async function doLogin() {
     S.progress = progRaw ? migrateProgress(JSON.parse(progRaw)) : defaultProgress();
     S.gh = gh;
     S.error = null;
-    await loadBatch();
+    await loadBatches();
     S.screen = 'home';
     render();
   } catch (e) {
@@ -957,17 +1034,31 @@ async function doLogin() {
    BATCH LOADING — fetch current batch from repo
    ═══════════════════════════════════════════════════════════════ */
 
-async function loadBatch() {
+async function loadBatches() {
   if (!S.gh) return;
+  Batch.batches = [];
   try {
-    const raw = await S.gh.get('batches/current.json');
-    if (raw) {
-      Batch.load(raw);
-      S.progress.batch.id = Batch.current.batch_id;
-      S.progress.batch.loaded = new Date().toISOString();
+    const regRaw = await S.gh.get('batches/registry.json');
+    if (regRaw) {
+      const reg = JSON.parse(regRaw);
+      Batch.registry = reg;
+      for (const entry of reg.batches) {
+        try {
+          const raw = await S.gh.get(`batches/${entry.file}`);
+          if (raw) Batch.addBatch(raw);
+        } catch (e) { /* skip missing batch */ }
+      }
     }
-  } catch (e) {
-    // no batch yet
+  } catch (e) { /* no registry */ }
+  if (Batch.batches.length === 0) {
+    try {
+      const raw = await S.gh.get('batches/current.json');
+      if (raw) Batch.addBatch(raw);
+    } catch (e) { /* no batch */ }
+  }
+  if (Batch.current) {
+    S.progress.batch.id = Batch.current.batch_id;
+    S.progress.batch.loaded = new Date().toISOString();
   }
 }
 
@@ -977,8 +1068,8 @@ async function loadBatch() {
    ═══════════════════════════════════════════════════════════════ */
 
 function renderWritingFeedback() {
-  if (!Batch.current || !Batch.current.writing_feedback || Batch.current.writing_feedback.length === 0) return '';
-  const feedback = Batch.current.writing_feedback;
+  const feedback = Batch.batches.flatMap(b => b.writing_feedback || []);
+  if (feedback.length === 0) return '';
   return `
     <div class="dash-section mt">
       <div class="dash-section-title">Writing Feedback</div>
@@ -1011,7 +1102,7 @@ function renderHome() {
   const total = Batch.totalFuel();
   const streak = S.progress.streak.current;
   const lastSession = S.progress.sessions.length > 0 ? S.progress.sessions[S.progress.sessions.length - 1] : null;
-  const hasBatch = Batch.current !== null;
+  const hasBatch = Batch.batches.length > 0;
   const todayDone = lastSession && lastSession.date === todayStr();
 
   const fuelBarPct = (count, max) => Math.min(100, Math.round((count / Math.max(max, 1)) * 100));
@@ -1073,6 +1164,11 @@ function renderHome() {
               <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.writing)}" style="width:${fuelBarPct(fuel.writing, 2)}%"></div></div>
               <span class="fuel-count">${fuel.writing}</span>
             </div>
+            <div class="fuel-row">
+              <span class="type-badge type-dictation">Dictation</span>
+              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.dictation)}" style="width:${fuelBarPct(fuel.dictation, 5)}%"></div></div>
+              <span class="fuel-count">${fuel.dictation}</span>
+            </div>
           </div>
           ${Batch.needsRefuel() ? `
             <div class="card" style="border-left:3px solid var(--warn);margin-top:.5rem">
@@ -1127,7 +1223,7 @@ function renderHome() {
     localStorage.removeItem('fdv3_token');
     S.gh = null;
     S.progress = null;
-    Batch.current = null;
+    Batch.batches = [];
     S.screen = 'login';
     render();
   };
@@ -1139,7 +1235,7 @@ function renderHome() {
    ═══════════════════════════════════════════════════════════════ */
 
 function startSession() {
-  if (!Batch.current) return;
+  if (Batch.batches.length === 0) return;
   S.sessionCorrect = 0;
   S.sessionTotal = 0;
   S.sessionStartTime = Date.now();
@@ -1154,12 +1250,13 @@ function startSession() {
 }
 
 function buildSessionQueue() {
-  if (!Batch.current) return [];
+  if (Batch.batches.length === 0) return [];
   const today = todayStr();
-  const allGrammar = (Batch.current.grammar || []).filter(q => exercisePassesGate(q));
-  const vocab = Batch.current.vocabulary || [];
-  const reading = Batch.current.reading || [];
-  const writing = Batch.current.writing || [];
+  const allGrammar = Batch.all('grammar').filter(q => exercisePassesGate(q));
+  const vocab = Batch.all('vocabulary');
+  const reading = Batch.all('reading');
+  const writing = Batch.all('writing');
+  const dictation = Batch.all('dictation');
 
   const due = [], errored = [], fresh = [];
   for (const q of allGrammar) {
@@ -1184,15 +1281,19 @@ function buildSessionQueue() {
   shuffle(dueVocab);
   const newVocab = vocab.filter(q => !getVocabCard(q.id).lastReview && !dueVocab.includes(q));
 
+  const writingFb = Batch.batches.flatMap(b => b.writing_feedback || []);
   const hasPendingWriting = S.progress.writingSubmissions.some(ws => {
-    const fb = (Batch.current.writing_feedback || []).find(f => f.id === ws.id);
-    return !fb;
+    return !writingFb.find(f => f.id === ws.id);
   });
+
+  const dictPool = dictation.filter(q => !S.progress.exercises[q.id]).slice(0, 3);
+  dictPool.forEach(q => { q._isDictation = true; });
 
   const queue = [
     ...grammarPool,
     ...dueVocab.slice(0, 5),
     ...newVocab.slice(0, 3),
+    ...dictPool,
     ...reading.filter(q => !S.progress.exercises[q.id]).slice(0, 1),
     ...(!hasPendingWriting ? writing.filter(q => !S.progress.exercises[q.id]).slice(0, 1) : [])
   ];
@@ -1226,7 +1327,7 @@ function interleaveByTag(exercises) {
 }
 
 function queueReach(tags) {
-  if (!tags || !Batch.current || !Batch.current.reach) return;
+  if (!tags || Batch.batches.length === 0) return;
   for (const tag of tags) {
     const pool = Batch.getReachExercises(tag);
     if (pool.length > 0) {
@@ -1249,6 +1350,7 @@ function renderSession() {
   if (q.type === 'mcq') renderMCQ(q, progress);
   else if (q.type === 'blank' || q.type === 'open') renderBlank(q, progress);
   else if (q.type === 'why') renderMCQ(q, progress);
+  else if (q._isDictation) renderDictation(q, progress);
   else if (q.word) renderVocabCard(q, progress);
   else if (q.passage) renderReading(q, progress);
   else if (q.prompt && q.guidelines) renderWriting(q, progress);
@@ -1282,7 +1384,7 @@ function renderMCQ(q, progress) {
       ${renderSessionHeader(progress, 'Grammar', 'type-grammar')}
       <div class="dp-body">
         <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
-          <div class="serif">${esc(q.stem)}</div>
+          <div class="serif">${esc(q.stem)} ${speakBtn(q.stem)}</div>
           ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
         </div>
         <div class="opts" id="opts">
@@ -1353,7 +1455,7 @@ function renderBlank(q, progress) {
       ${renderSessionHeader(progress, 'Grammar', 'type-grammar')}
       <div class="dp-body">
         <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
-          <div class="serif">${esc(q.stem)}</div>
+          <div class="serif">${esc(q.stem)} ${speakBtn(q.stem)}</div>
           ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
         </div>
         <input type="text" class="field${isWrong ? ' field-err' : isCorrect ? ' field-ok' : ''}" id="answer" placeholder="Type your answer..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''} ${S.answered && S._lastTyped ? `value="${esc(S._lastTyped)}"` : ''}>
@@ -1408,6 +1510,80 @@ function renderBlank(q, progress) {
   }
 }
 
+function renderDictation(q, progress) {
+  const isCorrect = S.answered && S.currentAnswer === true;
+  const isWrong = S.answered && S.currentAnswer === false;
+  const showFull = S.answered && (isCorrect || !S.selfExplainPhase);
+
+  app().innerHTML = `
+    <div class="dp">
+      ${renderSessionHeader(progress, 'Dictation', 'type-dictation')}
+      <div class="dp-body">
+        <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
+          <div class="center">
+            <div class="dictation-controls">
+              <button class="speak-btn speak-lg" id="dict-play">${SPEAK_SVG}</button>
+            </div>
+            <div class="sub">Tap to listen, then type what you hear</div>
+            ${!S.answered ? '<button class="btn-link" id="dict-slow" style="font-size:.8125rem">Play slower</button>' : ''}
+          </div>
+        </div>
+        <input type="text" class="field${isWrong ? ' field-err' : isCorrect ? ' field-ok' : ''}" id="answer" placeholder="Type what you hear..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''} ${S.answered && S._lastTyped ? `value="${esc(S._lastTyped)}"` : ''}>
+        ${renderAccentBar(S.answered)}
+        ${!S.answered ? '<button class="btn btn-p mt" id="check-btn">Check</button>' : ''}
+        ${isWrong && S.selfExplainPhase ? `
+          <div class="fb fb-warn">
+            <span class="fb-head">Listen again</span>
+            <span class="fb-rule">Focus on the sounds you missed. What words do you recognize?</span>
+          </div>
+          <button class="btn btn-g mt" id="reveal-btn" disabled>Show Answer</button>
+        ` : ''}
+        ${showFull ? `
+          <div class="fb ${isCorrect ? 'fb-ok' : 'fb-err'}">
+            <span class="fb-head">${isCorrect ? 'Correct' : 'Wrong'}</span>
+            <span class="fb-answer">${esc(q.sentence_fr)} ${speakBtn(q.sentence_fr)}</span>
+            ${q.sentence_en ? `<span class="fb-rule">${esc(q.sentence_en)}</span>` : ''}
+          </div>
+          <button class="btn btn-p mt" id="next-btn">Continue</button>
+        ` : ''}
+      </div>
+    </div>`;
+
+  const playBtn = $('dict-play');
+  if (playBtn) playBtn.onclick = () => Speech.speak(q.sentence_fr, 0.9);
+  const slowBtn = $('dict-slow');
+  if (slowBtn) slowBtn.onclick = () => Speech.speak(q.sentence_fr, 0.6);
+
+  if (!S.answered) {
+    bindAccentKeys();
+    const checkFn = () => {
+      const val = $('answer').value;
+      if (!val.trim()) return;
+      S._lastTyped = val;
+      const ok = checkAnswer(val, q.sentence_fr, q.alternates);
+      S.currentAnswer = ok;
+      S.answered = true;
+      S.sessionTotal++;
+      if (ok) S.sessionCorrect++;
+      else S.selfExplainPhase = true;
+      recordExercise(q.id, ok, q.tags || ['dictation']);
+      render();
+    };
+    $('check-btn').onclick = checkFn;
+    $('answer').addEventListener('keydown', e => { if (e.key === 'Enter') checkFn(); });
+  } else if (S.selfExplainPhase) {
+    const btn = $('reveal-btn');
+    setTimeout(() => { if (btn) btn.disabled = false; }, 1500);
+    if (btn) btn.onclick = () => { S.selfExplainPhase = false; render(); };
+  } else {
+    $('next-btn').onclick = advanceSession;
+    $('next-btn').focus();
+    document.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Enter' && !e.repeat) { document.removeEventListener('keydown', handler); advanceSession(); }
+    });
+  }
+}
+
 function vocabMode(q) {
   const card = getVocabCard(q.id);
   if (card.reps >= 2 && (q.sentence_blank_en || q.sentence_en)) return 'production';
@@ -1434,7 +1610,7 @@ function renderVocabRecognition(q, card, progress) {
       ${renderSessionHeader(progress, 'Vocab', 'type-vocab')}
       <div class="dp-body">
         <div class="card${S.answered ? (S.currentAnswer === correctIdx ? ' card-ok' : ' card-err') : ''}">
-          ${sentence ? `<div class="serif" style="font-size:1.25rem;line-height:1.5">${highlighted}</div>` : `<div class="serif">${esc(q.word)}</div>`}
+          ${sentence ? `<div class="serif" style="font-size:1.25rem;line-height:1.5">${highlighted} ${speakBtn(q.sentence_fr || q.word)}</div>` : `<div class="serif">${esc(q.word)} ${speakBtn(q.word)}</div>`}
           <div class="sub mt-sm">What does <strong>${esc(q.word)}</strong> mean?${q.gender ? ' (' + q.gender + ')' : ''}</div>
         </div>
         <div class="opts">
@@ -1451,7 +1627,7 @@ function renderVocabRecognition(q, card, progress) {
         ${S.answered ? `
           <div class="fb ${S.currentAnswer === correctIdx ? 'fb-ok' : 'fb-err'}">
             <span class="fb-head">${S.currentAnswer === correctIdx ? 'Correct' : 'Wrong'}</span>
-            <span class="fb-answer">${esc(q.word)} = ${esc(q.meaning)}</span>
+            <span class="fb-answer">${esc(q.word)} = ${esc(q.meaning)} ${speakBtn(q.word)}</span>
             ${q.pronunciation ? `<span class="fb-rule">${esc(q.pronunciation)}</span>` : ''}
             ${q.sentence_en ? `<span class="fb-rule">${esc(q.sentence_en)}</span>` : ''}
           </div>
@@ -1510,9 +1686,9 @@ function renderVocabProduction(q, card, progress) {
         ${showFull ? `
           <div class="fb ${isCorrect ? 'fb-ok' : 'fb-err'}">
             <span class="fb-head">${isCorrect ? 'Correct' : 'Wrong'}</span>
-            <span class="fb-answer">${esc(q.word)}</span>
+            <span class="fb-answer">${esc(q.word)} ${speakBtn(q.word)}</span>
             ${q.pronunciation ? `<span class="fb-rule">${esc(q.pronunciation)}</span>` : ''}
-            ${q.sentence_fr ? `<span class="fb-rule">${esc(q.sentence_fr)}</span>` : ''}
+            ${q.sentence_fr ? `<span class="fb-rule">${esc(q.sentence_fr)} ${speakBtn(q.sentence_fr)}</span>` : ''}
           </div>
           <button class="btn btn-p mt" id="next-btn">Continue</button>
         ` : ''}
@@ -1562,6 +1738,7 @@ function renderReading(q, progress) {
         <div class="card" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;box-shadow:var(--card-shadow)">
           <div style="font-weight:600;margin-bottom:.5rem">${esc(q.title || 'Reading')}</div>
           <div class="serif" style="font-size:1.125rem;line-height:1.7;font-weight:400">${esc(q.passage)}</div>
+          <div class="mt-sm">${speakBtn(q.passage)}</div>
           ${q.vocab_highlights ? `<div class="mt-sm sub">${Object.entries(q.vocab_highlights).map(([fr, en]) => `<strong>${esc(fr)}</strong> = ${esc(en)}`).join(' · ')}</div>` : ''}
         </div>
         ${rq.length > 0 ? `
@@ -1790,7 +1967,16 @@ document.addEventListener('visibilitychange', () => {
    BOOT — check auth, load data, show appropriate screen
    ═══════════════════════════════════════════════════════════════ */
 
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.speak-btn');
+  if (btn) {
+    e.stopPropagation();
+    Speech.speak(btn.dataset.speak, parseFloat(btn.dataset.rate) || 1);
+  }
+});
+
 async function init() {
+  Speech.init();
   const savedToken = localStorage.getItem('fdv3_token');
   const wasSetUp = localStorage.getItem('fdv3_setup');
 
@@ -1807,7 +1993,7 @@ async function init() {
           S.progress = migrated;
         }
       }
-      await loadBatch();
+      await loadBatches();
       S.screen = 'home';
     } catch (e) {
       localStorage.removeItem('fdv3_token');

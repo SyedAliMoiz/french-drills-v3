@@ -11,7 +11,9 @@ All-in-one French learning app. Replaces V1 (grammar) and V2 (vocab SRS).
 ## Files
 
 - `index.html` — Single-file app (CSS + JS inline)
-- `batches/current.json` — Active exercise batch
+- `batches/registry.json` — Batch registry (lists all batch files)
+- `batches/current.json` — First batch (Chapter 1, legacy name)
+- `batches/b-YYYY-MM-DD-chN.json` — Named batch files
 - `PROGRESS.json` — User progress (synced from app via GitHub API)
 - `config.enc` — Encrypted PAT (AES-256-GCM)
 
@@ -42,15 +44,34 @@ All-in-one French learning app. Replaces V1 (grammar) and V2 (vocab SRS).
   "writing": [
     { "id": "w001", "prompt": "...", "guidelines": "...", "level": "A1" }
   ],
+  "dictation": [
+    { "id": "d001", "sentence_fr": "...", "sentence_en": "...", "level": "A1", "tags": [...], "alternates": ["..."] }
+  ],
   "writing_feedback": [],
   "spaced_retrieval": ["section-ids-to-review"],
   "stare": { "type": "youtube", "title": "...", "url": "...", "note": "..." }
 }
 ```
 
+## Multi-Batch System
+
+The app loads ALL batches listed in `batches/registry.json`. Exercises from all batches are merged into one pool. Spaced retrieval pulls from older batches; fresh exercises come from the newest.
+
+### Registry format
+```json
+{
+  "batches": [
+    { "id": "b-2026-09-23-ch1", "file": "current.json", "chapter": 1, "generated": "2026-09-23" },
+    { "id": "b-2026-10-01-ch2", "file": "b-2026-10-01-ch2.json", "chapter": 2, "generated": "2026-10-01" }
+  ]
+}
+```
+
+Backward compatibility: if no registry.json exists, the app falls back to loading `batches/current.json`.
+
 ## Generating a Batch
 
-When you receive a REFUEL.md, generate `batches/current.json` following the format above. Push it to this repo. The app will load it on next open.
+When you receive a REFUEL.md, generate a new batch file (e.g. `batches/b-2026-10-01-ch2.json`) and add it to `batches/registry.json`. Push both. The app will load all batches on next open.
 
 Key rules:
 - Exercise IDs must be unique and never reuse exhausted IDs (listed in REFUEL.md)
