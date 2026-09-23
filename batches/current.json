@@ -5770,9 +5770,118 @@
       "prompt": "Describe a person you know (family member or friend) in 3-5 sentences.",
       "guidelines": "Use être (to be) + adjectives. Include at least one irregular adjective (beau/belle, vieux/vieille, bon/bonne). Make sure all adjectives agree in gender with the person you're describing.",
       "level": "A1"
+    },
+    {
+      "id": "w003",
+      "type": "essay",
+      "prompt": "Write about your daily routine",
+      "guidelines": "Write 5-7 sentences. Use present tense verbs. Include time expressions (le matin, l'après-midi, le soir).",
+      "level": "A1",
+      "template": "narrative"
+    },
+    {
+      "id": "w004",
+      "type": "micro",
+      "prompt": "Write 2 sentences about your favorite food",
+      "guidelines": "Use the verb aimer and include an article (le, la, les).",
+      "level": "A1"
+    },
+    {
+      "id": "w005",
+      "type": "translate",
+      "prompt": "Translate to French",
+      "source_en": "I have a small apartment in the city. The kitchen is white and the bedroom is blue. I like my apartment very much.",
+      "guidelines": "Focus on articles, gender agreement, and adjective placement.",
+      "level": "A1"
     }
   ],
   "writing_feedback": [],
   "spaced_retrieval": [],
-  "stare": null
+  "stare": null,
+  "dictation": [
+    {
+      "id": "d001",
+      "sentence_fr": "Je suis étudiant.",
+      "sentence_en": "I am a student.",
+      "level": "A1",
+      "tags": [
+        "être",
+        "subject-pronouns"
+      ]
+    },
+    {
+      "id": "d002",
+      "sentence_fr": "Elle a un chat noir.",
+      "sentence_en": "She has a black cat.",
+      "level": "A1",
+      "tags": [
+        "avoir",
+        "articles",
+        "adjective-placement"
+      ]
+    },
+    {
+      "id": "d003",
+      "sentence_fr": "Nous habitons à Paris.",
+      "sentence_en": "We live in Paris.",
+      "level": "A1",
+      "tags": [
+        "habiter",
+        "prepositions"
+      ]
+    },
+    {
+      "id": "d004",
+      "sentence_fr": "Il n'aime pas le café.",
+      "sentence_en": "He doesn't like coffee.",
+      "level": "A1",
+      "tags": [
+        "negation",
+        "articles"
+      ]
+    },
+    {
+      "id": "d005",
+      "sentence_fr": "C'est une grande maison.",
+      "sentence_en": "It's a big house.",
+      "level": "A1",
+      "tags": [
+        "c-est",
+        "articles",
+        "adjective-placement"
+      ]
+    },
+    {
+      "id": "d006",
+      "sentence_fr": "Tu parles français?",
+      "sentence_en": "Do you speak French?",
+      "level": "A1",
+      "tags": [
+        "parler",
+        "question-formation"
+      ]
+    },
+    {
+      "id": "d007",
+      "sentence_fr": "L'école est fermée aujourd'hui.",
+      "sentence_en": "The school is closed today.",
+      "level": "A1",
+      "tags": [
+        "elision",
+        "être",
+        "adjective-agreement"
+      ]
+    },
+    {
+      "id": "d008",
+      "sentence_fr": "Ils vont au marché le samedi.",
+      "sentence_en": "They go to the market on Saturdays.",
+      "level": "A1",
+      "tags": [
+        "aller",
+        "contractions",
+        "articles"
+      ]
+    }
+  ]
 }
