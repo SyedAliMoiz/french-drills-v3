@@ -236,6 +236,22 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background
 @media(prefers-color-scheme:dark){.type-dictation{background:#052E16;color:#34D399}}
 :root[data-theme="dark"] .type-dictation{background:#052E16;color:#34D399}
 :root[data-theme="light"] .type-dictation{background:#ECFDF5;color:#059669}
+
+.tpl-toggle{display:flex;align-items:center;gap:.375rem;background:none;border:none;color:var(--accent);font-size:.8125rem;font-weight:600;cursor:pointer;padding:.375rem 0;-webkit-tap-highlight-color:transparent}
+.tpl-toggle svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;transition:transform .2s}
+.tpl-toggle.open svg{transform:rotate(90deg)}
+.tpl-body{display:none;padding:.75rem 1rem;background:var(--accent-faint);border-radius:8px;margin-top:.375rem;font-size:.875rem;line-height:1.6}
+.tpl-body.show{display:block}
+.tpl-body ol{padding-left:1.25rem;margin:0}
+.tpl-body li{margin-bottom:.25rem;color:var(--text-dim)}
+.source-text{font-family:Georgia,serif;font-size:1.0625rem;line-height:1.6;padding:1rem;background:var(--accent-faint);border-radius:8px;border-left:3px solid var(--accent);margin-top:.75rem}
+.rubric{display:grid;grid-template-columns:1fr 1fr;gap:.375rem;margin-top:.625rem}
+.rubric-item{display:flex;align-items:center;justify-content:space-between;padding:.375rem .625rem;background:var(--surface);border:1px solid var(--line);border-radius:6px;font-size:.8125rem}
+.rubric-score{font-weight:700;font-variant-numeric:tabular-nums}
+.rubric-hi{color:var(--ok)}
+.rubric-mid{color:var(--warn)}
+.rubric-lo{color:var(--err)}
+.writing-type{font-size:.75rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.25rem}
 </style>
 </head>
 <body>
@@ -251,6 +267,47 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background
 const CFG = { owner: 'syedalimoiz', repo: 'french-drills-v3' };
 const ACCENTS = ['é','è','ê','ë','à','â','î','ï','ô','ù','û','ç'];
 const SPEAK_SVG = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.5v7a4.49 4.49 0 002.5-3.5zM14 3.23v2.06a7.007 7.007 0 010 13.42v2.06c4.73-.91 8.31-5.06 8.31-9.77s-3.58-8.86-8.31-9.77z"/></svg>';
+const CHEVRON_SVG = '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M10 6L16 12L10 18"/></svg>';
+
+const TCF_TEMPLATES = {
+  opinion_essay: {
+    name: 'Opinion Essay Structure',
+    steps: [
+      'Introduction: State the topic and your position',
+      'Argument 1: Support with a concrete example',
+      'Argument 2: Support with a different example',
+      'Counterargument: Acknowledge the other side briefly',
+      'Conclusion: Restate your position firmly'
+    ]
+  },
+  formal_email: {
+    name: 'Formal Email Structure',
+    steps: [
+      'Greeting: Madame, Monsieur,',
+      'Context: State why you are writing',
+      'Body: Your request, complaint, or information',
+      'Polite closing: Je vous prie d\'agréer, Madame/Monsieur, mes salutations distinguées.'
+    ]
+  },
+  letter_of_complaint: {
+    name: 'Letter of Complaint Structure',
+    steps: [
+      'State the problem clearly and factually',
+      'Describe the impact on you',
+      'Request a specific resolution',
+      'Formal sign-off with deadline if appropriate'
+    ]
+  },
+  narrative: {
+    name: 'Narrative Writing Structure',
+    steps: [
+      'Set the scene: when, where, who',
+      'Build tension: what happened',
+      'Climax: the turning point',
+      'Resolution: how it ended'
+    ]
+  }
+};
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -680,7 +737,7 @@ function generateRefuel() {
   const srsJson = JSON.stringify(p.srs, null, 2);
 
   const pendingWriting = p.writingSubmissions
-    .map(ws => `### ${ws.id} (submitted ${ws.submitted})\n${ws.text}`)
+    .map(ws => `### ${ws.id} [${ws.type || 'essay'}] (submitted ${ws.submitted})\n${ws.text}`)
     .join('\n\n');
 
   const exhaustedStr = p.seenIds.join(', ');
@@ -688,7 +745,7 @@ function generateRefuel() {
   const grammarTarget = Math.max(0, 25 - fuel.grammar);
   const vocabTarget = Math.max(0, 10 - fuel.vocab);
   const readingTarget = Math.max(0, 2 - fuel.reading);
-  const writingTarget = Math.max(0, 1 - fuel.writing);
+  const writingTarget = Math.max(0, 3 - fuel.writing);
   const dictationTarget = Math.max(0, 5 - (fuel.dictation || 0));
 
   let difficultyDirective;
@@ -767,7 +824,7 @@ ${pendingWriting ? `## Writing Submissions Awaiting Review\n${pendingWriting}\n`
 ${exhaustedStr || 'none'}
 
 ## Batch Target
-Generate: ${grammarTarget} grammar, 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab (include distractors + sentence_blank_en for each), ${readingTarget} reading, ${writingTarget} writing, ${dictationTarget} dictation (sentence_fr + sentence_en + level + tags)${pendingWriting ? ', feedback for pending writing' : ''}.
+Generate: ${grammarTarget} grammar, 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab (include distractors + sentence_blank_en for each), ${readingTarget} reading, ${writingTarget} writing (mix of essay with TCF template, micro 2-sentence, and translate), ${dictationTarget} dictation (sentence_fr + sentence_en + level + tags)${pendingWriting ? ', feedback for pending writing (include rubric: vocabulary/grammar/coherence/organization each 1-5)' : ''}.
 Batches: ${Batch.batches.length} loaded (${Batch.batches.map(b => b.batch_id).join(', ')}).
 Push to: github.com/SyedAliMoiz/french-drills-v3 → batches/ (new batch file + update registry.json)
 `;
@@ -1067,6 +1124,12 @@ async function loadBatches() {
    WRITING FEEDBACK — show corrections from Claude's batch review
    ═══════════════════════════════════════════════════════════════ */
 
+function rubricClass(score) {
+  if (score >= 4) return 'rubric-hi';
+  if (score >= 2) return 'rubric-mid';
+  return 'rubric-lo';
+}
+
 function renderWritingFeedback() {
   const feedback = Batch.batches.flatMap(b => b.writing_feedback || []);
   if (feedback.length === 0) return '';
@@ -1081,10 +1144,17 @@ function renderWritingFeedback() {
           </div>
           ${fb.original ? `<div class="writing-fb-original">"${esc(fb.original)}"</div>` : ''}
           ${fb.corrected ? `<div class="writing-fb-correction">${esc(fb.corrected)}</div>` : ''}
+          ${fb.rubric ? `
+            <div class="rubric">
+              ${Object.entries(fb.rubric).map(([k, v]) => `
+                <div class="rubric-item"><span>${esc(k)}</span><span class="rubric-score ${rubricClass(v)}">${v}/5</span></div>
+              `).join('')}
+            </div>
+          ` : ''}
           ${fb.comments ? `<div class="sub mt-sm">${esc(fb.comments)}</div>` : ''}
           ${fb.errors ? `
             <div class="mt-sm">
-              ${fb.errors.map(e => `<div class="fb fb-err" style="margin-top:.375rem;padding:.5rem .75rem;font-size:.8125rem"><span class="fb-head" style="font-size:.8125rem">${esc(e.type || 'Error')}</span>${esc(e.explanation || '')}</div>`).join('')}
+              ${fb.errors.map(e => `<div class="fb fb-err" style="margin-top:.375rem;padding:.5rem .75rem;font-size:.8125rem"><span class="fb-head" style="font-size:.8125rem">${esc(e.category ? e.category + ': ' : '')}${esc(e.type || 'Error')}</span>${esc(e.explanation || '')}</div>`).join('')}
             </div>
           ` : ''}
         </div>
@@ -1295,7 +1365,7 @@ function buildSessionQueue() {
     ...newVocab.slice(0, 3),
     ...dictPool,
     ...reading.filter(q => !S.progress.exercises[q.id]).slice(0, 1),
-    ...(!hasPendingWriting ? writing.filter(q => !S.progress.exercises[q.id]).slice(0, 1) : [])
+    ...(!hasPendingWriting ? writing.filter(q => !S.progress.exercises[q.id]).slice(0, 3) : [])
   ];
 
   return queue;
@@ -1806,17 +1876,35 @@ function renderReading(q, progress) {
   }
 }
 
+function renderWritingTemplate(q) {
+  const tpl = q.template && TCF_TEMPLATES[q.template];
+  if (!tpl) return '';
+  return `
+    <div class="tpl-toggle" id="tpl-toggle">${CHEVRON_SVG} ${esc(tpl.name)}</div>
+    <div class="tpl-body" id="tpl-body">
+      <ol>${tpl.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+    </div>`;
+}
+
 function renderWriting(q, progress) {
+  const wtype = q.type || 'essay';
+  const rows = wtype === 'micro' ? 3 : wtype === 'translate' ? 4 : 6;
+  const placeholder = wtype === 'translate' ? 'Write the French translation...' : 'Write in French...';
+  const typeLabel = wtype === 'micro' ? 'Quick Write' : wtype === 'translate' ? 'Translation' : 'Writing';
+
   app().innerHTML = `
     <div class="dp">
-      ${renderSessionHeader(progress, 'Writing', 'type-writing')}
+      ${renderSessionHeader(progress, typeLabel, 'type-writing')}
       <div class="dp-body" style="justify-content:flex-start;padding-top:1.5rem">
         <div class="card" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;box-shadow:var(--card-shadow)">
+          <div class="writing-type">${esc(typeLabel)}</div>
           <div class="serif" style="font-size:1.25rem">${esc(q.prompt)}</div>
-          <div class="sub mt-sm">${esc(q.guidelines)}</div>
+          ${q.guidelines ? `<div class="sub mt-sm">${esc(q.guidelines)}</div>` : ''}
           <div class="sub" style="margin-top:.25rem">Level: ${esc(q.level || 'A1')}</div>
+          ${wtype === 'translate' && q.source_en ? `<div class="source-text">${esc(q.source_en)}</div>` : ''}
+          ${renderWritingTemplate(q)}
         </div>
-        <textarea class="field mt" id="writing-area" rows="6" placeholder="Write in French..." style="resize:vertical;font-size:1rem;line-height:1.6"></textarea>
+        <textarea class="field mt" id="writing-area" rows="${rows}" placeholder="${placeholder}" style="resize:vertical;font-size:1rem;line-height:1.6"></textarea>
         ${renderAccentBar(false)}
         <button class="btn btn-p mt" id="submit-writing-btn">Submit</button>
         <button class="btn-link" id="skip-writing-btn">Skip for now</button>
@@ -1824,10 +1912,17 @@ function renderWriting(q, progress) {
     </div>`;
 
   bindAccentKeys();
+  const toggle = $('tpl-toggle'), body = $('tpl-body');
+  if (toggle && body) {
+    toggle.onclick = () => {
+      toggle.classList.toggle('open');
+      body.classList.toggle('show');
+    };
+  }
   $('submit-writing-btn').onclick = () => {
     const text = $('writing-area').value.trim();
     if (!text) return;
-    S.progress.writingSubmissions.push({ id: q.id, text, submitted: new Date().toISOString() });
+    S.progress.writingSubmissions.push({ id: q.id, type: wtype, text, submitted: new Date().toISOString() });
     if (!S.progress.seenIds.includes(q.id)) S.progress.seenIds.push(q.id);
     S.sessionTotal++;
     S.sessionCorrect++;

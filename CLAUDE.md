@@ -42,7 +42,9 @@ All-in-one French learning app. Replaces V1 (grammar) and V2 (vocab SRS).
     { "id": "r001", "title": "...", "passage": "...", "level": "A1", "questions": [...], "vocab_highlights": {...} }
   ],
   "writing": [
-    { "id": "w001", "prompt": "...", "guidelines": "...", "level": "A1" }
+    { "id": "w001", "type": "essay", "prompt": "...", "guidelines": "...", "level": "A1", "template": "opinion_essay" },
+    { "id": "w002", "type": "micro", "prompt": "Write 2 sentences about...", "guidelines": "...", "level": "A1" },
+    { "id": "w003", "type": "translate", "prompt": "Translate to French", "source_en": "English text here.", "guidelines": "...", "level": "A1" }
   ],
   "dictation": [
     { "id": "d001", "sentence_fr": "...", "sentence_en": "...", "level": "A1", "tags": [...], "alternates": ["..."] }
@@ -77,6 +79,8 @@ Key rules:
 - Exercise IDs must be unique and never reuse exhausted IDs (listed in REFUEL.md)
 - Grammar exercises need `id`, `type`, `stem`, `correct`, `rule`, `tags`
 - Vocab needs `id`, `word`, `meaning`, `gender` (for nouns)
+- Writing: 3 per batch, mixed types. `type`: essay (with `template`), micro (2-sentence prompt), translate (with `source_en`). Templates: opinion_essay, formal_email, letter_of_complaint, narrative.
+- Writing feedback: include `rubric: { vocabulary: N, grammar: N, coherence: N, organization: N }` (each 1-5) and categorized errors with `category` field.
 - Generate reach exercises for each weak error pattern
 - Difficulty 1-5 scale (1=recognition, 5=production with no hints)
 
