@@ -147,7 +147,7 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 
 .dp{min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
 .dp-top{padding:1rem 1.25rem 0;width:100%;max-width:800px;margin:0 auto}
-.dp-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 1.25rem 2rem;width:100%;max-width:800px;margin:0 auto;gap:.5rem}
+.dp-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:min(10vh,72px) 1.25rem 2rem;width:100%;max-width:800px;margin:0 auto;gap:.5rem}
 .dp .card{background:transparent;border:none;box-shadow:none;padding:0;border-radius:0;border-left:none;margin:0}
 .dp .card.card-ok{background:var(--ok-bg);border-radius:24px;padding:1.5rem;margin:-.5rem;margin-bottom:0}
 .dp .card.card-err{background:var(--err-bg);border-radius:24px;padding:1.5rem;margin:-.5rem;margin-bottom:0}
@@ -163,7 +163,7 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 .dp .keys-toggle:hover{color:var(--text)}
 .dp .btn{padding:1.125rem;font-size:clamp(1.0625rem,2.5vw,1.25rem);border-radius:50px}
 .dp .opts{gap:.875rem;margin-top:1.5rem}
-.dp .opt{padding:1.25rem 1.375rem;font-size:clamp(1.125rem,2.8vw,1.375rem);border-radius:20px;border-width:1.5px;background:var(--surface)}
+.dp .opt{padding:1.25rem 1.375rem;font-size:clamp(1.125rem,2.8vw,1.375rem);border-radius:20px;border-width:1.5px;background:var(--surface);border-color:var(--field-border)}
 .dp .opt:hover:not(.opt-locked){background:var(--accent-faint)}
 .dp .opt-right{border-radius:20px!important}
 .dp .opt-wrong{border-radius:20px!important}
@@ -352,6 +352,11 @@ const Speech = {
   speak(text, rate) {
     if (!window.speechSynthesis || !text) return;
     speechSynthesis.cancel();
+    if (!this.voice) {
+      const voices = speechSynthesis.getVoices();
+      this.voice = voices.find(v => v.lang === 'fr-FR') ||
+                   voices.find(v => v.lang.startsWith('fr')) || null;
+    }
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'fr-FR';
     if (this.voice) u.voice = this.voice;
@@ -1479,7 +1484,10 @@ function renderMCQ(q, progress) {
       ${renderSessionHeader(progress, 'Grammar', 'type-grammar')}
       <div class="dp-body">
         <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
-          <div class="serif">${esc(q.stem)} ${speakBtn(q.stem)}</div>
+          <div class="row gap-sm" style="align-items:flex-start">
+            <div class="serif flex1">${esc(q.stem)}</div>
+            ${q.type !== 'why' ? speakBtn(q.stem) : ''}
+          </div>
           ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
         </div>
         <div class="opts" id="opts">
@@ -1550,7 +1558,10 @@ function renderBlank(q, progress) {
       ${renderSessionHeader(progress, 'Grammar', 'type-grammar')}
       <div class="dp-body">
         <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
-          <div class="serif">${esc(q.stem)} ${speakBtn(q.stem)}</div>
+          <div class="row gap-sm" style="align-items:flex-start">
+            <div class="serif flex1">${esc(q.stem)}</div>
+            ${speakBtn(q.stem)}
+          </div>
           ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
         </div>
         <input type="text" class="field${isWrong ? ' field-err' : isCorrect ? ' field-ok' : ''}" id="answer" placeholder="Type your answer..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''} ${S.answered && S._lastTyped ? `value="${esc(S._lastTyped)}"` : ''}>
