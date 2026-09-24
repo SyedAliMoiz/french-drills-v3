@@ -1,0 +1,20 @@
+{
+  "v": 4,
+  "updated": "2026-09-24T04:36:36.618Z",
+  "exercises": {},
+  "srs": {},
+  "errorPatterns": {},
+  "tagMastery": {},
+  "writingSubmissions": [],
+  "sessions": [],
+  "streak": {
+    "current": 0,
+    "best": 0,
+    "lastDate": null
+  },
+  "batch": {
+    "id": null,
+    "loaded": null
+  },
+  "seenIds": []
+}
