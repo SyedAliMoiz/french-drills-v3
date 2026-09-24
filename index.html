@@ -1651,10 +1651,10 @@ function renderDictation(q, progress) {
         <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
           <div class="center">
             <div class="dictation-controls">
-              <button class="speak-btn speak-lg${!window.speechSynthesis || !Speech.hasFrenchVoice ? ' speak-btn-off' : ''}" id="dict-play">${SPEAK_SVG}</button>
+              ${window.speechSynthesis ? `<button class="speak-btn speak-lg${!Speech.hasFrenchVoice ? ' speak-btn-off' : ''}" id="dict-play">${SPEAK_SVG}</button>` : '<div class="sub">Audio unavailable</div>'}
             </div>
             <div class="sub">Tap to listen, then type what you hear</div>
-            ${!S.answered ? `<button class="btn-link${!Speech.hasFrenchVoice ? ' speak-link-off' : ''}" id="dict-slow" style="font-size:.8125rem">Play slower</button>` : ''}
+            ${!S.answered && window.speechSynthesis ? `<button class="btn-link${!Speech.hasFrenchVoice ? ' speak-link-off' : ''}" id="dict-slow" style="font-size:.8125rem">Play slower</button>` : ''}
           </div>
         </div>
         <input type="text" class="field${isWrong ? ' field-err' : isCorrect ? ' field-ok' : ''}" id="answer" placeholder="Type what you hear..." autocomplete="off" autocapitalize="off" spellcheck="false" ${S.answered ? 'disabled' : ''} ${S.answered && S._lastTyped ? `value="${esc(S._lastTyped)}"` : ''}>
@@ -1882,7 +1882,7 @@ function renderReading(q, progress) {
     <div class="dp">
       ${renderSessionHeader(progress, 'Reading', 'type-reading')}
       <div class="dp-body">
-        <div class="card" style="padding:1.25rem">
+        <div class="card">
           <div style="font-weight:600;margin-bottom:.5rem">${esc(q.title || 'Reading')}</div>
           <div class="serif" style="font-size:1.125rem;line-height:1.7;font-weight:400">${esc(q.passage)}</div>
           <div class="mt-sm">${speakBtn(q.passage)}</div>
@@ -1891,7 +1891,7 @@ function renderReading(q, progress) {
         ${rq.length > 0 ? `
           <div class="mt">
             ${rq.map((rqi, idx) => `
-              <div class="card" style="padding:1rem;margin-bottom:.5rem">
+              <div class="card" style="margin-bottom:.5rem">
                 <div style="font-weight:600;font-size:.9375rem;margin-bottom:.5rem">${esc(rqi.q)}</div>
                 ${rqi.type === 'mcq' ? `
                   <div class="opts" style="margin:0">
@@ -1973,7 +1973,7 @@ function renderWriting(q, progress) {
     <div class="dp">
       ${renderSessionHeader(progress, typeLabel, 'type-writing')}
       <div class="dp-body">
-        <div class="card" style="padding:1.25rem">
+        <div class="card">
           <div class="writing-type">${esc(typeLabel)}</div>
           <div class="serif" style="font-size:1.25rem">${esc(q.prompt)}</div>
           ${q.guidelines ? `<div class="sub mt-sm">${esc(q.guidelines)}</div>` : ''}
