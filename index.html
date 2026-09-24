@@ -1680,6 +1680,7 @@ function renderDictation(q, progress) {
 
   const playBtn = $('dict-play');
   if (playBtn) playBtn.onclick = () => {
+    if (!window.speechSynthesis) return;
     if (playBtn.classList.contains('speak-btn-off')) {
       const voices = speechSynthesis.getVoices();
       const fr = voices.find(v => v.lang === 'fr-FR') || voices.find(v => v.lang.startsWith('fr'));
@@ -1690,6 +1691,7 @@ function renderDictation(q, progress) {
   };
   const slowBtn = $('dict-slow');
   if (slowBtn) slowBtn.onclick = () => {
+    if (!window.speechSynthesis) return;
     if (slowBtn.classList.contains('speak-link-off')) {
       const voices = speechSynthesis.getVoices();
       const fr = voices.find(v => v.lang === 'fr-FR') || voices.find(v => v.lang.startsWith('fr'));
@@ -1879,7 +1881,7 @@ function renderReading(q, progress) {
   app().innerHTML = `
     <div class="dp">
       ${renderSessionHeader(progress, 'Reading', 'type-reading')}
-      <div class="dp-body" style="justify-content:flex-start;padding-top:1.5rem">
+      <div class="dp-body">
         <div class="card" style="padding:1.25rem">
           <div style="font-weight:600;margin-bottom:.5rem">${esc(q.title || 'Reading')}</div>
           <div class="serif" style="font-size:1.125rem;line-height:1.7;font-weight:400">${esc(q.passage)}</div>
@@ -1970,7 +1972,7 @@ function renderWriting(q, progress) {
   app().innerHTML = `
     <div class="dp">
       ${renderSessionHeader(progress, typeLabel, 'type-writing')}
-      <div class="dp-body" style="justify-content:flex-start;padding-top:1.5rem">
+      <div class="dp-body">
         <div class="card" style="padding:1.25rem">
           <div class="writing-type">${esc(typeLabel)}</div>
           <div class="serif" style="font-size:1.25rem">${esc(q.prompt)}</div>
@@ -2147,6 +2149,7 @@ document.addEventListener('click', e => {
   if (btn) {
     e.stopPropagation();
     if (btn.classList.contains('speak-btn-off')) {
+      if (!window.speechSynthesis) return;
       const voices = speechSynthesis.getVoices();
       const fr = voices.find(v => v.lang === 'fr-FR') || voices.find(v => v.lang.startsWith('fr'));
       if (fr) {
