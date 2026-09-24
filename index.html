@@ -2185,10 +2185,23 @@ async function init() {
       S.screen = 'home';
     } catch (e) {
       localStorage.removeItem('fdv3_token');
-      S.screen = wasSetUp ? 'login' : 'setup';
+      S.screen = 'login';
     }
+  } else if (wasSetUp) {
+    S.screen = 'login';
   } else {
-    S.screen = wasSetUp ? 'login' : 'setup';
+    try {
+      const gh = new GH(null);
+      const configRaw = await gh.get('config.enc');
+      if (configRaw) {
+        localStorage.setItem('fdv3_setup', '1');
+        S.screen = 'login';
+      } else {
+        S.screen = 'setup';
+      }
+    } catch (e) {
+      S.screen = 'setup';
+    }
   }
   render();
 }
