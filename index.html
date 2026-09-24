@@ -1031,7 +1031,7 @@ async function doSetup() {
   S.error = null;
   if (!pw1 || pw1.length < 4) { S.error = 'Password must be at least 4 characters.'; render(); return; }
   if (pw1 !== pw2) { S.error = "Passwords don't match."; render(); return; }
-  if (!pat || !pat.startsWith('github_pat_')) { S.error = 'Please enter a valid fine-grained PAT (starts with github_pat_).'; render(); return; }
+  if (!pat || pat.length < 10) { S.error = 'Please enter a valid GitHub token.'; render(); return; }
   $('setup-btn').disabled = true;
   $('setup-btn').innerHTML = '<span class="spin"></span> Setting up...';
   try {
