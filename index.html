@@ -963,8 +963,16 @@ ${pendingWriting ? `## Writing Submissions Awaiting Review\n${pendingWriting}\n`
 ## Seen Exercise IDs (do NOT regenerate these)
 ${exhaustedStr || 'none'}
 
+## Section Tags (MANDATORY on every grammar exercise)
+Every grammar exercise must include its section tag. Current chapter sections:
+${(() => {
+    const ch = CURRICULUM[cur.chapter];
+    if (!ch) return 'No section map for this chapter.';
+    return ch.sections.map(s => '- `' + s.id + '` — ' + s.name).join('\n');
+  })()}
+
 ## Batch Target
-Generate: ${grammarTarget} grammar, 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab (include distractors + sentence_blank_en for each), ${readingTarget} reading, ${writingTarget} writing (mix of essay with TCF template, micro 2-sentence, and translate), ${dictationTarget} dictation (sentence_fr + sentence_en + level + tags)${pendingWriting ? ', feedback for pending writing (include rubric: vocabulary/grammar/coherence/organization each 1-5)' : ''}.
+Generate: ${grammarTarget} grammar (focused on section \`${cur.currentSection}\`), 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab (include distractors + sentence_blank_en for each), ${readingTarget} reading, ${writingTarget} writing (mix of essay with TCF template, micro 2-sentence, and translate), ${dictationTarget} dictation (sentence_fr + sentence_en + level + tags)${pendingWriting ? ', feedback for pending writing (include rubric: vocabulary/grammar/coherence/organization each 1-5)' : ''}.
 Batches: ${Batch.batches.length} loaded (${Batch.batches.map(b => b.batch_id).join(', ')}).
 Push to: github.com/SyedAliMoiz/french-drills-v3 → batches/ (new batch file + update registry.json)
 `;
