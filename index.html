@@ -643,20 +643,6 @@ function migrateProgress(p) {
   if (p.v <= 4) {
     if (!p.curriculum) {
       p.curriculum = { chapter: 1, currentSection: 's1-gender', completedSections: [], chapterPhase: 'LEARN' };
-      const chapter = CURRICULUM[1];
-      if (chapter) {
-        for (const section of chapter.sections) {
-          const status = sectionStatus(section.id);
-          if (status === 'complete' || status === 'advancing') {
-            if (!p.curriculum.completedSections.includes(section.id)) {
-              p.curriculum.completedSections.push(section.id);
-            }
-          }
-        }
-        const firstIncomplete = chapter.sections.find(s => !p.curriculum.completedSections.includes(s.id));
-        if (firstIncomplete) p.curriculum.currentSection = firstIncomplete.id;
-        else p.curriculum.currentSection = chapter.sections[chapter.sections.length - 1].id;
-      }
     }
     p.v = 5;
   }
@@ -1282,6 +1268,30 @@ async function loadBatches() {
   if (Batch.current) {
     S.progress.batch.id = Batch.current.batch_id;
     S.progress.batch.loaded = new Date().toISOString();
+  }
+  syncCurriculumFromMastery();
+}
+
+function syncCurriculumFromMastery() {
+  if (!S.progress || !S.progress.curriculum) return;
+  const cur = S.progress.curriculum;
+  if (cur.chapterPhase !== 'LEARN') return;
+  const chapter = CURRICULUM[cur.chapter];
+  if (!chapter) return;
+
+  const sectionIds = chapter.sections.map(s => s.id);
+  for (const id of sectionIds) {
+    const status = sectionStatus(id);
+    if ((status === 'advancing' || status === 'complete') && !cur.completedSections.includes(id)) {
+      cur.completedSections.push(id);
+    }
+  }
+
+  const firstIncomplete = sectionIds.find(id => !cur.completedSections.includes(id));
+  if (firstIncomplete) {
+    const currentIdx = sectionIds.indexOf(cur.currentSection);
+    const targetIdx = sectionIds.indexOf(firstIncomplete);
+    if (targetIdx > currentIdx) cur.currentSection = firstIncomplete;
   }
 }
 
