@@ -250,6 +250,12 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 .writing-fb-correction{font-size:.9375rem;line-height:1.6}
 .writing-fb-correction mark{background:var(--ok-bg);color:var(--ok);border-radius:2px;padding:0 .125rem}
 
+.sec-pills{display:flex;flex-wrap:wrap;gap:.375rem}
+.sec-pill{font-size:.6875rem;font-weight:600;padding:.25rem .625rem;border-radius:var(--radius-pill);white-space:nowrap}
+.sec-done{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-border)}
+.sec-current{background:var(--accent-faint);color:var(--accent);border:1px solid var(--accent)}
+.sec-future{background:var(--surface);color:var(--text-dim);border:1px solid var(--line)}
+
 .speak-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;background:var(--accent-faint);color:var(--accent);border-radius:50%;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background .15s,transform .08s;flex-shrink:0;vertical-align:middle;margin-left:.25rem}
 .speak-btn:hover{background:var(--accent);color:var(--accent-on)}
 .speak-btn:active{transform:scale(.9)}
@@ -299,6 +305,65 @@ const CFG = { owner: 'syedalimoiz', repo: 'french-drills-v3' };
 const ACCENTS = ['é','è','ê','ë','à','â','î','ï','ô','ù','û','ç'];
 const SPEAK_SVG = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.5v7a4.49 4.49 0 002.5-3.5zM14 3.23v2.06a7.007 7.007 0 010 13.42v2.06c4.73-.91 8.31-5.06 8.31-9.77s-3.58-8.86-8.31-9.77z"/></svg>';
 const CHEVRON_SVG = '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M10 6L16 12L10 18"/></svg>';
+
+/* ═══════════════════════════════════════════════════════════════
+   CURRICULUM — chapter/section structure + section inference
+   ═══════════════════════════════════════════════════════════════ */
+
+const CURRICULUM = {
+  1: {
+    title: 'Nouns, Articles & Adjectives',
+    sections: [
+      { id: 's1-gender', name: 'Gender & Articles' },
+      { id: 's2-adjectives', name: 'Adjective Agreement' },
+      { id: 's3-plurals', name: 'Plurals' },
+      { id: 's4b-colors', name: 'Color Adjectives' },
+      { id: 's4c-precede', name: 'Preceding Adjectives' },
+      { id: 's5-vocab', name: 'Chapter Vocabulary' }
+    ]
+  }
+};
+
+const SECTION_TAG_MAP = {
+  'gender': 's1-gender', 'definite-articles': 's1-gender', 'indefinite-articles': 's1-gender',
+  'articles': 's1-gender', 'elision': 's1-gender', 'mute-h': 's1-gender',
+  'masculine': 's1-gender', 'feminine': 's1-gender',
+  'feminine-adjective': 's2-adjectives', 'feminine-agreement': 's2-adjectives',
+  'gender-agreement': 's2-adjectives', 'adjective-position': 's2-adjectives',
+  'position': 's2-adjectives', 'word-order': 's2-adjectives', 'position-meaning': 's2-adjectives',
+  'plural': 's3-plurals', 'plurals': 's3-plurals', 'plural-adjective': 's3-plurals',
+};
+
+const ALL_SECTION_IDS = Object.values(CURRICULUM).flatMap(ch => ch.sections.map(s => s.id));
+
+function exerciseSection(exercise) {
+  if (!exercise.tags) return null;
+  for (const tag of exercise.tags) {
+    if (ALL_SECTION_IDS.includes(tag)) return tag;
+  }
+  for (const tag of exercise.tags) {
+    if (SECTION_TAG_MAP[tag]) return SECTION_TAG_MAP[tag];
+  }
+  return null;
+}
+
+function preprocessBatch(batch) {
+  for (const ex of (batch.grammar || [])) {
+    const section = exerciseSection(ex);
+    if (section && !ex.tags.includes(section)) ex.tags.push(section);
+    ex._section = section;
+  }
+  if (batch.reach) {
+    for (const exs of Object.values(batch.reach)) {
+      for (const ex of exs) {
+        const section = exerciseSection(ex);
+        if (section && ex.tags && !ex.tags.includes(section)) ex.tags.push(section);
+        ex._section = section;
+      }
+    }
+  }
+}
+
 
 const TCF_TEMPLATES = {
   opinion_essay: {
@@ -544,7 +609,7 @@ function checkAnswer(given, correct, alternates) {
 
 function defaultProgress() {
   return {
-    v: 4,
+    v: 5,
     updated: null,
     exercises: {},
     srs: {},
@@ -554,7 +619,13 @@ function defaultProgress() {
     sessions: [],
     streak: { current: 0, best: 0, lastDate: null },
     batch: { id: null, loaded: null },
-    seenIds: []
+    seenIds: [],
+    curriculum: {
+      chapter: 1,
+      currentSection: 's1-gender',
+      completedSections: [],
+      chapterPhase: 'LEARN'
+    }
   };
 }
 
@@ -569,8 +640,29 @@ function migrateProgress(p) {
     }
     p.v = 4;
   }
+  if (p.v <= 4) {
+    if (!p.curriculum) {
+      p.curriculum = { chapter: 1, currentSection: 's1-gender', completedSections: [], chapterPhase: 'LEARN' };
+      const chapter = CURRICULUM[1];
+      if (chapter) {
+        for (const section of chapter.sections) {
+          const status = sectionStatus(section.id);
+          if (status === 'complete' || status === 'advancing') {
+            if (!p.curriculum.completedSections.includes(section.id)) {
+              p.curriculum.completedSections.push(section.id);
+            }
+          }
+        }
+        const firstIncomplete = chapter.sections.find(s => !p.curriculum.completedSections.includes(s.id));
+        if (firstIncomplete) p.curriculum.currentSection = firstIncomplete.id;
+        else p.curriculum.currentSection = chapter.sections[chapter.sections.length - 1].id;
+      }
+    }
+    p.v = 5;
+  }
   if (!p.seenIds) p.seenIds = [];
   if (!p.tagMastery) p.tagMastery = {};
+  if (!p.curriculum) p.curriculum = { chapter: 1, currentSection: 's1-gender', completedSections: [], chapterPhase: 'LEARN' };
   return p;
 }
 
@@ -635,6 +727,15 @@ function tagUnlockedType(tag) {
   return 'mcq';
 }
 
+function sectionStatus(sectionId) {
+  const unlocked = tagUnlockedType(sectionId);
+  if (unlocked === 'open') return 'complete';
+  if (unlocked === 'blank') return 'advancing';
+  const tm = S.progress.tagMastery[sectionId];
+  if (tm && tm.mcq && tm.mcq.attempts > 0) return 'learning';
+  return 'new';
+}
+
 function exercisePassesGate(exercise) {
   if (!exercise.tags || exercise.tags.length === 0) return true;
   if (exercise.type === 'why') return true;
@@ -694,6 +795,7 @@ const Batch = {
   addBatch(json) {
     const batch = typeof json === 'string' ? JSON.parse(json) : json;
     if (!this.batches.find(b => b.batch_id === batch.batch_id)) {
+      preprocessBatch(batch);
       this.batches.push(batch);
     }
   },
@@ -760,7 +862,8 @@ function generateRefuel() {
   const p = S.progress;
   const fuel = Batch.fuel();
   const reachFuel = Batch.reachFuel();
-  const curriculum = Batch.current ? Batch.current.curriculum : { chapter: 1, section: 'unknown', phase: 'LEARN' };
+  const cur = p.curriculum;
+  const curriculum = { chapter: cur.chapter, section: cur.currentSection, phase: cur.chapterPhase };
 
   const recentSessions = p.sessions.slice(-5);
   const avgErrorRate = recentSessions.length > 0
@@ -830,6 +933,14 @@ The app repo is at \`~/Projects/french-drills-v3/\`. Push the generated batch to
 
 ## Current Position
 - Chapter: ${curriculum.chapter}, Section: ${curriculum.section}, Phase: ${curriculum.phase}
+- Sections completed: ${cur.completedSections.length > 0 ? cur.completedSections.join(', ') : 'none'}
+- Next section: ${(() => {
+    const ch = CURRICULUM[cur.chapter];
+    if (!ch) return 'unknown';
+    const ids = ch.sections.map(s => s.id);
+    const idx = ids.indexOf(cur.currentSection);
+    return idx < ids.length - 1 ? ids[idx + 1] : 'last section';
+  })()}
 - Batch ID: ${p.batch.id || 'none'}
 
 ## Difficulty Directive
@@ -911,6 +1022,7 @@ const S = {
   sessionStartTime: null,
   reachQueue: [],
   readingSelections: {},
+  _advancedSection: null,
 };
 
 
@@ -1221,6 +1333,39 @@ function renderWritingFeedback() {
    HOME — dashboard with fuel status, streak, start button
    ═══════════════════════════════════════════════════════════════ */
 
+function renderSectionProgress() {
+  const cur = S.progress.curriculum;
+  const chapter = CURRICULUM[cur.chapter];
+  if (!chapter) return '';
+  const sectionIds = chapter.sections.map(s => s.id);
+  const currentIdx = sectionIds.indexOf(cur.currentSection);
+
+  const pills = chapter.sections.map((s, i) => {
+    const status = sectionStatus(s.id);
+    const isCompleted = cur.completedSections.includes(s.id) || status === 'complete' || status === 'advancing';
+    const isCurrent = s.id === cur.currentSection;
+    let cls = 'sec-pill';
+    let icon = '';
+    if (isCompleted && !isCurrent) { cls += ' sec-done'; icon = '✓ '; }
+    else if (isCurrent) { cls += ' sec-current'; icon = '▶ '; }
+    else { cls += ' sec-future'; }
+    return `<span class="${cls}">${icon}${esc(s.name)}</span>`;
+  }).join('');
+
+  const completed = chapter.sections.filter(s => cur.completedSections.includes(s.id) || sectionStatus(s.id) === 'complete').length;
+  const pct = Math.round((completed / chapter.sections.length) * 100);
+
+  return `
+    <div class="dash-section">
+      <div class="dash-section-title">Chapter ${cur.chapter} Progress</div>
+      <div class="card">
+        <div class="sec-pills">${pills}</div>
+        <div class="prog-track mt-sm"><div class="prog-fill" style="width:${pct}%"></div></div>
+        <div class="sub mt-sm">${completed} of ${chapter.sections.length} sections complete</div>
+      </div>
+    </div>`;
+}
+
 function renderHome() {
   const fuel = Batch.fuel();
   const total = Batch.totalFuel();
@@ -1247,7 +1392,13 @@ function renderHome() {
       <div class="row between mb">
         <div>
           <div class="hdr">French Drills</div>
-          <div class="sub">${Batch.current && Batch.current.curriculum ? 'Chapter ' + Batch.current.curriculum.chapter : 'Practice'}</div>
+          <div class="sub">${(() => {
+            const cur = S.progress.curriculum;
+            const ch = CURRICULUM[cur.chapter];
+            if (!ch) return 'Practice';
+            const sec = ch.sections.find(s => s.id === cur.currentSection);
+            return 'Ch ' + cur.chapter + ' · ' + (sec ? sec.name : cur.currentSection);
+          })()}</div>
         </div>
         ${streak > 0 ? `<div class="streak-badge">\u{1F525} ${streak} day${streak > 1 ? 's' : ''}</div>` : ''}
       </div>
@@ -1258,6 +1409,8 @@ function renderHome() {
           <div class="card-sub">${lastSession.correct}/${lastSession.exercises} correct · ${formatDuration(lastSession.duration * 1000)}</div>
         </div>
       ` : ''}
+
+      ${renderSectionProgress()}
 
       ${!hasBatch ? `
         <div class="card card-err" style="border-left:3px solid var(--err)">
@@ -1376,18 +1529,45 @@ function startSession() {
 function buildSessionQueue() {
   if (Batch.batches.length === 0) return [];
   const today = todayStr();
-  const allGrammar = Batch.all('grammar').filter(q => exercisePassesGate(q));
-  const vocab = Batch.all('vocabulary');
-  const reading = Batch.all('reading');
-  const writing = Batch.all('writing');
-  const dictation = Batch.all('dictation');
+  const cur = S.progress.curriculum;
+  const chapter = CURRICULUM[cur.chapter];
+
+  const activeSections = [];
+  if (chapter) {
+    const sectionIds = chapter.sections.map(s => s.id);
+    const currentIdx = sectionIds.indexOf(cur.currentSection);
+    for (let i = 0; i <= Math.max(currentIdx, 0); i++) activeSections.push(sectionIds[i]);
+  }
+
+  const allGrammar = Batch.all('grammar').filter(q => {
+    if (!exercisePassesGate(q)) return false;
+    if (activeSections.length === 0) return true;
+    const section = q._section || exerciseSection(q);
+    if (!section) return true;
+    return activeSections.includes(section);
+  });
+
+  const currentSectionExercises = allGrammar.filter(q => {
+    const section = q._section || exerciseSection(q);
+    return section === cur.currentSection;
+  });
+  const reviewExercises = allGrammar.filter(q => {
+    const section = q._section || exerciseSection(q);
+    return section !== cur.currentSection;
+  });
 
   const due = [], errored = [], fresh = [];
-  for (const q of allGrammar) {
+  for (const q of currentSectionExercises) {
     const rec = S.progress.exercises[q.id];
     if (!rec) { fresh.push(q); continue; }
     if (rec.streak === 0 && rec.attempts > 0) { errored.push(q); continue; }
     if (rec.nextDue && rec.nextDue <= today) { due.push(q); continue; }
+  }
+
+  const reviewDue = [];
+  for (const q of reviewExercises) {
+    const rec = S.progress.exercises[q.id];
+    if (rec && rec.nextDue && rec.nextDue <= today) reviewDue.push(q);
   }
 
   due.sort((a, b) => {
@@ -1398,8 +1578,14 @@ function buildSessionQueue() {
   const grammarPool = [
     ...interleaveByTag(errored).slice(0, 5),
     ...interleaveByTag(due).slice(0, 5),
-    ...interleaveByTag(fresh).slice(0, 5)
+    ...interleaveByTag(fresh).slice(0, 8),
+    ...shuffle(reviewDue).slice(0, 3)
   ];
+
+  const vocab = Batch.all('vocabulary');
+  const reading = Batch.all('reading');
+  const writing = Batch.all('writing');
+  const dictation = Batch.all('dictation');
 
   const dueVocab = vocab.filter(q => SRS.isDue(getVocabCard(q.id)));
   shuffle(dueVocab);
@@ -2028,9 +2214,41 @@ function advanceSession() {
   }
 }
 
+function checkSectionAdvancement() {
+  const cur = S.progress.curriculum;
+  if (cur.chapterPhase !== 'LEARN') return null;
+  const chapter = CURRICULUM[cur.chapter];
+  if (!chapter) return null;
+
+  const sectionIds = chapter.sections.map(s => s.id);
+  const currentIdx = sectionIds.indexOf(cur.currentSection);
+  const status = sectionStatus(cur.currentSection);
+
+  if ((status === 'advancing' || status === 'complete') && !cur.completedSections.includes(cur.currentSection)) {
+    cur.completedSections.push(cur.currentSection);
+  }
+
+  if (status === 'advancing' || status === 'complete') {
+    if (currentIdx < sectionIds.length - 1) {
+      const advanced = cur.currentSection;
+      cur.currentSection = sectionIds[currentIdx + 1];
+      return advanced;
+    }
+  }
+
+  const allComplete = sectionIds.every(id => {
+    const s = sectionStatus(id);
+    return s === 'complete';
+  });
+  if (allComplete) cur.chapterPhase = 'TEST';
+
+  return null;
+}
+
 function endSession() {
   const duration = Date.now() - (S.sessionStartTime || Date.now());
   recordSession(S.sessionCorrect, S.sessionTotal, duration);
+  S._advancedSection = checkSectionAdvancement();
   saveLocal();
   syncToGitHub();
   S.screen = 'results';
@@ -2060,6 +2278,21 @@ function renderResults() {
         ${scoreRing(pct)}
         <div class="res-msg mt-sm">${correct} of ${total} correct · ${formatDuration(duration)}</div>
       </div>
+
+      ${S._advancedSection ? `
+        <div class="card card-ok fade-up" style="border-left:3px solid var(--ok);margin-bottom:.75rem">
+          <div class="card-title" style="color:var(--ok)">Section Complete</div>
+          <div class="card-sub">${esc((() => {
+            const ch = CURRICULUM[S.progress.curriculum.chapter];
+            const sec = ch && ch.sections.find(s => s.id === S._advancedSection);
+            return sec ? sec.name : S._advancedSection;
+          })())} mastered. Moving to ${esc((() => {
+            const ch = CURRICULUM[S.progress.curriculum.chapter];
+            const sec = ch && ch.sections.find(s => s.id === S.progress.curriculum.currentSection);
+            return sec ? sec.name : S.progress.curriculum.currentSection;
+          })())}.</div>
+        </div>
+      ` : ''}
 
       <div class="zone-indicator ${zoneClass}">${zoneLabel}</div>
       <div class="sub mt-sm center">Coyle's 20% Rule: aim for 15–25% errors. That's where growth happens.</div>
