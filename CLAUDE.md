@@ -84,6 +84,42 @@ Key rules:
 - Generate reach exercises for each weak error pattern
 - Difficulty 1-5 scale (1=recognition, 5=production with no hints)
 
+## Curriculum Progression System
+
+The app tracks mastery per chapter section and advances through the curriculum automatically.
+
+### Chapter 1 sections (in order):
+- `s1-gender` — Gender & Articles
+- `s2-adjectives` — Adjective Agreement
+- `s3-plurals` — Plurals
+- `s4b-colors` — Color Adjectives
+- `s4c-precede` — Preceding Adjectives
+- `s5-vocab` — Chapter Vocabulary
+
+### How it works:
+- Every grammar exercise is mapped to a section via its tags
+- Exercises without explicit section tags are inferred from content tags (e.g. `gender` → `s1-gender`)
+- The session queue only serves exercises from the current section + completed sections (for spaced review)
+- When MCQ mastery is achieved for a section's tag (≥6 attempts, ≥75% accuracy), blank exercises unlock
+- When blank mastery is achieved (≥4 attempts, ≥75%), open exercises unlock
+- Once blanks are unlocked ("advancing" status), the app auto-advances to the next section
+- Progress is tracked in `PROGRESS.json` under the `curriculum` field
+
+### Progress schema (v5):
+```json
+{
+  "curriculum": {
+    "chapter": 1,
+    "currentSection": "s2-adjectives",
+    "completedSections": ["s1-gender"],
+    "chapterPhase": "LEARN"
+  }
+}
+```
+
+### Batch generation requirement:
+Every grammar exercise MUST include its section tag in the `tags` array. The REFUEL.md includes the section map.
+
 ## Methodology
 
 The app implements frameworks from:
