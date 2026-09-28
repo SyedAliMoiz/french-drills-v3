@@ -364,17 +364,123 @@ const CHEVRON_SVG = '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M1
    ═══════════════════════════════════════════════════════════════ */
 
 const CURRICULUM = {
-  1: {
-    title: 'Nouns, Articles & Adjectives',
-    sections: [
-      { id: 's1-gender', name: 'Gender & Articles' },
-      { id: 's2-adjectives', name: 'Adjective Agreement' },
-      { id: 's3-plurals', name: 'Plurals' },
-      { id: 's4b-colors', name: 'Color Adjectives' },
-      { id: 's4c-precede', name: 'Preceding Adjectives' },
-      { id: 's5-vocab', name: 'Chapter Vocabulary' }
-    ]
-  }
+  1: { title: 'Nouns, Articles & Adjectives', sections: [
+    { id: 's1-gender', name: 'Gender & Articles' },
+    { id: 's2-adjectives', name: 'Adjective Agreement' },
+    { id: 's3-plurals', name: 'Plurals' },
+    { id: 's4b-colors', name: 'Color Adjectives' },
+    { id: 's4c-precede', name: 'Preceding Adjectives' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  2: { title: 'Être, Avoir & Negation', sections: [
+    { id: 's1-etre', name: 'Être (to be)' },
+    { id: 's2-avoir', name: 'Avoir (to have)' },
+    { id: 's3-etre-avoir', name: 'Être vs Avoir Expressions' },
+    { id: 's4-negation', name: 'Negation (ne...pas)' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  3: { title: '-ER Verbs & Questions', sections: [
+    { id: 's1-er-present', name: '-ER Verb Conjugation' },
+    { id: 's2-er-common', name: 'Common -ER Verbs' },
+    { id: 's3-interrogative', name: 'Question Formation' },
+    { id: 's4-question-words', name: 'Question Words' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  4: { title: 'Numbers, Dates & -IR Verbs', sections: [
+    { id: 's1-numbers', name: 'Cardinal Numbers' },
+    { id: 's2-dates', name: 'Days, Months & Dates' },
+    { id: 's3-time', name: 'Telling Time' },
+    { id: 's4-ir-present', name: '-IR Verb Conjugation' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  5: { title: '-RE Verbs', sections: [
+    { id: 's1-re-present', name: '-RE Verb Conjugation' },
+    { id: 's2-re-common', name: 'Common -RE Verbs' },
+    { id: 's3-re-irregular', name: 'Semi-Irregular -RE Verbs' },
+    { id: 's4-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  6: { title: 'Aller, Futur Proche & Faire', sections: [
+    { id: 's1-aller', name: 'Aller + Contractions' },
+    { id: 's2-futur-proche', name: 'Futur Proche' },
+    { id: 's3-faire', name: 'Faire + Expressions' },
+    { id: 's4-weather', name: 'Weather with Faire' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  7: { title: 'Irregular Verbs I', sections: [
+    { id: 's1-pouvoir', name: 'Pouvoir (can)' },
+    { id: 's2-vouloir', name: 'Vouloir (to want)' },
+    { id: 's3-devoir', name: 'Devoir (must)' },
+    { id: 's4-savoir-connaitre', name: 'Savoir vs Connaître' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  8: { title: 'Irregular Verbs II & Relative Pronouns', sections: [
+    { id: 's1-venir', name: 'Venir + Passé Récent' },
+    { id: 's2-prendre', name: 'Prendre & Compounds' },
+    { id: 's3-mettre', name: 'Mettre & Compounds' },
+    { id: 's4-relative-qui-que', name: 'Qui & Que' },
+    { id: 's5-relative-ou-dont', name: 'Où & Dont' },
+    { id: 's6-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  9: { title: 'Partitive & Object Pronouns', sections: [
+    { id: 's1-partitive', name: 'Partitive Articles' },
+    { id: 's2-partitive-neg', name: 'Partitive in Negation' },
+    { id: 's3-direct-obj', name: 'Direct Object Pronouns' },
+    { id: 's4-indirect-obj', name: 'Indirect Object Pronouns' },
+    { id: 's5-pronoun-place', name: 'Pronoun Placement' },
+    { id: 's6-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  10: { title: 'Possessives, Comparatives & Adverbs', sections: [
+    { id: 's1-possessive', name: 'Possessive Adjectives' },
+    { id: 's2-demonstrative', name: 'Demonstrative Adjectives' },
+    { id: 's3-comparative', name: 'Comparatives' },
+    { id: 's4-superlative', name: 'Superlatives' },
+    { id: 's5-adverbs', name: 'Adverb Formation' },
+    { id: 's6-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  11: { title: 'Imperative & Stressed Pronouns', sections: [
+    { id: 's1-imperative', name: 'Imperative Formation' },
+    { id: 's2-imperative-neg', name: 'Negative Imperative' },
+    { id: 's3-imperative-pron', name: 'Imperative + Pronouns' },
+    { id: 's4-stressed', name: 'Stressed Pronouns' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  12: { title: 'Pronominal Verbs', sections: [
+    { id: 's1-reflexive', name: 'Reflexive Verbs' },
+    { id: 's2-reflexive-conj', name: 'Reflexive Conjugation' },
+    { id: 's3-reflexive-neg', name: 'Reflexive in Negation' },
+    { id: 's4-reciprocal', name: 'Reciprocal Verbs' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  13: { title: 'Passé Composé', sections: [
+    { id: 's1-pc-avoir', name: 'PC with Avoir' },
+    { id: 's2-past-participle', name: 'Past Participles' },
+    { id: 's3-pc-irregular', name: 'Irregular Participles' },
+    { id: 's4-pc-etre', name: 'PC with Être' },
+    { id: 's5-pc-agreement', name: 'Participle Agreement' },
+    { id: 's6-pc-neg', name: 'PC in Negation' },
+    { id: 's7-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  14: { title: 'Imparfait & Past Narration', sections: [
+    { id: 's1-imp-form', name: 'Imparfait Formation' },
+    { id: 's2-imp-usage', name: 'Imparfait Usage' },
+    { id: 's3-pc-vs-imp', name: 'PC vs Imparfait' },
+    { id: 's4-narration', name: 'Past Narration' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  15: { title: 'Conditional', sections: [
+    { id: 's1-cond-form', name: 'Conditionnel Formation' },
+    { id: 's2-cond-usage', name: 'Conditionnel Usage' },
+    { id: 's3-si-clauses', name: 'Si Clauses' },
+    { id: 's4-cond-irreg', name: 'Irregular Stems' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]},
+  16: { title: 'Subjunctive', sections: [
+    { id: 's1-subj-form', name: 'Subjonctif Formation' },
+    { id: 's2-subj-irreg', name: 'Irregular Subjonctif' },
+    { id: 's3-subj-triggers', name: 'Subjonctif Triggers' },
+    { id: 's4-subj-vs-ind', name: 'Subjonctif vs Indicatif' },
+    { id: 's5-vocab', name: 'Chapter Vocabulary' }
+  ]}
 };
 
 const SECTION_TAG_MAP = {
@@ -385,6 +491,56 @@ const SECTION_TAG_MAP = {
   'gender-agreement': 's2-adjectives', 'adjective-position': 's2-adjectives',
   'position': 's2-adjectives', 'word-order': 's2-adjectives', 'position-meaning': 's2-adjectives',
   'plural': 's3-plurals', 'plurals': 's3-plurals', 'plural-adjective': 's3-plurals',
+  'etre': 's1-etre', 'etre-conjugation': 's1-etre',
+  'avoir': 's2-avoir', 'avoir-conjugation': 's2-avoir',
+  'etre-avoir-expressions': 's3-etre-avoir',
+  'negation': 's4-negation', 'ne-pas': 's4-negation',
+  'er-verbs': 's1-er-present', 'er-conjugation': 's1-er-present', 'present-tense': 's1-er-present',
+  'interrogative': 's3-interrogative', 'est-ce-que': 's3-interrogative', 'inversion': 's3-interrogative',
+  'question-words': 's4-question-words',
+  'numbers': 's1-numbers', 'cardinal': 's1-numbers',
+  'dates': 's2-dates', 'days': 's2-dates', 'months': 's2-dates',
+  'time': 's3-time', 'telling-time': 's3-time',
+  'ir-verbs': 's4-ir-present', 'ir-conjugation': 's4-ir-present',
+  're-verbs': 's1-re-present', 're-conjugation': 's1-re-present',
+  'aller': 's1-aller', 'a-contractions': 's1-aller',
+  'futur-proche': 's2-futur-proche', 'near-future': 's2-futur-proche',
+  'faire': 's3-faire', 'faire-expressions': 's3-faire',
+  'weather': 's4-weather',
+  'pouvoir': 's1-pouvoir', 'vouloir': 's2-vouloir', 'devoir': 's3-devoir',
+  'savoir': 's4-savoir-connaitre', 'connaitre': 's4-savoir-connaitre',
+  'venir': 's1-venir', 'passe-recent': 's1-venir',
+  'prendre': 's2-prendre', 'mettre': 's3-mettre',
+  'relative-pronouns': 's4-relative-qui-que', 'qui': 's4-relative-qui-que', 'que': 's4-relative-qui-que',
+  'ou-relative': 's5-relative-ou-dont', 'dont': 's5-relative-ou-dont',
+  'partitive': 's1-partitive', 'du-de-la': 's1-partitive',
+  'partitive-negation': 's2-partitive-neg',
+  'direct-object': 's3-direct-obj', 'le-la-les-pronoun': 's3-direct-obj',
+  'indirect-object': 's4-indirect-obj', 'lui-leur': 's4-indirect-obj',
+  'pronoun-placement': 's5-pronoun-place',
+  'possessive': 's1-possessive', 'mon-ton-son': 's1-possessive',
+  'demonstrative': 's2-demonstrative', 'ce-cette-ces': 's2-demonstrative',
+  'comparative': 's3-comparative', 'plus-moins-aussi': 's3-comparative',
+  'superlative': 's4-superlative',
+  'adverbs': 's5-adverbs', 'adverb-formation': 's5-adverbs',
+  'imperative': 's1-imperative', 'commands': 's1-imperative',
+  'stressed-pronouns': 's4-stressed', 'moi-toi-lui': 's4-stressed',
+  'reflexive': 's1-reflexive', 'se-lever': 's1-reflexive', 'pronominal': 's1-reflexive',
+  'reciprocal': 's4-reciprocal',
+  'passe-compose': 's1-pc-avoir', 'pc-avoir': 's1-pc-avoir',
+  'past-participle': 's2-past-participle',
+  'pc-irregular': 's3-pc-irregular',
+  'pc-etre': 's4-pc-etre', 'vandertramp': 's4-pc-etre',
+  'pc-agreement': 's5-pc-agreement',
+  'imparfait': 's1-imp-form', 'imperfect': 's1-imp-form',
+  'imparfait-usage': 's2-imp-usage',
+  'pc-vs-imparfait': 's3-pc-vs-imp',
+  'past-narration': 's4-narration',
+  'conditional': 's1-cond-form', 'conditionnel': 's1-cond-form',
+  'si-clauses': 's3-si-clauses', 'hypothetical': 's3-si-clauses',
+  'subjunctive': 's1-subj-form', 'subjonctif': 's1-subj-form',
+  'subj-triggers': 's3-subj-triggers', 'il-faut-que': 's3-subj-triggers',
+  'subj-vs-indicative': 's4-subj-vs-ind',
 };
 
 const ALL_SECTION_IDS = Object.values(CURRICULUM).flatMap(ch => ch.sections.map(s => s.id));
