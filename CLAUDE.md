@@ -105,20 +105,49 @@ The app tracks mastery per chapter section and advances through the curriculum a
 - Once blanks are unlocked ("advancing" status), the app auto-advances to the next section
 - Progress is tracked in `PROGRESS.json` under the `curriculum` field
 
-### Progress schema (v5):
+### Progress schema (v6):
 ```json
 {
-  "curriculum": {
-    "chapter": 1,
-    "currentSection": "s2-adjectives",
-    "completedSections": ["s1-gender"],
-    "chapterPhase": "LEARN"
-  }
+  "curriculum": { "chapter": 1, "currentSection": "s2-adjectives", "completedSections": ["s1-gender"], "chapterPhase": "LEARN" },
+  "xp": { "total": 1250, "level": 5 },
+  "achievements": { "first-note": { "unlocked": "ISO-date", "fresh": false } },
+  "streak": { "current": 3, "best": 5, "lastDate": "2026-09-28", "freezeDays": 2, "freezeUsed": [] }
 }
 ```
 
 ### Batch generation requirement:
 Every grammar exercise MUST include its section tag in the `tags` array. The REFUEL.md includes the section map.
+
+## Stickiness Layer (Phase 3)
+
+### XP & Levels
+- XP earned per correct answer: MCQ 10, blank 20, open 30, vocab recognition 10, vocab production 20, reading 15, writing 50, dictation 20, REACH bonus +5
+- 15% chance of double XP on any correct answer (variable reward)
+- Level = floor(sqrt(totalXP / 50)) + 1
+- XP for next level = (level)^2 * 50
+
+### 24 Achievements
+Coyle-specific badges: First Note, Deep Practitioner, Centurion, 500 Club, Sweet Spot, Clarissa Moment, Perfect Session, Streak Starter/Week Warrior/Flame Keeper/Unbreakable, Section Master, Chapter Champion, Word Collector/Vocabulary Vault, Error Hunter, Marathon, Writer, Early Bird, Night Owl, Freeze Frame, Guitar String, Rising Star, Polyglot Path.
+
+### Streak Protection
+- Forgiving: freeze days auto-save the streak if you miss 1 day
+- Earn 1 freeze day every 7-day streak milestone (max 3 stored)
+- Visual indicator on home screen
+
+### Guitar Strings / Ignition Tab
+- 8 real stories of South Asian immigrants who learned French
+- Accessible from home screen, designed for motivation during gaps
+
+### Stare Content
+- French content links from batch `stare` field displayed on home screen
+- Shows title, note, duration, and "Watch" link
+
+### Daily Reminder
+- Cron job at 8 PM: `notify-send` if no session today
+- "Not done today" nudge banner on home screen after 6 PM
+
+### Share Progress
+- Text-based shareable progress card (uses Web Share API or clipboard)
 
 ## Methodology
 
@@ -127,3 +156,6 @@ The app implements frameworks from:
 - `Projects/Ongoing/French 2/TEACHING-METHODOLOGY.md` — 14 cognitive science principles
 - Coyle's Deep Practice — 20% Rule (aim for 15-25% error rate)
 - Coyle's REACH — follow-up exercise after pattern errors
+- Coyle's Ignition — Guitar Strings motivation (8 real stories)
+- BJ Fogg's Tiny Habits — prompt design (cron reminder + nudge banner)
+- Nir Eyal's Hook Model — variable rewards (15% double XP chance)

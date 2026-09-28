@@ -289,6 +289,59 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 .speak-btn-off{opacity:.35;cursor:default}
 .speak-btn-off:hover{background:var(--accent-faint)}
 .speak-link-off{opacity:.35;cursor:default}
+
+.xp-wrap{display:flex;align-items:center;gap:.5rem;padding:.5rem 0}
+.xp-level{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-hover));color:var(--accent-on);font-weight:700;font-size:.875rem;flex-shrink:0}
+.xp-info{flex:1;min-width:0}
+.xp-label{font-size:.6875rem;color:var(--text-dim);font-weight:600}
+.xp-track{height:6px;background:var(--bar-track);border-radius:3px;overflow:hidden;margin-top:.125rem}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),#A78BFA);border-radius:3px;transition:width .5s ease}
+.xp-earned{font-size:1.25rem;font-weight:700;color:var(--accent);text-align:center}
+.xp-bonus{font-size:.875rem;color:#A78BFA;font-weight:600}
+.level-up-card{background:linear-gradient(135deg,var(--accent-faint),#F3E8FF);border:2px solid var(--accent);border-radius:var(--radius-md);padding:1.25rem;text-align:center;margin-bottom:.75rem}
+.level-up-card .xp-level{width:56px;height:56px;font-size:1.5rem;margin:0 auto .5rem}
+@media(prefers-color-scheme:dark){.level-up-card{background:linear-gradient(135deg,var(--accent-faint),#2D1B4E)}}
+:root[data-theme="dark"] .level-up-card{background:linear-gradient(135deg,var(--accent-faint),#2D1B4E)}
+
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem}
+.ach-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:.75rem;text-align:center;box-shadow:var(--card-shadow)}
+.ach-card.ach-locked{opacity:.35;filter:grayscale(1)}
+.ach-icon{font-size:1.5rem;margin-bottom:.25rem}
+.ach-name{font-size:.75rem;font-weight:600}
+.ach-desc{font-size:.625rem;color:var(--text-dim);margin-top:.125rem}
+.ach-new{border-color:var(--accent);box-shadow:0 0 12px rgba(129,140,248,.3);animation:pop .3s ease}
+.ach-row{display:flex;gap:.375rem;overflow-x:auto;padding:.25rem 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.ach-row::-webkit-scrollbar{display:none}
+.ach-mini{display:flex;align-items:center;gap:.25rem;padding:.25rem .5rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-pill);font-size:.6875rem;font-weight:600;white-space:nowrap;flex-shrink:0}
+.ach-mini-new{border-color:var(--accent);background:var(--accent-faint);color:var(--accent)}
+
+.freeze-badge{display:inline-flex;align-items:center;gap:.25rem;font-size:.8125rem;font-weight:600;color:#0891B2;padding:.25rem .625rem;background:#ECFEFF;border-radius:var(--radius-pill)}
+@media(prefers-color-scheme:dark){.freeze-badge{background:#083344;color:#22D3EE}}
+:root[data-theme="dark"] .freeze-badge{background:#083344;color:#22D3EE}
+
+.nudge-banner{background:linear-gradient(135deg,var(--warn-bg),#FEF3C7);border:1px solid var(--warn-border);border-radius:var(--radius-md);padding:.875rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem}
+.nudge-icon{font-size:1.5rem;flex-shrink:0}
+.nudge-text{font-size:.875rem;font-weight:500;color:var(--warn)}
+@media(prefers-color-scheme:dark){.nudge-banner{background:linear-gradient(135deg,var(--warn-bg),#2D2410)}}
+:root[data-theme="dark"] .nudge-banner{background:linear-gradient(135deg,var(--warn-bg),#2D2410)}
+
+.gs-back{display:flex;align-items:center;gap:.375rem;background:none;border:none;color:var(--accent);font-weight:600;font-size:.875rem;cursor:pointer;padding:.5rem 0;-webkit-tap-highlight-color:transparent}
+.gs-card{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius-md);padding:1rem;margin-bottom:.75rem;box-shadow:var(--card-shadow)}
+.gs-name{font-weight:700;font-size:1rem}
+.gs-origin{font-size:.75rem;color:var(--text-dim);margin-top:.125rem}
+.gs-quote{font-family:Georgia,serif;font-style:italic;font-size:.9375rem;line-height:1.5;color:var(--text);margin:.625rem 0;padding-left:.75rem;border-left:2px solid var(--accent)}
+.gs-key{font-size:.8125rem;font-weight:600;color:var(--accent)}
+
+.stare-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:1rem;display:flex;align-items:center;gap:.75rem}
+.stare-icon{font-size:1.5rem;flex-shrink:0}
+.stare-info{flex:1;min-width:0}
+.stare-title{font-weight:600;font-size:.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stare-note{font-size:.75rem;color:var(--text-dim);margin-top:.125rem}
+.stare-link{color:var(--accent);text-decoration:none;font-weight:600;font-size:.875rem;flex-shrink:0}
+
+.share-btn{display:inline-flex;align-items:center;gap:.375rem;background:none;border:1.5px solid var(--line);color:var(--text-dim);font-weight:600;font-size:.8125rem;padding:.5rem 1rem;border-radius:var(--radius-pill);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s,color .15s}
+.share-btn:hover{border-color:var(--accent);color:var(--accent)}
+.nav-link{display:inline-flex;align-items:center;gap:.375rem;background:none;border:none;color:var(--accent);font-weight:600;font-size:.875rem;cursor:pointer;padding:.5rem 0;-webkit-tap-highlight-color:transparent}
 </style>
 </head>
 <body>
@@ -360,6 +413,140 @@ function preprocessBatch(batch) {
         if (section && ex.tags && !ex.tags.includes(section)) ex.tags.push(section);
         ex._section = section;
       }
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   XP, ACHIEVEMENTS, GUITAR STRINGS — Phase 3 stickiness layer
+   ═══════════════════════════════════════════════════════════════ */
+
+const XP_TABLE = { mcq: 10, blank: 20, open: 30, why: 10, vocab_rec: 10, vocab_prod: 20, reading: 15, writing: 50, dictation: 20, reach: 5 };
+
+const ACHIEVEMENTS = {
+  'first-note':      { name: 'First Note',       icon: '\u{1F3B5}', desc: 'Complete your first exercise' },
+  'deep-5':          { name: 'Deep Practitioner', icon: '\u{1F9E0}', desc: 'Complete 5 sessions' },
+  'centurion':       { name: 'Centurion',         icon: '\u{1F4AF}', desc: 'Complete 100 exercises' },
+  '500-club':        { name: '500 Club',          icon: '\u{1F3C6}', desc: 'Complete 500 exercises' },
+  'sweet-spot':      { name: 'Sweet Spot',        icon: '\u{1F3AF}', desc: 'Session in the 15-25% error zone' },
+  'clarissa':        { name: 'Clarissa Moment',   icon: '\u{1F4A1}', desc: 'Get a REACH exercise correct' },
+  'perfect':         { name: 'Perfect Session',   icon: '\u{2B50}',  desc: '100% with 10+ exercises' },
+  'streak-3':        { name: 'Streak Starter',    icon: '\u{1F525}', desc: '3-day streak' },
+  'streak-7':        { name: 'Week Warrior',      icon: '\u{2694}\u{FE0F}',  desc: '7-day streak' },
+  'streak-14':       { name: 'Flame Keeper',      icon: '\u{1F3D4}\u{FE0F}', desc: '14-day streak' },
+  'streak-30':       { name: 'Unbreakable',       icon: '\u{1F48E}', desc: '30-day streak' },
+  'section-master':  { name: 'Section Master',    icon: '\u{1F4D6}', desc: 'Complete a curriculum section' },
+  'chapter-champ':   { name: 'Chapter Champion',  icon: '\u{1F451}', desc: 'Complete an entire chapter' },
+  'word-50':         { name: 'Word Collector',    icon: '\u{1F4DA}', desc: 'Learn 50 vocabulary words' },
+  'word-100':        { name: 'Vocabulary Vault',  icon: '\u{1F3DB}\u{FE0F}', desc: 'Learn 100 vocabulary words' },
+  'error-100':       { name: 'Error Hunter',      icon: '\u{1F50D}', desc: 'Make 100 errors (learning from mistakes)' },
+  'marathon':        { name: 'Marathon',           icon: '\u{1F3C3}', desc: '30+ exercises in one session' },
+  'writer':          { name: 'Writer',             icon: '\u{270D}\u{FE0F}',  desc: 'Submit 5 writing pieces' },
+  'early-bird':      { name: 'Early Bird',        icon: '\u{1F305}', desc: 'Practice before 8 AM' },
+  'night-owl':       { name: 'Night Owl',         icon: '\u{1F989}', desc: 'Practice after 10 PM' },
+  'freeze-used':     { name: 'Freeze Frame',      icon: '\u{2744}\u{FE0F}',  desc: 'Use a streak freeze day' },
+  'ignition':        { name: 'Guitar String',     icon: '\u{1F3B8}', desc: 'Read an ignition story' },
+  'level-5':         { name: 'Rising Star',       icon: '\u{1F31F}', desc: 'Reach Level 5' },
+  'level-10':        { name: 'Polyglot Path',     icon: '\u{1F30D}', desc: 'Reach Level 10' },
+};
+
+const GUITAR_STRINGS = [
+  { name: 'Khalil Guliwala', origin: 'Indian Muslim from Dubai', quote: 'Language is the great vehicle for integration.', result: 'Wrote a book entirely in French. Professor in Montreal.', key: 'Started at zero. Now writes books in French.' },
+  { name: 'Ishan Malhi', origin: 'Punjabi, moved to Montreal', quote: 'Traditional schools said 1-2 years. He passed TEFAQ in 6 weeks.', result: 'Founded Learn Le Français. 15,000+ students served.', key: 'Proved the "it takes 2 years" consensus wrong.' },
+  { name: 'Smitha S. Dutt', origin: 'Indian PhD, cancer researcher', quote: 'I was the only South Asian. It was a huge challenge.', result: 'Published her story in La Presse — in French.', key: 'Found a community. Conquered the shame of speaking.' },
+  { name: 'Hadi Ijaz', origin: 'Pakistani from Lahore', quote: 'Learning French was one of my biggest regrets.', result: 'Spent a decade in Montreal without learning it.', key: 'The cautionary tale. The future you don\'t want.' },
+  { name: 'Faisal Ilyas', origin: 'Pakistani cook in Montreal', quote: 'They make do, they get by, they don\'t give up.', result: 'Subject of documentary. Taking classes, showing up daily.', key: 'No glamour. Just showing up.' },
+  { name: 'Anonymous', origin: 'Pakistani on r/pkmigrate', quote: 'Not easy, but definitely far more worthwhile than spending a fortune.', result: 'B2-C1 French. Express Entry. Job before relocating.', key: 'Did exactly what you\'re planning. Same strategy.' },
+  { name: 'Kirtan Varasia', origin: 'Pakistani Hindu, 5 languages', quote: 'Not as a fallback, but as a liberation.', result: 'Self-employed in Montreal. French still in progress.', key: 'Chose to build his own thing. Honest about the struggle.' },
+  { name: '24M Java Engineer', origin: 'Pakistani software engineer', quote: 'Targeting B2 by late 2026. Same French strategy as you.', result: 'Living your exact timeline, one step behind.', key: 'You\'re further along than someone walking the same path.' },
+];
+
+function xpForLevel(lv) { return lv <= 1 ? 0 : (lv - 1) * (lv - 1) * 50; }
+function xpLevel(total) { return Math.floor(Math.sqrt(total / 50)) + 1; }
+function xpProgress(total) {
+  const lv = xpLevel(total);
+  const cur = xpForLevel(lv);
+  const next = xpForLevel(lv + 1);
+  return { level: lv, current: total - cur, needed: next - cur, pct: Math.round(((total - cur) / (next - cur)) * 100) };
+}
+
+function calcExerciseXP(exercise, correct, isReach) {
+  if (!correct) return 0;
+  let base = 0;
+  if (exercise._isDictation) base = XP_TABLE.dictation;
+  else if (exercise.word) base = (vocabMode(exercise) === 'production') ? XP_TABLE.vocab_prod : XP_TABLE.vocab_rec;
+  else if (exercise.passage) base = XP_TABLE.reading;
+  else if (exercise.prompt && exercise.guidelines) base = XP_TABLE.writing;
+  else if (exercise.type === 'mcq' || exercise.type === 'why') base = XP_TABLE.mcq;
+  else if (exercise.type === 'blank') base = XP_TABLE.blank;
+  else if (exercise.type === 'open') base = XP_TABLE.open;
+  else base = 10;
+  if (isReach) base += XP_TABLE.reach;
+  if (Math.random() < 0.15) { S._lastBonus = true; return base * 2; }
+  S._lastBonus = false;
+  return base;
+}
+
+function addXP(amount) {
+  if (!S.progress.xp) S.progress.xp = { total: 0, level: 1 };
+  S.progress.xp.total += amount;
+  S.progress.xp.level = xpLevel(S.progress.xp.total);
+}
+
+function unlockAchievement(id) {
+  if (!S.progress.achievements) S.progress.achievements = {};
+  if (S.progress.achievements[id]) return false;
+  S.progress.achievements[id] = { unlocked: new Date().toISOString(), fresh: true };
+  return true;
+}
+
+function checkAchievements() {
+  const p = S.progress;
+  const totalEx = Object.keys(p.exercises).length;
+  const totalErrors = Object.values(p.errorPatterns).reduce((s, v) => s + v, 0);
+  const vocabLearned = Object.values(p.srs).filter(c => c.reps >= 2).length;
+  const sessionCount = p.sessions.length;
+  const lastSession = p.sessions[p.sessions.length - 1];
+  const hour = new Date().getHours();
+  const newly = [];
+
+  if (totalEx >= 1 && unlockAchievement('first-note')) newly.push('first-note');
+  if (totalEx >= 100 && unlockAchievement('centurion')) newly.push('centurion');
+  if (totalEx >= 500 && unlockAchievement('500-club')) newly.push('500-club');
+  if (sessionCount >= 5 && unlockAchievement('deep-5')) newly.push('deep-5');
+  if (lastSession) {
+    if (lastSession.errorRate >= 15 && lastSession.errorRate <= 25 && unlockAchievement('sweet-spot')) newly.push('sweet-spot');
+    if (lastSession.correct === lastSession.exercises && lastSession.exercises >= 10 && unlockAchievement('perfect')) newly.push('perfect');
+    if (lastSession.exercises >= 30 && unlockAchievement('marathon')) newly.push('marathon');
+  }
+  if (p.streak.current >= 3 && unlockAchievement('streak-3')) newly.push('streak-3');
+  if (p.streak.current >= 7 && unlockAchievement('streak-7')) newly.push('streak-7');
+  if (p.streak.current >= 14 && unlockAchievement('streak-14')) newly.push('streak-14');
+  if (p.streak.current >= 30 && unlockAchievement('streak-30')) newly.push('streak-30');
+  if (p.curriculum.completedSections.length > 0 && unlockAchievement('section-master')) newly.push('section-master');
+  if (p.curriculum.chapterPhase === 'TEST' && unlockAchievement('chapter-champ')) newly.push('chapter-champ');
+  if (vocabLearned >= 50 && unlockAchievement('word-50')) newly.push('word-50');
+  if (vocabLearned >= 100 && unlockAchievement('word-100')) newly.push('word-100');
+  if (totalErrors >= 100 && unlockAchievement('error-100')) newly.push('error-100');
+  if (p.writingSubmissions.length >= 5 && unlockAchievement('writer')) newly.push('writer');
+  if (hour < 8 && unlockAchievement('early-bird')) newly.push('early-bird');
+  if (hour >= 22 && unlockAchievement('night-owl')) newly.push('night-owl');
+  const xpLv = p.xp ? p.xp.level : 1;
+  if (xpLv >= 5 && unlockAchievement('level-5')) newly.push('level-5');
+  if (xpLv >= 10 && unlockAchievement('level-10')) newly.push('level-10');
+
+  return newly;
+}
+
+function earnFreezeDays() {
+  const p = S.progress;
+  if (!p.streak.freezeDays && p.streak.freezeDays !== 0) p.streak.freezeDays = 1;
+  if (p.streak.current > 0 && p.streak.current % 7 === 0 && p.streak.freezeDays < 3) {
+    const lastEarned = p.streak._lastFreezeStreak || 0;
+    if (p.streak.current > lastEarned) {
+      p.streak.freezeDays++;
+      p.streak._lastFreezeStreak = p.streak.current;
     }
   }
 }
@@ -609,7 +796,7 @@ function checkAnswer(given, correct, alternates) {
 
 function defaultProgress() {
   return {
-    v: 5,
+    v: 6,
     updated: null,
     exercises: {},
     srs: {},
@@ -617,15 +804,12 @@ function defaultProgress() {
     tagMastery: {},
     writingSubmissions: [],
     sessions: [],
-    streak: { current: 0, best: 0, lastDate: null },
+    streak: { current: 0, best: 0, lastDate: null, freezeDays: 1, freezeUsed: [] },
     batch: { id: null, loaded: null },
     seenIds: [],
-    curriculum: {
-      chapter: 1,
-      currentSection: 's1-gender',
-      completedSections: [],
-      chapterPhase: 'LEARN'
-    }
+    curriculum: { chapter: 1, currentSection: 's1-gender', completedSections: [], chapterPhase: 'LEARN' },
+    xp: { total: 0, level: 1 },
+    achievements: {}
   };
 }
 
@@ -646,9 +830,20 @@ function migrateProgress(p) {
     }
     p.v = 5;
   }
+  if (p.v <= 5) {
+    if (!p.xp) p.xp = { total: 0, level: 1 };
+    if (!p.achievements) p.achievements = {};
+    if (p.streak.freezeDays === undefined) p.streak.freezeDays = 1;
+    if (!p.streak.freezeUsed) p.streak.freezeUsed = [];
+    p.v = 6;
+  }
   if (!p.seenIds) p.seenIds = [];
   if (!p.tagMastery) p.tagMastery = {};
   if (!p.curriculum) p.curriculum = { chapter: 1, currentSection: 's1-gender', completedSections: [], chapterPhase: 'LEARN' };
+  if (!p.xp) p.xp = { total: 0, level: 1 };
+  if (!p.achievements) p.achievements = {};
+  if (p.streak.freezeDays === undefined) p.streak.freezeDays = 1;
+  if (!p.streak.freezeUsed) p.streak.freezeUsed = [];
   return p;
 }
 
@@ -685,6 +880,13 @@ function recordExercise(id, correct, tags) {
       for (const tag of tags) p.errorPatterns[tag] = (p.errorPatterns[tag] || 0) + 1;
     }
     updateTagMastery(tags, correct, S.queue[S.qi]);
+  }
+  const exercise = S.queue[S.qi];
+  const xpGain = calcExerciseXP(exercise, correct, exercise && exercise._isReach);
+  if (xpGain > 0) {
+    addXP(xpGain);
+    S._sessionXP = (S._sessionXP || 0) + xpGain;
+    if (exercise._isReach && correct) unlockAchievement('clarissa');
   }
   saveLocal();
 }
@@ -749,11 +951,25 @@ function updateStreak() {
   const yStr = yesterday.toISOString().slice(0, 10);
   if (p.streak.lastDate === yStr) {
     p.streak.current++;
-  } else if (p.streak.lastDate !== today) {
+  } else if (p.streak.lastDate) {
+    const lastD = new Date(p.streak.lastDate + 'T00:00:00');
+    const todayD = new Date(today + 'T00:00:00');
+    const gapDays = Math.floor((todayD - lastD) / 86400000);
+    if (gapDays <= 2 && p.streak.freezeDays > 0) {
+      p.streak.freezeDays--;
+      p.streak.freezeUsed.push(yStr);
+      p.streak.current++;
+      S._usedFreeze = true;
+      unlockAchievement('freeze-used');
+    } else {
+      p.streak.current = 1;
+    }
+  } else {
     p.streak.current = 1;
   }
   if (p.streak.current > p.streak.best) p.streak.best = p.streak.current;
   p.streak.lastDate = today;
+  earnFreezeDays();
 }
 
 function recordSession(correct, total, durationMs) {
@@ -1113,6 +1329,8 @@ function render() {
     home: renderHome,
     session: renderSession,
     results: renderResults,
+    ignition: renderIgnition,
+    achievements: renderAchievements,
   }[S.screen] || renderLoading)();
 }
 
@@ -1384,10 +1602,75 @@ function renderSectionProgress() {
     </div>`;
 }
 
+function renderXPBar() {
+  const p = S.progress.xp || { total: 0, level: 1 };
+  const prog = xpProgress(p.total);
+  return `
+    <div class="xp-wrap">
+      <div class="xp-level">${prog.level}</div>
+      <div class="xp-info">
+        <div class="xp-label">Level ${prog.level} · ${p.total.toLocaleString()} XP</div>
+        <div class="xp-track"><div class="xp-fill" style="width:${prog.pct}%"></div></div>
+      </div>
+    </div>`;
+}
+
+function renderNudgeBanner() {
+  const hour = new Date().getHours();
+  if (hour < 18) return '';
+  const lastSession = S.progress.sessions[S.progress.sessions.length - 1];
+  if (lastSession && lastSession.date === todayStr()) return '';
+  return `
+    <div class="nudge-banner">
+      <div class="nudge-icon">\u{1F4AA}</div>
+      <div class="nudge-text">You haven't practiced today. A quick session keeps the streak alive.</div>
+    </div>`;
+}
+
+function renderStareContent() {
+  const stare = Batch.batches.map(b => b.stare).filter(Boolean).pop();
+  if (!stare || !stare.url) return '';
+  const icon = stare.type === 'youtube' ? '\u{1F4FA}' : stare.type === 'podcast' ? '\u{1F3A7}' : '\u{1F4D6}';
+  return `
+    <div class="dash-section mt">
+      <div class="dash-section-title">French Content</div>
+      <div class="stare-card">
+        <div class="stare-icon">${icon}</div>
+        <div class="stare-info">
+          <div class="stare-title">${esc(stare.title || 'French content')}</div>
+          ${stare.note ? `<div class="stare-note">${esc(stare.note)}</div>` : ''}
+          ${stare.duration ? `<div class="stare-note">${esc(stare.duration)}</div>` : ''}
+        </div>
+        <a href="${esc(stare.url)}" target="_blank" rel="noopener" class="stare-link">Watch</a>
+      </div>
+    </div>`;
+}
+
+function renderAchievementPreview() {
+  const ach = S.progress.achievements || {};
+  const unlocked = Object.entries(ach).filter(([, v]) => v.unlocked);
+  if (unlocked.length === 0) return '';
+  const recent = unlocked.sort((a, b) => b[1].unlocked.localeCompare(a[1].unlocked)).slice(0, 5);
+  return `
+    <div class="dash-section mt">
+      <div class="row between" style="margin-bottom:.375rem">
+        <div class="dash-section-title" style="margin:0">${unlocked.length}/${Object.keys(ACHIEVEMENTS).length} Achievements</div>
+        <button class="nav-link" id="show-all-ach">View all</button>
+      </div>
+      <div class="ach-row">
+        ${recent.map(([id]) => {
+          const a = ACHIEVEMENTS[id];
+          return a ? `<div class="ach-mini"><span>${a.icon}</span> ${esc(a.name)}</div>` : '';
+        }).join('')}
+      </div>
+    </div>`;
+}
+
 function renderHome() {
   const fuel = Batch.fuel();
   const total = Batch.totalFuel();
   const streak = S.progress.streak.current;
+  const freezeDays = S.progress.streak.freezeDays || 0;
   const lastSession = S.progress.sessions.length > 0 ? S.progress.sessions[S.progress.sessions.length - 1] : null;
   const hasBatch = Batch.batches.length > 0;
   const todayDone = lastSession && lastSession.date === todayStr();
@@ -1418,8 +1701,15 @@ function renderHome() {
             return 'Ch ' + cur.chapter + ' · ' + (sec ? sec.name : cur.currentSection);
           })()}</div>
         </div>
-        ${streak > 0 ? `<div class="streak-badge">\u{1F525} ${streak} day${streak > 1 ? 's' : ''}</div>` : ''}
+        <div class="row gap-sm">
+          ${freezeDays > 0 ? `<div class="freeze-badge">\u{2744}\u{FE0F} ${freezeDays}</div>` : ''}
+          ${streak > 0 ? `<div class="streak-badge">\u{1F525} ${streak} day${streak > 1 ? 's' : ''}</div>` : ''}
+        </div>
       </div>
+
+      ${renderXPBar()}
+
+      ${renderNudgeBanner()}
 
       ${todayDone ? `
         <div class="card card-ok" style="border-left:3px solid var(--ok)">
@@ -1482,6 +1772,14 @@ function renderHome() {
 
       ${zoneHTML ? `<div class="mt">${zoneHTML}</div>` : ''}
 
+      ${renderAchievementPreview()}
+
+      ${renderStareContent()}
+
+      <div class="dash-section mt">
+        <button class="nav-link" id="ignition-btn">\u{1F3B8} Guitar Strings — people who did it</button>
+      </div>
+
       ${S.progress.sessions.length > 1 ? `
         <div class="dash-section mt">
           <div class="dash-section-title">Recent Sessions</div>
@@ -1514,6 +1812,8 @@ function renderHome() {
   document.querySelectorAll('.dismiss-fb').forEach(el => {
     el.onclick = () => { el.closest('.writing-fb-card').remove(); };
   });
+  if ($('ignition-btn')) $('ignition-btn').onclick = () => { S.screen = 'ignition'; render(); };
+  if ($('show-all-ach')) $('show-all-ach').onclick = () => { S.screen = 'achievements'; render(); };
   $('logout-btn').onclick = () => {
     localStorage.removeItem('fdv3_token');
     S.gh = null;
@@ -1534,6 +1834,10 @@ function startSession() {
   S.sessionCorrect = 0;
   S.sessionTotal = 0;
   S.sessionStartTime = Date.now();
+  S._sessionXP = 0;
+  S._lastBonus = false;
+  S._usedFreeze = false;
+  S._prevLevel = S.progress.xp ? S.progress.xp.level : 1;
   S.queue = buildSessionQueue();
   S.qi = 0;
   S.answered = false;
@@ -2267,6 +2571,8 @@ function endSession() {
   const duration = Date.now() - (S.sessionStartTime || Date.now());
   recordSession(S.sessionCorrect, S.sessionTotal, duration);
   S._advancedSection = checkSectionAdvancement();
+  S._newAchievements = checkAchievements();
+  S._leveledUp = S.progress.xp && S.progress.xp.level > S._prevLevel;
   saveLocal();
   syncToGitHub();
   S.screen = 'results';
@@ -2284,6 +2590,9 @@ function renderResults() {
   const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
   const errorRate = total > 0 ? 100 - pct : 0;
   const duration = Date.now() - (S.sessionStartTime || Date.now());
+  const sessionXP = S._sessionXP || 0;
+  const prog = xpProgress(S.progress.xp ? S.progress.xp.total : 0);
+  const newAch = S._newAchievements || [];
 
   let zoneClass, zoneLabel;
   if (errorRate >= 15 && errorRate <= 25) { zoneClass = 'zone-sweet'; zoneLabel = 'Sweet zone — right level of challenge'; }
@@ -2291,11 +2600,32 @@ function renderResults() {
   else { zoneClass = 'zone-hard'; zoneLabel = 'Too hard — review the basics first'; }
 
   app().innerHTML = `
-    <div class="wrap" style="padding-top:8vh">
+    <div class="wrap" style="padding-top:6vh">
       <div class="center mb fade-up">
         ${scoreRing(pct)}
         <div class="res-msg mt-sm">${correct} of ${total} correct · ${formatDuration(duration)}</div>
       </div>
+
+      ${sessionXP > 0 ? `
+        <div class="center fade-up" style="margin-bottom:.75rem">
+          <div class="xp-earned">+${sessionXP} XP</div>
+          <div class="xp-wrap" style="max-width:280px;margin:0 auto">
+            <div class="xp-level">${prog.level}</div>
+            <div class="xp-info">
+              <div class="xp-label">${prog.current}/${prog.needed} to Level ${prog.level + 1}</div>
+              <div class="xp-track"><div class="xp-fill" style="width:${prog.pct}%"></div></div>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
+      ${S._leveledUp ? `
+        <div class="level-up-card fade-up">
+          <div class="xp-level">${prog.level}</div>
+          <div style="font-weight:700;font-size:1.125rem">Level Up!</div>
+          <div class="sub">You reached Level ${prog.level}</div>
+        </div>
+      ` : ''}
 
       ${S._advancedSection ? `
         <div class="card card-ok fade-up" style="border-left:3px solid var(--ok);margin-bottom:.75rem">
@@ -2309,6 +2639,25 @@ function renderResults() {
             const sec = ch && ch.sections.find(s => s.id === S.progress.curriculum.currentSection);
             return sec ? sec.name : S.progress.curriculum.currentSection;
           })())}.</div>
+        </div>
+      ` : ''}
+
+      ${S._usedFreeze ? `
+        <div class="card fade-up" style="border-left:3px solid #0891B2;margin-bottom:.75rem">
+          <div class="card-title" style="color:#0891B2">\u{2744}\u{FE0F} Streak Freeze Used</div>
+          <div class="card-sub">You missed a day, but a freeze day saved your streak. ${S.progress.streak.freezeDays} freeze${S.progress.streak.freezeDays !== 1 ? 's' : ''} remaining.</div>
+        </div>
+      ` : ''}
+
+      ${newAch.length > 0 ? `
+        <div class="dash-section fade-up" style="margin-bottom:.75rem">
+          <div class="dash-section-title">Achievements Unlocked</div>
+          <div class="ach-grid">
+            ${newAch.map(id => {
+              const a = ACHIEVEMENTS[id];
+              return a ? `<div class="ach-card ach-new"><div class="ach-icon">${a.icon}</div><div class="ach-name">${esc(a.name)}</div><div class="ach-desc">${esc(a.desc)}</div></div>` : '';
+            }).join('')}
+          </div>
         </div>
       ` : ''}
 
@@ -2347,6 +2696,9 @@ function renderResults() {
 
       <button class="btn btn-p mt" id="home-btn">Back to Home</button>
       ${Batch.totalFuel() > 0 ? '<button class="btn btn-g mt-sm" id="again-btn">Practice More</button>' : ''}
+      <div class="center mt-sm">
+        <button class="share-btn" id="share-btn">\u{1F4E4} Share Progress</button>
+      </div>
     </div>`;
 
   $('home-btn').onclick = () => { S.screen = 'home'; render(); };
@@ -2356,6 +2708,107 @@ function renderResults() {
     $('res-refuel-status').textContent = ok ? 'Copied!' : 'Copy failed';
     $('res-refuel-btn').textContent = ok ? 'Copied' : 'Try again';
   };
+  if ($('share-btn')) $('share-btn').onclick = shareProgress;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   IGNITION — Guitar Strings motivation tab
+   ═══════════════════════════════════════════════════════════════ */
+
+function renderIgnition() {
+  unlockAchievement('ignition');
+  saveLocal();
+
+  app().innerHTML = `
+    <div class="wrap">
+      <button class="gs-back" id="gs-back">\u{2190} Back</button>
+      <div class="hdr" style="margin-bottom:.25rem">\u{1F3B8} Guitar Strings</div>
+      <div class="sub mb">Real people who went from zero French to fluent life. When motivation fades, these stories pull it back.</div>
+      ${GUITAR_STRINGS.map(gs => `
+        <div class="gs-card">
+          <div class="gs-name">${esc(gs.name)}</div>
+          <div class="gs-origin">${esc(gs.origin)}</div>
+          <div class="gs-quote">${esc(gs.quote)}</div>
+          <div class="sub" style="font-size:.8125rem;margin-bottom:.375rem">${esc(gs.result)}</div>
+          <div class="gs-key">${esc(gs.key)}</div>
+        </div>
+      `).join('')}
+      <div class="center mt mb">
+        <div class="sub">From Daniel Coyle's Ignition framework. Guitar strings pluck motivation from identity connection, not willpower.</div>
+      </div>
+    </div>`;
+
+  $('gs-back').onclick = () => { S.screen = 'home'; render(); };
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ACHIEVEMENTS — full badge gallery
+   ═══════════════════════════════════════════════════════════════ */
+
+function renderAchievements() {
+  const ach = S.progress.achievements || {};
+  const unlocked = Object.keys(ach).filter(id => ach[id].unlocked);
+  const total = Object.keys(ACHIEVEMENTS).length;
+
+  app().innerHTML = `
+    <div class="wrap">
+      <button class="gs-back" id="ach-back">\u{2190} Back</button>
+      <div class="hdr" style="margin-bottom:.25rem">\u{1F3C6} Achievements</div>
+      <div class="sub mb">${unlocked.length} of ${total} unlocked</div>
+      <div class="ach-grid">
+        ${Object.entries(ACHIEVEMENTS).map(([id, a]) => {
+          const isUnlocked = !!ach[id];
+          return `<div class="ach-card${isUnlocked ? '' : ' ach-locked'}"><div class="ach-icon">${a.icon}</div><div class="ach-name">${esc(a.name)}</div><div class="ach-desc">${esc(a.desc)}</div></div>`;
+        }).join('')}
+      </div>
+    </div>`;
+
+  $('ach-back').onclick = () => { S.screen = 'home'; render(); };
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SHARE — generate a shareable progress image
+   ═══════════════════════════════════════════════════════════════ */
+
+async function shareProgress() {
+  const p = S.progress;
+  const prog = xpProgress(p.xp ? p.xp.total : 0);
+  const streak = p.streak.current;
+  const totalEx = Object.keys(p.exercises).length;
+  const achCount = Object.keys(p.achievements || {}).filter(id => p.achievements[id].unlocked).length;
+  const cur = p.curriculum;
+
+  const text = [
+    '\u{1F1EB}\u{1F1F7} French Drills Progress',
+    '',
+    `Level ${prog.level} · ${(p.xp ? p.xp.total : 0).toLocaleString()} XP`,
+    `\u{1F525} ${streak} day streak`,
+    `${totalEx} exercises completed`,
+    `${achCount}/${Object.keys(ACHIEVEMENTS).length} achievements`,
+    '',
+    `Chapter ${cur.chapter} · ${cur.completedSections.length} sections done`,
+    '',
+    'syedalimoiz.com/french-drills-v3/'
+  ].join('\n');
+
+  try {
+    if (navigator.share) {
+      await navigator.share({ text });
+    } else {
+      await navigator.clipboard.writeText(text);
+      const btn = $('share-btn');
+      if (btn) { btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = '\u{1F4E4} Share Progress'; }, 2000); }
+    }
+  } catch (e) {
+    try {
+      await navigator.clipboard.writeText(text);
+      const btn = $('share-btn');
+      if (btn) { btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = '\u{1F4E4} Share Progress'; }, 2000); }
+    } catch (e2) { /* silent */ }
+  }
 }
 
 
