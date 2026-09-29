@@ -2917,13 +2917,9 @@ function renderSectionProgress() {
   const pct = Math.round((completed / chapter.sections.length) * 100);
 
   return `
-    <div class="dash-section">
-      <div class="dash-section-title">Chapter ${cur.chapter} Progress</div>
-      <div class="card">
-        <div class="sec-pills">${pills}</div>
-        <div class="prog-track mt-sm"><div class="prog-fill" style="width:${pct}%"></div></div>
-        <div class="sub mt-sm">${completed} of ${chapter.sections.length} sections complete</div>
-      </div>
+    <div>
+      <div class="sec-pills">${pills}</div>
+      <div class="sub" style="margin-top:.5rem">${completed} of ${chapter.sections.length} sections</div>
     </div>`;
 }
 
