@@ -181,6 +181,16 @@ The app adjusts mid-session based on real-time performance:
 - **Quiz history**: tracked in `progress.weeklyQuizzes[]`, displayed on home screen.
 - Functions: `canTakeWeeklyQuiz()`, `sessionsSinceLastQuiz()`, `buildQuizQueue()`, `challengeableSkills()`, `buildChallengeQueue()`, `canBossBattle()`, `buildBossQueue()`, `startWeeklyQuiz()`, `startChallengeRound()`, `startBossBattle()`, `updateTimer()`, `stopTimer()`, `timerDisplay()`
 
+### Instant Writing Feedback (Phase 6)
+- **Claude API integration**: when a Claude API key is configured, writing submissions get instant feedback via Claude Opus 4.6
+- **Evaluation flow**: submit writing > loading state > rubric scores + corrections + comment displayed inline > "Continue" button
+- **Rubric**: vocabulary (1-5), grammar (1-5), coherence (1-5), organization (1-5) using TCF grading criteria
+- **Corrections**: up to 8 specific corrections shown with original/corrected text and category
+- **Key management**: stored in localStorage (`fdv3_claude_key`), encrypted backup on GitHub as `claude-key.enc`
+- **Settings screen**: accessible from home, allows adding/updating/removing the Claude API key
+- **Fallback**: if no key configured or API call fails, the old flow continues (submit and wait for batch feedback)
+- Functions: `evaluateWriting()`, `renderWritingEvaluation()`, `getClaudeKey()`, `setClaudeKey()`, `saveClaudeKeyEncrypted()`, `loadClaudeKeyEncrypted()`, `renderSettings()`
+
 ### 28 Achievements
 Coyle-specific badges: First Note, Deep Practitioner, Centurion, 500 Club, Sweet Spot, Clarissa Moment, Perfect Session, Streak Starter/Week Warrior/Flame Keeper/Unbreakable, Section Master, Chapter Champion, Word Collector/Vocabulary Vault, Error Hunter, Marathon, Writer, Early Bird, Night Owl, Freeze Frame, Guitar String, Rising Star, Polyglot Path, Checkpoint, Quiz Ace, Challenge Won, Boss Slayer.
 

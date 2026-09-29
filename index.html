@@ -435,6 +435,20 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 .boss-card-sub{font-size:.8125rem;color:var(--text-dim)}
 .boss-celebration{font-size:3rem;margin-bottom:.75rem}
 .session-mode-badge{font-size:.6875rem;font-weight:700;padding:2px 8px;border-radius:var(--radius-pill);text-transform:uppercase;letter-spacing:.04em}
+.writing-eval-loading{text-align:center;padding:2rem 1rem}
+.writing-eval-loading .spin{width:32px;height:32px;margin-bottom:.75rem}
+.writing-eval-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:1.25rem;border-left:3px solid #7C3AED;box-shadow:var(--card-shadow);margin-top:.75rem}
+.writing-eval-rubric{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.75rem 0}
+.writing-eval-rubric-item{display:flex;align-items:center;justify-content:space-between;padding:.5rem .75rem;background:var(--surface-elevated);border-radius:var(--radius-sm);font-size:.875rem}
+.writing-eval-rubric-score{font-weight:700;font-variant-numeric:tabular-nums}
+.writing-eval-comment{font-size:.9375rem;line-height:1.6;margin-top:.75rem;padding:.875rem;background:var(--accent-faint);border-radius:var(--radius-sm)}
+.writing-eval-corrections{margin-top:.75rem}
+.writing-eval-correction{font-size:.875rem;line-height:1.5;padding:.5rem .75rem;border-left:2px solid var(--err);margin-bottom:.375rem;background:var(--err-bg);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.writing-eval-correction mark{background:var(--ok-bg);color:var(--ok);border-radius:2px;padding:0 .125rem}
+.settings-key-row{display:flex;align-items:center;gap:.5rem;margin-top:.5rem}
+.settings-key-status{font-size:.75rem;font-weight:600;padding:.25rem .5rem;border-radius:var(--radius-pill)}
+.settings-key-ok{background:var(--ok-bg);color:var(--ok)}
+.settings-key-missing{background:var(--warn-bg);color:var(--warn)}
 .mode-quiz{background:#F3E8FF;color:#7C3AED}
 .mode-challenge{background:#FFF7ED;color:#C2410C}
 .mode-boss{background:#FEF3C7;color:#92400E}
@@ -1854,6 +1868,183 @@ function timerDisplay() {
 }
 
 
+/* ═══════════════════════════════════════════════════════════════
+   PHASE 6 — Instant Writing Feedback via Claude API
+   ═══════════════════════════════════════════════════════════════ */
+
+function getClaudeKey() {
+  try { return localStorage.getItem('fdv3_claude_key') || null; } catch (e) { return null; }
+}
+
+function setClaudeKey(key) {
+  try { localStorage.setItem('fdv3_claude_key', key); } catch (e) { /* storage full */ }
+}
+
+function hasClaudeKey() { return !!getClaudeKey(); }
+
+async function saveClaudeKeyEncrypted(key) {
+  if (!S.gh) return;
+  try {
+    const pw = S._lastPassword;
+    if (!pw) return;
+    const enc = await Cry.encrypt(pw, key);
+    await S.gh.put('claude-key.enc', JSON.stringify(enc), 'Claude API key (encrypted)');
+  } catch (e) { /* silent */ }
+}
+
+async function loadClaudeKeyEncrypted(pw) {
+  if (!S.gh) return null;
+  try {
+    const raw = await S.gh.get('claude-key.enc');
+    if (!raw) return null;
+    const bundle = JSON.parse(raw);
+    return await Cry.decrypt(pw, bundle);
+  } catch (e) { return null; }
+}
+
+const TCF_RUBRIC_PROMPT = `You are a TCF (Test de connaissance du français) writing evaluator. Grade this submission using the official TCF rubric.
+
+Return ONLY valid JSON in this exact format, no markdown, no explanation outside the JSON:
+{
+  "rubric": {
+    "vocabulary": <1-5>,
+    "grammar": <1-5>,
+    "coherence": <1-5>,
+    "organization": <1-5>
+  },
+  "corrections": [
+    {"original": "incorrect phrase", "corrected": "correct phrase", "category": "grammar|spelling|vocabulary|structure"}
+  ],
+  "comment": "One encouraging sentence about the submission with one specific tip."
+}
+
+Scoring guide:
+1 = Very limited, major errors throughout
+2 = Limited, frequent errors
+3 = Adequate, some errors but meaning clear
+4 = Good, minor errors only
+5 = Excellent, near-native accuracy`;
+
+async function evaluateWriting(exercise, submission) {
+  const key = getClaudeKey();
+  if (!key) return null;
+
+  const tacheContext = exercise.tcf_tache
+    ? `TCF Tâche ${exercise.tcf_tache}. ` + (
+      exercise.tcf_tache === 1 ? 'Informal message reply. Expected: 60-120 words, informal register.'
+      : exercise.tcf_tache === 2 ? 'Formal/semi-formal article or newsletter. Expected: 120-150 words, formal register.'
+      : 'Opinion essay with two viewpoints. Expected: 120-180 words, argumentative structure.'
+    )
+    : 'General French writing exercise.';
+
+  const prompt = exercise.tcf_tache
+    ? `Original prompt: ${exercise.message_text || exercise.context || exercise.instruction || ''}
+Student level: A1-A2 (beginner)
+${tacheContext}
+
+Student's submission:
+${submission}`
+    : `Writing prompt: ${exercise.prompt || exercise.instruction || ''}
+Student level: ${exercise.level || 'A1'}
+
+Student's submission:
+${submission}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-opus-4-6',
+        max_tokens: 1024,
+        system: TCF_RUBRIC_PROMPT,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    if (!resp.ok) {
+      const errBody = await resp.text().catch(() => '');
+      throw new Error('API ' + resp.status + ': ' + errBody.slice(0, 200));
+    }
+    const data = await resp.json();
+    const text = data.content && data.content[0] && data.content[0].text;
+    if (!text) return null;
+    const cleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    return JSON.parse(cleaned);
+  } catch (e) {
+    console.warn('Writing eval failed:', e.message);
+    return null;
+  }
+}
+
+function renderWritingEvaluation(feedback) {
+  if (!feedback || !feedback.rubric) return '';
+  const r = feedback.rubric;
+  const scoreClass = v => v >= 4 ? 'rubric-hi' : v >= 3 ? 'rubric-mid' : 'rubric-lo';
+  return `
+    <div class="writing-eval-card fade-up">
+      <div class="card-title" style="margin-bottom:.5rem">Instant Feedback</div>
+      <div class="writing-eval-rubric">
+        <div class="writing-eval-rubric-item"><span>Vocabulary</span><span class="writing-eval-rubric-score ${scoreClass(r.vocabulary)}">${r.vocabulary}/5</span></div>
+        <div class="writing-eval-rubric-item"><span>Grammar</span><span class="writing-eval-rubric-score ${scoreClass(r.grammar)}">${r.grammar}/5</span></div>
+        <div class="writing-eval-rubric-item"><span>Coherence</span><span class="writing-eval-rubric-score ${scoreClass(r.coherence)}">${r.coherence}/5</span></div>
+        <div class="writing-eval-rubric-item"><span>Organization</span><span class="writing-eval-rubric-score ${scoreClass(r.organization)}">${r.organization}/5</span></div>
+      </div>
+      ${feedback.corrections && feedback.corrections.length > 0 ? `
+        <div class="writing-eval-corrections">
+          <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:.375rem">Corrections</div>
+          ${feedback.corrections.slice(0, 8).map(c => `
+            <div class="writing-eval-correction">
+              <span style="text-decoration:line-through;color:var(--err)">${esc(c.original)}</span> → <mark>${esc(c.corrected)}</mark>
+              <span class="sub" style="font-size:.75rem;margin-left:.375rem">(${esc(c.category || '')})</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+      ${feedback.comment ? `<div class="writing-eval-comment">${esc(feedback.comment)}</div>` : ''}
+    </div>`;
+}
+
+function renderSettings() {
+  const hasKey = hasClaudeKey();
+  app().innerHTML = `
+    <div class="wrap">
+      <button class="gs-back" id="settings-back">\u{2190} Back</button>
+      <div class="hdr" style="margin-bottom:.75rem">Settings</div>
+      <div class="card">
+        <div class="card-title">Claude API Key</div>
+        <div class="card-sub">For instant writing feedback. Your key is stored locally and encrypted on GitHub for sync.</div>
+        <div class="settings-key-row">
+          <span class="settings-key-status ${hasKey ? 'settings-key-ok' : 'settings-key-missing'}">${hasKey ? 'Configured' : 'Not set'}</span>
+        </div>
+        <div class="form-group mt">
+          <input type="password" class="field field-pw" id="claude-key-input" placeholder="sk-ant-api03-..." autocomplete="off" value="">
+        </div>
+        <button class="btn btn-p btn-sm" id="save-key-btn">${hasKey ? 'Update Key' : 'Save Key'}</button>
+        ${hasKey ? '<button class="btn-link" id="remove-key-btn" style="margin-top:.5rem">Remove key</button>' : ''}
+      </div>
+    </div>`;
+
+  $('settings-back').onclick = () => { S.screen = 'home'; render(); };
+  $('save-key-btn').onclick = async () => {
+    const key = $('claude-key-input').value.trim();
+    if (!key || key.length < 10) return;
+    setClaudeKey(key);
+    await saveClaudeKeyEncrypted(key);
+    S.screen = 'home';
+    render();
+  };
+  if ($('remove-key-btn')) $('remove-key-btn').onclick = () => {
+    try { localStorage.removeItem('fdv3_claude_key'); } catch (e) { /* */ }
+    render();
+  };
+}
+
+
 function getVocabCard(wordId) {
   if (!S.progress.srs[wordId]) S.progress.srs[wordId] = SRS.defaultCard();
   return S.progress.srs[wordId];
@@ -2262,6 +2453,7 @@ function render() {
     results: renderResults,
     ignition: renderIgnition,
     achievements: renderAchievements,
+    settings: renderSettings,
   }[S.screen] || renderLoading)();
 }
 
@@ -2382,10 +2574,13 @@ async function doLogin() {
     try { pat = await Cry.decrypt(pw, bundle); } catch (e) { S.error = 'Wrong password.'; render(); return; }
     gh.token = pat;
     if ($('remember').checked) localStorage.setItem('fdv3_token', pat);
+    S._lastPassword = pw;
     const progRaw = await gh.get('PROGRESS.json');
     S.progress = progRaw ? migrateProgress(JSON.parse(progRaw)) : defaultProgress();
     S.gh = gh;
     S.error = null;
+    const claudeKey = await loadClaudeKeyEncrypted(pw);
+    if (claudeKey) setClaudeKey(claudeKey);
     await loadBatches();
     S.screen = 'home';
     render();
@@ -2856,7 +3051,8 @@ function renderHome() {
 
       ${renderWritingFeedback()}
 
-      <div class="mt center">
+      <div class="mt center" style="display:flex;justify-content:center;gap:1rem">
+        <button class="btn-link" id="settings-btn">\u{2699}\u{FE0F} Settings</button>
         <button class="btn-link" id="logout-btn">Lock app</button>
       </div>
     </div>`;
@@ -2884,6 +3080,7 @@ function renderHome() {
   };
   if ($('ignition-btn')) $('ignition-btn').onclick = () => { S.screen = 'ignition'; render(); };
   if ($('show-all-ach')) $('show-all-ach').onclick = () => { S.screen = 'achievements'; render(); };
+  if ($('settings-btn')) $('settings-btn').onclick = () => { S.screen = 'settings'; render(); };
   $('logout-btn').onclick = () => {
     localStorage.removeItem('fdv3_token');
     S.gh = null;
@@ -3750,7 +3947,7 @@ function renderWriting(q, progress) {
     });
   }
 
-  $('submit-writing-btn').onclick = () => {
+  $('submit-writing-btn').onclick = async () => {
     const text = $('writing-area').value.trim();
     if (!text) return;
     S.progress.writingSubmissions.push({ id: q.id, type: wtype, tache: q.tcf_tache || null, text, submitted: new Date().toISOString() });
@@ -3761,7 +3958,32 @@ function renderWriting(q, progress) {
     const xp = calcExerciseXP(q, true, q._isReach);
     addXP(xp);
     S._sessionXP = (S._sessionXP || 0) + xp;
-    advanceSession();
+
+    if (hasClaudeKey()) {
+      $('submit-writing-btn').disabled = true;
+      $('submit-writing-btn').innerHTML = '<span class="spin"></span> Getting feedback...';
+      if ($('skip-writing-btn')) $('skip-writing-btn').style.display = 'none';
+      try {
+        const feedback = await evaluateWriting(q, text);
+        if (feedback) {
+          const sub = S.progress.writingSubmissions[S.progress.writingSubmissions.length - 1];
+          sub.feedback = feedback;
+          saveLocal();
+          const container = document.createElement('div');
+          container.innerHTML = renderWritingEvaluation(feedback);
+          $('submit-writing-btn').parentNode.insertBefore(container, $('submit-writing-btn'));
+          $('submit-writing-btn').textContent = 'Continue';
+          $('submit-writing-btn').disabled = false;
+          $('submit-writing-btn').onclick = () => advanceSession();
+        } else {
+          advanceSession();
+        }
+      } catch (e) {
+        advanceSession();
+      }
+    } else {
+      advanceSession();
+    }
   };
   $('skip-writing-btn').onclick = () => {
     trackAnswer(0, 1, { wrong: '(skipped)', correct: '(writing exercise)' });
