@@ -407,6 +407,41 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 .smart-close-card .card-title{color:var(--warn)}
 .bonus-offer{background:var(--accent-faint);border:1px solid var(--accent);border-radius:var(--radius-md);padding:1rem;margin-top:.75rem;text-align:center}
 .bonus-offer-text{font-size:.875rem;color:var(--text-dim);margin-bottom:.5rem}
+
+.quiz-timer{display:flex;align-items:center;gap:.375rem;font-size:.875rem;font-weight:700;font-variant-numeric:tabular-nums;padding:.375rem .75rem;border-radius:var(--radius-pill);background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn)}
+.quiz-timer.timer-danger{background:var(--err-bg);border-color:var(--err-border);color:var(--err);animation:pulse 1s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.quiz-card{background:linear-gradient(135deg,var(--accent-faint),#F3E8FF);border:2px solid var(--accent);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:.75rem;box-shadow:var(--card-shadow)}
+@media(prefers-color-scheme:dark){.quiz-card{background:linear-gradient(135deg,var(--accent-faint),#2D1B4E)}}
+:root[data-theme="dark"] .quiz-card{background:linear-gradient(135deg,var(--accent-faint),#2D1B4E)}
+.quiz-card-title{font-weight:700;font-size:1rem;margin-bottom:.25rem}
+.quiz-card-sub{font-size:.8125rem;color:var(--text-dim)}
+.quiz-compare{display:flex;gap:.75rem;margin-top:.75rem}
+.quiz-compare-item{flex:1;text-align:center;padding:.75rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm)}
+.quiz-compare-val{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.quiz-compare-label{font-size:.6875rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;margin-top:.125rem}
+.quiz-compare-up{color:var(--ok)}
+.quiz-compare-down{color:var(--err)}
+.quiz-compare-same{color:var(--text-dim)}
+.challenge-offer{background:var(--surface);border:1px solid var(--line);border-left:3px solid #A78BFA;border-radius:var(--radius-md);padding:1rem;margin-bottom:.5rem;box-shadow:var(--card-shadow);display:flex;align-items:center;gap:.75rem}
+.challenge-offer-info{flex:1;min-width:0}
+.challenge-offer-tag{font-weight:600;font-size:.875rem}
+.challenge-offer-desc{font-size:.75rem;color:var(--text-dim);margin-top:.125rem}
+.challenge-offer-btn{flex-shrink:0}
+.boss-card{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:2px solid #D97706;border-radius:var(--radius-md);padding:1.25rem;margin-bottom:.75rem;text-align:center}
+@media(prefers-color-scheme:dark){.boss-card{background:linear-gradient(135deg,#2D2410,#422006);border-color:#FBBF24}}
+:root[data-theme="dark"] .boss-card{background:linear-gradient(135deg,#2D2410,#422006);border-color:#FBBF24}
+.boss-card-title{font-weight:700;font-size:1.125rem;margin-bottom:.25rem}
+.boss-card-sub{font-size:.8125rem;color:var(--text-dim)}
+.boss-celebration{font-size:3rem;margin-bottom:.75rem}
+.session-mode-badge{font-size:.6875rem;font-weight:700;padding:2px 8px;border-radius:var(--radius-pill);text-transform:uppercase;letter-spacing:.04em}
+.mode-quiz{background:#F3E8FF;color:#7C3AED}
+.mode-challenge{background:#FFF7ED;color:#C2410C}
+.mode-boss{background:#FEF3C7;color:#92400E}
+@media(prefers-color-scheme:dark){.mode-quiz{background:#2D1B4E;color:#A78BFA}.mode-challenge{background:#431407;color:#FB923C}.mode-boss{background:#422006;color:#FBBF24}}
+:root[data-theme="dark"] .mode-quiz{background:#2D1B4E;color:#A78BFA}
+:root[data-theme="dark"] .mode-challenge{background:#431407;color:#FB923C}
+:root[data-theme="dark"] .mode-boss{background:#422006;color:#FBBF24}
 </style>
 </head>
 <body>
@@ -670,6 +705,10 @@ const ACHIEVEMENTS = {
   'ignition':        { name: 'Guitar String',     icon: '\u{1F3B8}', desc: 'Read an ignition story' },
   'level-5':         { name: 'Rising Star',       icon: '\u{1F31F}', desc: 'Reach Level 5' },
   'level-10':        { name: 'Polyglot Path',     icon: '\u{1F30D}', desc: 'Reach Level 10' },
+  'quiz-first':      { name: 'Checkpoint',        icon: '\u{1F4CB}', desc: 'Complete your first weekly quiz' },
+  'quiz-ace':        { name: 'Quiz Ace',           icon: '\u{1F4A5}', desc: 'Score 90%+ on a weekly quiz' },
+  'challenge-win':   { name: 'Challenge Won',      icon: '\u{26A1}',  desc: 'Win a skill challenge round' },
+  'boss-slayer':     { name: 'Boss Slayer',         icon: '\u{1F409}', desc: 'Defeat a boss battle' },
 };
 
 const GUITAR_STRINGS = [
@@ -757,6 +796,11 @@ function checkAchievements() {
   const xpLv = p.xp ? p.xp.level : 1;
   if (xpLv >= 5 && unlockAchievement('level-5')) newly.push('level-5');
   if (xpLv >= 10 && unlockAchievement('level-10')) newly.push('level-10');
+  if ((p.weeklyQuizzes || []).length >= 1 && unlockAchievement('quiz-first')) newly.push('quiz-first');
+  const lastQuiz = (p.weeklyQuizzes || []).length > 0 ? p.weeklyQuizzes[p.weeklyQuizzes.length - 1] : null;
+  if (lastQuiz && lastQuiz.pct >= 90 && unlockAchievement('quiz-ace')) newly.push('quiz-ace');
+  if ((p.challengesDone || []).some(c => c.passed) && unlockAchievement('challenge-win')) newly.push('challenge-win');
+  if ((p.bossDefeated || []).length > 0 && unlockAchievement('boss-slayer')) newly.push('boss-slayer');
 
   return newly;
 }
@@ -1024,7 +1068,7 @@ function checkAnswer(given, correct, alternates) {
 
 function defaultProgress() {
   return {
-    v: 9,
+    v: 10,
     updated: null,
     exercises: {},
     srs: {},
@@ -1039,7 +1083,10 @@ function defaultProgress() {
     seenIds: [],
     curriculum: { chapter: 1, currentSection: 's1-gender', completedSections: [], chapterPhase: 'LEARN' },
     xp: { total: 0, level: 1 },
-    achievements: {}
+    achievements: {},
+    weeklyQuizzes: [],
+    challengesDone: [],
+    bossDefeated: []
   };
 }
 
@@ -1078,6 +1125,12 @@ function migrateProgress(p) {
     if (!p.weakTags) p.weakTags = {};
     p.v = 9;
   }
+  if (p.v <= 9) {
+    if (!p.weeklyQuizzes) p.weeklyQuizzes = [];
+    if (!p.challengesDone) p.challengesDone = [];
+    if (!p.bossDefeated) p.bossDefeated = [];
+    p.v = 10;
+  }
   if (!p.seenIds) p.seenIds = [];
   if (!p.tagMastery) p.tagMastery = {};
   if (!p.weakTags) p.weakTags = {};
@@ -1087,6 +1140,9 @@ function migrateProgress(p) {
   if (p.streak.freezeDays === undefined) p.streak.freezeDays = 1;
   if (!p.streak.freezeUsed) p.streak.freezeUsed = [];
   if (!p.speakingDone) p.speakingDone = [];
+  if (!p.weeklyQuizzes) p.weeklyQuizzes = [];
+  if (!p.challengesDone) p.challengesDone = [];
+  if (!p.bossDefeated) p.bossDefeated = [];
   return p;
 }
 
@@ -1424,6 +1480,8 @@ function adaptiveThreshold() {
 }
 
 function checkAdaptiveTriggers() {
+  const mode = S.sessionMode || 'normal';
+  if (mode === 'quiz' || mode === 'challenge' || mode === 'boss') return false;
   if (checkSmartClose()) {
     S._smartCloseReason = 'high_errors';
     endSession();
@@ -1489,6 +1547,312 @@ function weakestSkill() {
   }
   return weakest && lowest < 70 ? { skill: weakest, pct: lowest } : null;
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PHASE 7 — Mini Quizzes, Challenges & Boss Battles
+   ═══════════════════════════════════════════════════════════════ */
+
+function sessionsSinceLastQuiz() {
+  const quizzes = S.progress.weeklyQuizzes || [];
+  if (quizzes.length === 0) return S.progress.sessions.length;
+  const lastQuizDate = quizzes[quizzes.length - 1].date;
+  let count = 0;
+  for (let i = S.progress.sessions.length - 1; i >= 0; i--) {
+    if (S.progress.sessions[i].date <= lastQuizDate) break;
+    count++;
+  }
+  return count;
+}
+
+function canTakeWeeklyQuiz() {
+  return S.progress.sessions.length >= 7 && sessionsSinceLastQuiz() >= 7;
+}
+
+function buildQuizQueue() {
+  const stage = sessionStage();
+  const pool = { grammar: [], vocab: [], reading: [], listening: [], dictation: [] };
+
+  const allGrammar = Batch.all('grammar').filter(q => exercisePassesGate(q));
+  shuffle(allGrammar);
+  pool.grammar = allGrammar;
+
+  if (stage.vocab) {
+    const vocab = Batch.all('vocabulary');
+    shuffle(vocab);
+    pool.vocab = vocab;
+  }
+  if (stage.reading) {
+    const reading = Batch.all('reading');
+    shuffle(reading);
+    pool.reading = reading;
+  }
+  if (stage.listening) {
+    let listening = Batch.all('listening');
+    if (stage.maxListenTier > 0 && stage.maxListenTier < 5) {
+      listening = listening.filter(q => !q.tier || q.tier <= stage.maxListenTier);
+    }
+    shuffle(listening);
+    pool.listening = listening;
+  }
+  if (stage.dictation) {
+    const dictation = Batch.all('dictation');
+    shuffle(dictation);
+    pool.dictation = dictation;
+  }
+
+  const queue = [];
+  queue.push(...pool.grammar.slice(0, 4));
+
+  if (pool.vocab.length >= 2) queue.push(...pool.vocab.slice(0, 2));
+  else queue.push(...pool.grammar.slice(4, 6));
+
+  if (pool.reading.length >= 1) queue.push(pool.reading[0]);
+  else queue.push(...pool.grammar.slice(queue.length));
+
+  if (pool.listening.length >= 1) {
+    const lq = pool.listening[0];
+    lq._isListening = true;
+    queue.push(lq);
+  } else queue.push(...pool.grammar.slice(queue.length));
+
+  if (pool.dictation.length >= 1) {
+    const dq = pool.dictation[0];
+    dq._isDictation = true;
+    queue.push(dq);
+  } else queue.push(...pool.grammar.slice(queue.length));
+
+  const weak = weakestSkill();
+  if (weak && pool[weak.skill] && pool[weak.skill].length > queue.filter(q => exerciseSkill(q) === weak.skill).length) {
+    const extra = pool[weak.skill].find(q => !queue.includes(q));
+    if (extra) {
+      if (weak.skill === 'listening') extra._isListening = true;
+      if (weak.skill === 'dictation') extra._isDictation = true;
+      queue.push(extra);
+    } else {
+      queue.push(...pool.grammar.slice(queue.length));
+    }
+  } else {
+    queue.push(...pool.grammar.slice(queue.length));
+  }
+
+  return queue.slice(0, 10);
+}
+
+function challengeableSkills() {
+  const acc = skillAccuracy();
+  const results = [];
+  const tagM = S.progress.tagMastery || {};
+  const done = S.progress.challengesDone || [];
+  const today = todayStr();
+
+  for (const [tag, tm] of Object.entries(tagM)) {
+    if (!tm.mcq || !tm.mcq.attempts) continue;
+    if (tm.mcq.attempts < 6) continue;
+    const pct = Math.round((tm.mcq.correct / tm.mcq.attempts) * 100);
+    if (pct < 80) continue;
+    if (done.some(c => c.tag === tag && c.date === today)) continue;
+    const available = Batch.all('grammar').filter(q => q.tags && q.tags.includes(tag));
+    if (available.length < 5) continue;
+    results.push({ tag, pct, count: available.length });
+  }
+
+  for (const [skill, data] of Object.entries(acc)) {
+    if (data.attempts < 10 || data.pct < 80) continue;
+    if (done.some(c => c.tag === skill && c.date === today)) continue;
+    if (results.some(r => r.tag === skill)) continue;
+    results.push({ tag: skill, pct: data.pct, count: 99 });
+  }
+
+  results.sort((a, b) => b.pct - a.pct);
+  return results.slice(0, 3);
+}
+
+function buildChallengeQueue(tag) {
+  const skills = ['grammar', 'vocab', 'reading', 'listening', 'dictation'];
+  if (skills.includes(tag)) {
+    const types = { grammar: 'grammar', vocab: 'vocabulary', reading: 'reading', listening: 'listening', dictation: 'dictation' };
+    const all = Batch.all(types[tag] || tag);
+    shuffle(all);
+    const queue = all.slice(0, 5);
+    queue.forEach(q => {
+      if (tag === 'listening') q._isListening = true;
+      if (tag === 'dictation') q._isDictation = true;
+    });
+    return queue;
+  }
+  const allGrammar = Batch.all('grammar').filter(q => q.tags && q.tags.includes(tag));
+  shuffle(allGrammar);
+  return allGrammar.slice(0, 5);
+}
+
+function canBossBattle() {
+  const ch = S.progress.curriculum.chapter;
+  const defeated = S.progress.bossDefeated || [];
+  const checkpoints = [5, 10, 15];
+  for (const cp of checkpoints) {
+    if (ch >= cp && !defeated.includes(cp)) return cp;
+  }
+  return null;
+}
+
+function buildBossQueue(upToChapter) {
+  const allGrammar = Batch.all('grammar').filter(q => {
+    const d = q.difficulty || 2;
+    return d >= 2;
+  });
+  shuffle(allGrammar);
+
+  const vocab = Batch.all('vocabulary');
+  shuffle(vocab);
+
+  const dictation = Batch.all('dictation');
+  shuffle(dictation);
+
+  const queue = [];
+  queue.push(...allGrammar.slice(0, 8));
+  queue.push(...vocab.slice(0, 3).map(q => q));
+  const dq = dictation.slice(0, 2);
+  dq.forEach(q => { q._isDictation = true; });
+  queue.push(...dq);
+
+  const reading = Batch.all('reading');
+  if (reading.length > 0) {
+    shuffle(reading);
+    queue.push(reading[0]);
+  }
+
+  const listening = Batch.all('listening');
+  if (listening.length > 0) {
+    shuffle(listening);
+    const lq = listening[0];
+    lq._isListening = true;
+    queue.push(lq);
+  }
+
+  shuffle(queue);
+  return queue.slice(0, 15);
+}
+
+function startWeeklyQuiz() {
+  S.sessionMode = 'quiz';
+  S.sessionCorrect = 0;
+  S.sessionTotal = 0;
+  S.sessionStartTime = Date.now();
+  S._sessionXP = 0;
+  S._lastBonus = false;
+  S._usedFreeze = false;
+  S._prevLevel = S.progress.xp ? S.progress.xp.level : 1;
+  S.sessionStats = { byTag: {}, bySkill: {}, errors: [] };
+  S._smartCloseReason = null;
+  S._smartCloseWarned = false;
+  S._showAdaptiveMsg = null;
+  S._sessionFocus = null;
+  S._persistentWeak = [];
+  S.queue = buildQuizQueue();
+  S.qi = 0;
+  S.answered = false;
+  S.currentAnswer = null;
+  S.reachQueue = [];
+  S._timerSeconds = 480;
+  S._timerStart = Date.now();
+  S._timerInterval = setInterval(updateTimer, 1000);
+  if (S.queue.length === 0) { S.screen = 'home'; render(); return; }
+  S.screen = 'session';
+  render();
+}
+
+function startChallengeRound(tag) {
+  S.sessionMode = 'challenge';
+  S._challengeTag = tag;
+  S.sessionCorrect = 0;
+  S.sessionTotal = 0;
+  S.sessionStartTime = Date.now();
+  S._sessionXP = 0;
+  S._lastBonus = false;
+  S._usedFreeze = false;
+  S._prevLevel = S.progress.xp ? S.progress.xp.level : 1;
+  S.sessionStats = { byTag: {}, bySkill: {}, errors: [] };
+  S._smartCloseReason = null;
+  S._smartCloseWarned = false;
+  S._showAdaptiveMsg = null;
+  S._sessionFocus = null;
+  S._persistentWeak = [];
+  S.queue = buildChallengeQueue(tag);
+  S.qi = 0;
+  S.answered = false;
+  S.currentAnswer = null;
+  S.reachQueue = [];
+  S._timerSeconds = 90;
+  S._timerStart = Date.now();
+  S._timerInterval = setInterval(updateTimer, 1000);
+  if (S.queue.length === 0) { S.screen = 'home'; render(); return; }
+  S.screen = 'session';
+  render();
+}
+
+function startBossBattle(chapter) {
+  S.sessionMode = 'boss';
+  S._bossChapter = chapter;
+  S.sessionCorrect = 0;
+  S.sessionTotal = 0;
+  S.sessionStartTime = Date.now();
+  S._sessionXP = 0;
+  S._lastBonus = false;
+  S._usedFreeze = false;
+  S._prevLevel = S.progress.xp ? S.progress.xp.level : 1;
+  S.sessionStats = { byTag: {}, bySkill: {}, errors: [] };
+  S._smartCloseReason = null;
+  S._smartCloseWarned = false;
+  S._showAdaptiveMsg = null;
+  S._sessionFocus = null;
+  S._persistentWeak = [];
+  S.queue = buildBossQueue(chapter);
+  S.qi = 0;
+  S.answered = false;
+  S.currentAnswer = null;
+  S.reachQueue = [];
+  S._timerSeconds = 600;
+  S._timerStart = Date.now();
+  S._timerInterval = setInterval(updateTimer, 1000);
+  if (S.queue.length === 0) { S.screen = 'home'; render(); return; }
+  S.screen = 'session';
+  render();
+}
+
+function updateTimer() {
+  if (!S._timerStart || !S._timerSeconds) return;
+  const elapsed = Math.floor((Date.now() - S._timerStart) / 1000);
+  const remaining = Math.max(0, S._timerSeconds - elapsed);
+  S._timerRemaining = remaining;
+  const timerEl = document.getElementById('session-timer');
+  if (timerEl) {
+    const mins = Math.floor(remaining / 60);
+    const secs = remaining % 60;
+    timerEl.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+    timerEl.className = 'quiz-timer' + (remaining <= 30 ? ' timer-danger' : '');
+  }
+  if (remaining <= 0) {
+    stopTimer();
+    S._smartCloseReason = 'timer';
+    endSession();
+  }
+}
+
+function stopTimer() {
+  if (S._timerInterval) { clearInterval(S._timerInterval); S._timerInterval = null; }
+}
+
+function timerDisplay() {
+  if (!S._timerStart || !S._timerSeconds) return '';
+  const elapsed = Math.floor((Date.now() - S._timerStart) / 1000);
+  const remaining = Math.max(0, S._timerSeconds - elapsed);
+  const mins = Math.floor(remaining / 60);
+  const secs = remaining % 60;
+  const danger = remaining <= 30;
+  return '<div class="quiz-timer' + (danger ? ' timer-danger' : '') + '" id="session-timer">' + mins + ':' + (secs < 10 ? '0' : '') + secs + '</div>';
+}
+
 
 function getVocabCard(wordId) {
   if (!S.progress.srs[wordId]) S.progress.srs[wordId] = SRS.defaultCard();
@@ -2286,6 +2650,10 @@ function renderHome() {
     zoneHTML = `<div class="zone-indicator ${cls}">${label}</div>`;
   }
 
+  const quizReady = canTakeWeeklyQuiz();
+  const challenges = challengeableSkills();
+  const bossChapter = canBossBattle();
+
   app().innerHTML = `
     <div class="wrap stagger">
       <div class="row between mb">
@@ -2327,7 +2695,7 @@ function renderHome() {
         const barColor = pct => pct < 50 ? 'bar-red' : pct < 75 ? 'bar-yellow' : 'bar-green';
         return `
           <div class="dash-section">
-            <div class="dash-section-title">Skill Accuracy (last 10 sessions)</div>
+            <div class="dash-section-title">Skill Progress</div>
             <div class="card">
               <div class="skill-bars">
                 ${Object.entries(acc).filter(([,d]) => d.attempts > 0).map(([sk, d]) => `
@@ -2353,13 +2721,53 @@ function renderHome() {
           </div>`;
       })()}
 
+      ${bossChapter ? `
+        <div class="boss-card">
+          <div class="boss-card-title">\u{1F409} Boss Battle Available</div>
+          <div class="boss-card-sub">Test everything from Chapters 1–${bossChapter}. 15 exercises, timed, higher difficulty. Need 70% to win.</div>
+          <button class="btn btn-p mt-sm" id="boss-btn" style="background:linear-gradient(180deg,#D97706,#B45309);max-width:250px;margin:0 auto">Fight the Boss</button>
+        </div>
+      ` : ''}
+
+      ${quizReady ? `
+        <div class="quiz-card">
+          <div class="quiz-card-title">\u{1F4CB} Weekly Quiz Ready</div>
+          <div class="quiz-card-sub">${sessionsSinceLastQuiz()} sessions since last quiz. 10 questions across all skills, 8 minutes.</div>
+          ${(() => {
+            const quizzes = S.progress.weeklyQuizzes || [];
+            const last = quizzes.length > 0 ? quizzes[quizzes.length - 1] : null;
+            return last ? `<div class="quiz-card-sub">Last quiz: ${last.pct}% (${last.score}/${last.total})</div>` : '';
+          })()}
+          <button class="btn btn-p mt-sm" id="quiz-btn" style="max-width:250px;margin:0 auto">Take Weekly Quiz</button>
+        </div>
+      ` : ''}
+
+      ${challenges.length > 0 ? `
+        <div class="dash-section">
+          <div class="dash-section-title">Skill Challenges</div>
+          ${challenges.map((ch, i) => `
+            <div class="challenge-offer">
+              <div class="challenge-offer-info">
+                <div class="challenge-offer-tag">\u{26A1} ${esc(ch.tag)} (${ch.pct}%)</div>
+                <div class="challenge-offer-desc">Go 5/5 in 90 seconds. +50 XP if you win.</div>
+              </div>
+              <button class="btn btn-g btn-sm challenge-offer-btn challenge-btn" data-tag="${esc(ch.tag)}" style="width:auto;padding:.5rem .875rem">Go</button>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
       ${!hasBatch ? `
         <div class="card card-err" style="border-left:3px solid var(--err)">
           <div class="card-title">No exercises loaded</div>
           <div class="card-sub">Generate a batch in Claude Code and push to the repo.</div>
         </div>
       ` : `
-        <div class="dash-section">
+        <button class="btn btn-p" id="start-btn" ${total === 0 ? 'disabled' : ''}>
+          ${todayDone ? 'Practice Again' : 'Start Session'}
+        </button>
+
+        <div class="dash-section mt">
           <div class="dash-section-title">Fuel Status</div>
           <div class="card">
             <div class="fuel-row">
@@ -2402,10 +2810,6 @@ function renderHome() {
             </div>
           ` : ''}
         </div>
-
-        <button class="btn btn-p" id="start-btn" ${total === 0 ? 'disabled' : ''}>
-          ${todayDone ? 'Practice Again' : 'Start Session'}
-        </button>
       `}
 
       ${zoneHTML ? `<div class="mt">${zoneHTML}</div>` : ''}
@@ -2435,6 +2839,21 @@ function renderHome() {
         </div>
       ` : ''}
 
+      ${(S.progress.weeklyQuizzes || []).length > 0 ? `
+        <div class="dash-section mt">
+          <div class="dash-section-title">Quiz History</div>
+          <div class="card">
+            ${S.progress.weeklyQuizzes.slice(-5).reverse().map(q => `
+              <div class="fuel-row">
+                <span class="sub">${q.date.slice(5)}</span>
+                <div class="fuel-bar"><div class="fuel-bar-fill ${q.pct >= 75 ? 'fuel-ok' : q.pct >= 50 ? 'fuel-low' : 'fuel-empty'}" style="width:${q.pct}%"></div></div>
+                <span class="fuel-count">${q.score}/${q.total}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
       ${renderWritingFeedback()}
 
       <div class="mt center">
@@ -2443,6 +2862,11 @@ function renderHome() {
     </div>`;
 
   if ($('start-btn')) $('start-btn').onclick = startSession;
+  if ($('quiz-btn')) $('quiz-btn').onclick = startWeeklyQuiz;
+  if ($('boss-btn')) $('boss-btn').onclick = () => startBossBattle(bossChapter);
+  document.querySelectorAll('.challenge-btn').forEach(el => {
+    el.onclick = () => startChallengeRound(el.dataset.tag);
+  });
   if ($('refuel-btn')) $('refuel-btn').onclick = async () => {
     const ok = await copyRefuel();
     $('refuel-status').textContent = ok ? 'Copied!' : 'Copy failed';
@@ -2477,6 +2901,7 @@ function renderHome() {
 
 function startSession() {
   if (Batch.batches.length === 0) return;
+  S.sessionMode = 'normal';
   S.sessionCorrect = 0;
   S.sessionTotal = 0;
   S.sessionStartTime = Date.now();
@@ -2490,6 +2915,9 @@ function startSession() {
   S._showAdaptiveMsg = null;
   S._sessionFocus = weakestSkill();
   S._persistentWeak = persistentWeakTags();
+  stopTimer();
+  S._timerStart = null;
+  S._timerSeconds = null;
   S.queue = buildSessionQueue();
   S.qi = 0;
   S.answered = false;
@@ -2740,11 +3168,18 @@ function renderSessionHeader(progress, typeLabel, typeClass) {
   const isReach = q && q._isReach;
   const isConfidence = q && q._isConfidenceBuilder;
   const isEscalation = q && q._isEscalation;
+  const mode = S.sessionMode || 'normal';
+  const modeBadge = mode === 'quiz' ? '<span class="session-mode-badge mode-quiz">QUIZ</span>'
+    : mode === 'challenge' ? '<span class="session-mode-badge mode-challenge">CHALLENGE</span>'
+    : mode === 'boss' ? '<span class="session-mode-badge mode-boss">BOSS</span>'
+    : '';
   return `
     <div class="dp-top">
       <div class="row between">
         <div class="dp-count">${S.qi + 1} / ${S.queue.length}</div>
         <div class="row gap-sm">
+          ${modeBadge}
+          ${S._timerStart ? timerDisplay() : ''}
           ${isReach ? '<span class="type-badge type-reach">REACH</span>' : ''}
           ${isConfidence ? '<span class="type-confidence">CONFIDENCE</span>' : ''}
           ${isEscalation ? '<span class="type-escalation">CHALLENGE</span>' : ''}
@@ -2752,7 +3187,7 @@ function renderSessionHeader(progress, typeLabel, typeClass) {
         </div>
       </div>
       <div class="prog-track mt-sm"><div class="prog-fill" style="width:${progress}%"></div></div>
-      ${S.qi === 0 && S._persistentWeak && S._persistentWeak.length > 0 ? `<div class="adaptive-msg adaptive-msg-close">Last few sessions, ${esc(S._persistentWeak.map(w => w.tag).join(' and '))} ${S._persistentWeak.length === 1 ? 'has' : 'have'} been tough. Extra practice front-loaded.</div>` : ''}
+      ${S.qi === 0 && mode === 'normal' && S._persistentWeak && S._persistentWeak.length > 0 ? `<div class="adaptive-msg adaptive-msg-close">Last few sessions, ${esc(S._persistentWeak.map(w => w.tag).join(' and '))} ${S._persistentWeak.length === 1 ? 'has' : 'have'} been tough. Extra practice front-loaded.</div>` : ''}
     </div>`;
 }
 
@@ -3479,10 +3914,70 @@ function checkSectionAdvancement() {
 }
 
 function endSession() {
+  stopTimer();
   const duration = Date.now() - (S.sessionStartTime || Date.now());
-  recordSession(S.sessionCorrect, S.sessionTotal, duration);
-  updateWeakTags();
-  S._advancedSection = checkSectionAdvancement();
+  const mode = S.sessionMode || 'normal';
+
+  if (mode === 'quiz') {
+    const quizResult = {
+      date: todayStr(),
+      score: S.sessionCorrect,
+      total: S.sessionTotal,
+      pct: S.sessionTotal > 0 ? Math.round((S.sessionCorrect / S.sessionTotal) * 100) : 0,
+      duration: Math.round(duration / 1000),
+      timedOut: S._smartCloseReason === 'timer'
+    };
+    if (S.sessionStats && S.sessionStats.bySkill) {
+      quizResult.skills = {};
+      for (const [sk, data] of Object.entries(S.sessionStats.bySkill)) {
+        quizResult.skills[sk] = { a: data.right + data.wrong, c: data.right };
+      }
+    }
+    S.progress.weeklyQuizzes.push(quizResult);
+    if (S.progress.weeklyQuizzes.length > 20) S.progress.weeklyQuizzes = S.progress.weeklyQuizzes.slice(-20);
+    S._quizResult = quizResult;
+    S._prevQuiz = S.progress.weeklyQuizzes.length >= 2 ? S.progress.weeklyQuizzes[S.progress.weeklyQuizzes.length - 2] : null;
+  }
+
+  if (mode === 'challenge') {
+    const passed = S.sessionTotal > 0 && S.sessionCorrect === S.sessionTotal;
+    S.progress.challengesDone.push({
+      tag: S._challengeTag,
+      date: todayStr(),
+      passed: passed,
+      score: S.sessionCorrect,
+      total: S.sessionTotal,
+      timedOut: S._smartCloseReason === 'timer'
+    });
+    S._challengePassed = passed;
+    if (passed) {
+      addXP(50);
+      S._sessionXP = (S._sessionXP || 0) + 50;
+    }
+  }
+
+  if (mode === 'boss') {
+    const pct = S.sessionTotal > 0 ? Math.round((S.sessionCorrect / S.sessionTotal) * 100) : 0;
+    const passed = pct >= 70;
+    if (passed && S._bossChapter) {
+      if (!S.progress.bossDefeated.includes(S._bossChapter)) {
+        S.progress.bossDefeated.push(S._bossChapter);
+      }
+      addXP(200);
+      S._sessionXP = (S._sessionXP || 0) + 200;
+    }
+    S._bossPassed = passed;
+    S._bossPct = pct;
+  }
+
+  if (mode === 'normal') {
+    recordSession(S.sessionCorrect, S.sessionTotal, duration);
+    updateWeakTags();
+    S._advancedSection = checkSectionAdvancement();
+  } else {
+    recordSession(S.sessionCorrect, S.sessionTotal, duration);
+  }
+
   S._newAchievements = checkAchievements();
   S._leveledUp = S.progress.xp && S.progress.xp.level > S._prevLevel;
   saveLocal();
@@ -3505,6 +4000,7 @@ function renderResults() {
   const sessionXP = S._sessionXP || 0;
   const prog = xpProgress(S.progress.xp ? S.progress.xp.total : 0);
   const newAch = S._newAchievements || [];
+  const mode = S.sessionMode || 'normal';
 
   let zoneClass, zoneLabel;
   if (errorRate >= 15 && errorRate <= 25) { zoneClass = 'zone-sweet'; zoneLabel = 'Sweet zone — right level of challenge'; }
@@ -3512,20 +4008,82 @@ function renderResults() {
   else { zoneClass = 'zone-hard'; zoneLabel = 'Too hard — review the basics first'; }
 
   const smartClose = S._smartCloseReason === 'high_errors';
-  const offerBonus = !smartClose && errorRate < 10 && total >= 4 && S.progress.sessions.length > 5 && Batch.totalFuel() > 0;
+  const timedOut = S._smartCloseReason === 'timer';
+  const offerBonus = mode === 'normal' && !smartClose && errorRate < 10 && total >= 4 && S.progress.sessions.length > 5 && Batch.totalFuel() > 0;
+
+  let modeHeader = '';
+  if (mode === 'quiz') {
+    modeHeader = `
+      <div class="quiz-card fade-up" style="margin-bottom:1rem">
+        <div class="quiz-card-title">\u{1F4CB} Weekly Quiz ${timedOut ? '(Time Up)' : 'Complete'}</div>
+        <div class="quiz-card-sub">${correct}/${total} across all skills${timedOut ? ' — ran out of time' : ''}</div>
+        ${(() => {
+          const prev = S._prevQuiz;
+          if (!prev) return '<div class="quiz-card-sub mt-sm">First quiz recorded. Next one unlocks after 7 more sessions.</div>';
+          const curPct = pct;
+          const prevPct = prev.pct;
+          const diff = curPct - prevPct;
+          const cls = diff > 0 ? 'quiz-compare-up' : diff < 0 ? 'quiz-compare-down' : 'quiz-compare-same';
+          const arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+          return `
+            <div class="quiz-compare">
+              <div class="quiz-compare-item">
+                <div class="quiz-compare-val">${prevPct}%</div>
+                <div class="quiz-compare-label">Last Quiz</div>
+              </div>
+              <div class="quiz-compare-item">
+                <div class="quiz-compare-val ${cls}">${curPct}%</div>
+                <div class="quiz-compare-label">This Quiz</div>
+              </div>
+              <div class="quiz-compare-item">
+                <div class="quiz-compare-val ${cls}">${arrow} ${Math.abs(diff)}%</div>
+                <div class="quiz-compare-label">Change</div>
+              </div>
+            </div>`;
+        })()}
+      </div>`;
+  } else if (mode === 'challenge') {
+    const passed = S._challengePassed;
+    const tag = S._challengeTag || '?';
+    modeHeader = `
+      <div class="center fade-up" style="margin-bottom:1rem">
+        <div style="font-size:3rem">${passed ? '\u{26A1}' : '\u{1F4AA}'}</div>
+        <div style="font-weight:700;font-size:1.25rem;margin-top:.5rem">${passed ? 'Challenge Won!' : 'Challenge Failed'}</div>
+        <div class="sub">${passed ? `Perfect on ${esc(tag)}! +50 bonus XP.` : `${correct}/${total} on ${esc(tag)}. Need 5/5 to win. Try again anytime.`}</div>
+      </div>`;
+  } else if (mode === 'boss') {
+    const passed = S._bossPassed;
+    const ch = S._bossChapter || '?';
+    modeHeader = `
+      <div class="center fade-up" style="margin-bottom:1rem">
+        ${passed ? '<div class="boss-celebration">\u{1F389}\u{1F409}\u{1F389}</div>' : '<div style="font-size:3rem">\u{1F409}</div>'}
+        <div style="font-weight:700;font-size:1.25rem;margin-top:.5rem">${passed ? `Boss Defeated! Chapters 1–${ch}` : 'Boss Wins This Round'}</div>
+        <div class="sub">${passed ? `${pct}% accuracy. +200 bonus XP. Massive.` : `${pct}% accuracy (need 70% to win). Keep practicing and try again.`}</div>
+      </div>`;
+  }
 
   app().innerHTML = `
     <div class="wrap" style="padding-top:6vh">
-      ${smartClose ? `
+      ${smartClose && mode === 'normal' ? `
         <div class="smart-close-card fade-up">
           <div class="card-title">Session ended early</div>
           <div class="card-sub">Good effort today. Shorter sessions build stronger habits. The research is clear: pushing through a rough session builds frustration, not skill.</div>
         </div>
       ` : ''}
-      <div class="center mb fade-up">
-        ${scoreRing(pct)}
-        <div class="res-msg mt-sm">${correct} of ${total} correct · ${formatDuration(duration)}</div>
-      </div>
+
+      ${modeHeader}
+
+      ${mode === 'normal' ? `
+        <div class="center mb fade-up">
+          ${scoreRing(pct)}
+          <div class="res-msg mt-sm">${correct} of ${total} correct · ${formatDuration(duration)}</div>
+        </div>
+      ` : mode !== 'quiz' ? `
+        <div class="center mb fade-up">
+          ${scoreRing(pct)}
+          <div class="res-msg mt-sm">${correct} of ${total} correct · ${formatDuration(duration)}</div>
+        </div>
+      ` : ''}
 
       ${sessionXP > 0 ? `
         <div class="center fade-up" style="margin-bottom:.75rem">
@@ -3582,8 +4140,10 @@ function renderResults() {
         </div>
       ` : ''}
 
-      <div class="zone-indicator ${zoneClass}">${zoneLabel}</div>
-      <div class="sub mt-sm center">Coyle's 20% Rule: aim for 15–25% errors. That's where growth happens.</div>
+      ${mode === 'normal' ? `
+        <div class="zone-indicator ${zoneClass}">${zoneLabel}</div>
+        <div class="sub mt-sm center">Coyle's 20% Rule: aim for 15–25% errors. That's where growth happens.</div>
+      ` : ''}
 
       ${S.progress.streak.current > 0 ? `
         <div class="center mt">
@@ -3642,7 +4202,7 @@ function renderResults() {
         return '<div class="sub mt-sm center">' + parts.join(' · ') + '</div>';
       })()}
 
-      ${Batch.needsRefuel() ? `
+      ${mode === 'normal' && Batch.needsRefuel() ? `
         <div class="card mt" style="border-left:3px solid var(--warn)">
           <div class="card-title" style="color:var(--warn)">Fuel is low</div>
           <div class="card-sub">Copy the refuel file and paste it into Claude Code to generate more exercises.</div>
@@ -3659,13 +4219,13 @@ function renderResults() {
       ` : ''}
 
       <button class="btn btn-p mt" id="home-btn">Back to Home</button>
-      ${Batch.totalFuel() > 0 ? '<button class="btn btn-g mt-sm" id="again-btn">Practice More</button>' : ''}
+      ${mode === 'normal' && Batch.totalFuel() > 0 ? '<button class="btn btn-g mt-sm" id="again-btn">Practice More</button>' : ''}
       <div class="center mt-sm">
         <button class="share-btn" id="share-btn">\u{1F4E4} Share Progress</button>
       </div>
     </div>`;
 
-  $('home-btn').onclick = () => { S.screen = 'home'; render(); };
+  $('home-btn').onclick = () => { S.sessionMode = 'normal'; S.screen = 'home'; render(); };
   if ($('again-btn')) $('again-btn').onclick = startSession;
   if ($('bonus-btn')) $('bonus-btn').onclick = () => { S._bonusRound = true; startSession(); };
   if ($('res-refuel-btn')) $('res-refuel-btn').onclick = async () => {

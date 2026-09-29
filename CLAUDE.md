@@ -120,14 +120,17 @@ The app tracks mastery per chapter section and advances through the curriculum a
 - Once blanks are unlocked ("advancing" status), the app auto-advances to the next section
 - Progress is tracked in `PROGRESS.json` under the `curriculum` field
 
-### Progress schema (v9):
+### Progress schema (v10):
 ```json
 {
   "curriculum": { "chapter": 1, "currentSection": "s2-adjectives", "completedSections": ["s1-gender"], "chapterPhase": "LEARN" },
   "xp": { "total": 1250, "level": 5 },
   "achievements": { "first-note": { "unlocked": "ISO-date", "fresh": false } },
   "streak": { "current": 3, "best": 5, "lastDate": "2026-09-28", "freezeDays": 2, "freezeUsed": [] },
-  "speakingDone": ["sp001"]
+  "speakingDone": ["sp001"],
+  "weeklyQuizzes": [{ "date": "2026-09-29", "score": 8, "total": 10, "pct": 80, "duration": 300, "timedOut": false }],
+  "challengesDone": [{ "tag": "gender", "date": "2026-09-29", "passed": true, "score": 5, "total": 5, "timedOut": false }],
+  "bossDefeated": [5]
 }
 ```
 
@@ -169,8 +172,17 @@ The app adjusts mid-session based on real-time performance:
 - Level = floor(sqrt(totalXP / 50)) + 1
 - XP for next level = (level)^2 * 50
 
-### 24 Achievements
-Coyle-specific badges: First Note, Deep Practitioner, Centurion, 500 Club, Sweet Spot, Clarissa Moment, Perfect Session, Streak Starter/Week Warrior/Flame Keeper/Unbreakable, Section Master, Chapter Champion, Word Collector/Vocabulary Vault, Error Hunter, Marathon, Writer, Early Bird, Night Owl, Freeze Frame, Guitar String, Rising Star, Polyglot Path.
+### Mini Quizzes & Skill Progress (Phase 7)
+- **Skill progress bars**: per-skill accuracy bars (red/yellow/green) promoted as primary progress indicator on home screen
+- **Weekly checkpoint quiz**: unlocks after 7 sessions since last quiz. 10 questions across all practiced skills (4 grammar, 2 vocab, 1 reading, 1 listening, 1 dictation, 1 weakest-skill wildcard). 8-minute timer. Score comparison to previous quiz.
+- **Skill challenge rounds**: when a tag or skill has >80% accuracy with enough exercises, offers "go 5/5 in 90 seconds" challenge. Perfect score earns +50 bonus XP. No penalty for failure.
+- **Boss battles**: available at chapters 5, 10, 15. 15 exercises at harder difficulty, 10-minute timer, mixed skills. Need 70% to win. +200 bonus XP on victory.
+- **Session modes**: `S.sessionMode` flag ('normal', 'quiz', 'challenge', 'boss'). Adaptive triggers disabled in non-normal modes. Timer runs with countdown display (turns red at 30s).
+- **Quiz history**: tracked in `progress.weeklyQuizzes[]`, displayed on home screen.
+- Functions: `canTakeWeeklyQuiz()`, `sessionsSinceLastQuiz()`, `buildQuizQueue()`, `challengeableSkills()`, `buildChallengeQueue()`, `canBossBattle()`, `buildBossQueue()`, `startWeeklyQuiz()`, `startChallengeRound()`, `startBossBattle()`, `updateTimer()`, `stopTimer()`, `timerDisplay()`
+
+### 28 Achievements
+Coyle-specific badges: First Note, Deep Practitioner, Centurion, 500 Club, Sweet Spot, Clarissa Moment, Perfect Session, Streak Starter/Week Warrior/Flame Keeper/Unbreakable, Section Master, Chapter Champion, Word Collector/Vocabulary Vault, Error Hunter, Marathon, Writer, Early Bird, Night Owl, Freeze Frame, Guitar String, Rising Star, Polyglot Path, Checkpoint, Quiz Ace, Challenge Won, Boss Slayer.
 
 ### Streak Protection
 - Forgiving: freeze days auto-save the streak if you miss 1 day
