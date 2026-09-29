@@ -2641,6 +2641,23 @@ function speakBtn(text, cls) {
   return `<button class="speak-btn${off}${cls ? ' ' + cls : ''}" data-speak="${esc(clean)}">${SPEAK_SVG}</button>`;
 }
 
+function autoSpeak(text) {
+  if (!Speech.hasFrenchVoice || !text) return;
+  const clean = text.replace(/_{2,}/g, '').replace(/\s{2,}/g, ' ').trim();
+  if (clean) setTimeout(() => Speech.speak(clean), 200);
+}
+
+function speakCorrectSentence(q) {
+  if (!Speech.hasFrenchVoice) return;
+  let sentence = '';
+  if (q.context && q.options) {
+    sentence = q.context.replace(/_{2,}/, q.options[q.correct]);
+  } else if (q.options) {
+    sentence = q.options[q.correct];
+  }
+  if (sentence) setTimeout(() => Speech.speak(sentence), 300);
+}
+
 
 /* ═══════════════════════════════════════════════════════════════
    SCREEN ROUTING
@@ -3518,6 +3535,7 @@ function renderMCQ(q, progress) {
     </div>`;
 
   if (!S.answered) {
+    autoSpeak(q.context || q.stem);
     document.querySelectorAll('.opt').forEach(el => {
       el.onclick = () => {
         const i = parseInt(el.dataset.i);
@@ -3530,6 +3548,7 @@ function renderMCQ(q, progress) {
         trackAnswer(correct ? 1 : 0, correct ? 0 : 1, !correct ? { wrong: q.options[i], correct: q.options[q.correct] } : null);
         recordExercise(q.id, correct, q.tags);
         if (!correct && !q._isReach) queueReach(q.tags);
+        speakCorrectSentence(q);
         render();
       };
     });
@@ -3585,6 +3604,7 @@ function renderBlank(q, progress) {
     </div>`;
 
   if (!S.answered) {
+    autoSpeak(q.context || q.stem);
     bindAccentKeys();
     const checkFn = () => {
       const val = $('answer').value;
@@ -3599,6 +3619,8 @@ function renderBlank(q, progress) {
       trackAnswer(ok ? 1 : 0, ok ? 0 : 1, !ok ? { wrong: val, correct: correctStr } : null);
       recordExercise(q.id, ok, q.tags);
       if (!ok && !q._isReach) queueReach(q.tags);
+      const fullSentence = q.context ? q.context.replace(/_{2,}/, correctStr) : correctStr;
+      setTimeout(() => Speech.speak(fullSentence), 300);
       render();
     };
     $('check-btn').onclick = checkFn;
