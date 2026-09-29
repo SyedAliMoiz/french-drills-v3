@@ -191,6 +191,13 @@ The app adjusts mid-session based on real-time performance:
 - **Fallback**: if no key configured or API call fails, the old flow continues (submit and wait for batch feedback)
 - Functions: `evaluateWriting()`, `renderWritingEvaluation()`, `getClaudeKey()`, `setClaudeKey()`, `saveClaudeKeyEncrypted()`, `loadClaudeKeyEncrypted()`, `renderSettings()`
 
+### Smart Pressure System (Phase 8)
+- **Energy detection**: after every 3 exercises, detects energy state from accuracy + response times. Good day (>85% acc, fast responses) → adds 2 bonus exercises + encouraging message. Bad day (<50% acc or slow + <65%) → caps session early + supportive message.
+- **Response time tracking**: `sessionStats.responseTimes[]` records ms per exercise. Slow = avg >20s for last 3.
+- **Streak risk escalation**: enhanced nudge banner with 3 urgency levels based on streak length + time of day. Moderate (3+ days, after 7 PM) = gentle. High (5+) = loss framing. Critical (7+) = maximum urgency with "longest streak ever" if applicable.
+- **Weekly progress report**: shown on home screen every Monday. Sessions count, exercises done, average accuracy, streak length, skill strengths/weaknesses, comparison to previous week with directional arrows.
+- Functions: `detectEnergy()`, `checkEnergy()`, `streakRiskLevel()`, `renderNudgeBannerEnhanced()`, `renderWeeklyReport()`
+
 ### 28 Achievements
 Coyle-specific badges: First Note, Deep Practitioner, Centurion, 500 Club, Sweet Spot, Clarissa Moment, Perfect Session, Streak Starter/Week Warrior/Flame Keeper/Unbreakable, Section Master, Chapter Champion, Word Collector/Vocabulary Vault, Error Hunter, Marathon, Writer, Early Bird, Night Owl, Freeze Frame, Guitar String, Rising Star, Polyglot Path, Checkpoint, Quiz Ace, Challenge Won, Boss Slayer.
 

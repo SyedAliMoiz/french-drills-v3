@@ -449,6 +449,22 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 .settings-key-status{font-size:.75rem;font-weight:600;padding:.25rem .5rem;border-radius:var(--radius-pill)}
 .settings-key-ok{background:var(--ok-bg);color:var(--ok)}
 .settings-key-missing{background:var(--warn-bg);color:var(--warn)}
+.energy-msg{padding:.75rem 1rem;border-radius:var(--radius-md);font-size:.875rem;font-weight:500;text-align:center;margin-bottom:.5rem;animation:fadeUp .3s ease-out both}
+.energy-good{background:var(--ok-bg);border:1px solid var(--ok-border);color:var(--ok)}
+.energy-bad{background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn)}
+.weekly-report{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:.75rem;box-shadow:var(--card-shadow);border-left:3px solid var(--accent)}
+.weekly-report-title{font-weight:700;font-size:1rem;margin-bottom:.75rem}
+.weekly-report-row{display:flex;justify-content:space-between;align-items:center;padding:.375rem 0;font-size:.875rem}
+.weekly-report-row+.weekly-report-row{border-top:1px solid var(--line)}
+.weekly-report-label{color:var(--text-dim)}
+.weekly-report-val{font-weight:600;font-variant-numeric:tabular-nums}
+.weekly-report-change{font-size:.75rem;font-weight:600;margin-left:.375rem}
+.weekly-report-up{color:var(--ok)}
+.weekly-report-down{color:var(--err)}
+.nudge-urgent{background:linear-gradient(135deg,var(--err-bg),#FEE2E2);border:1px solid var(--err-border)}
+.nudge-urgent .nudge-text{color:var(--err);font-weight:600}
+@media(prefers-color-scheme:dark){.nudge-urgent{background:linear-gradient(135deg,var(--err-bg),#2D1515)}}
+:root[data-theme="dark"] .nudge-urgent{background:linear-gradient(135deg,var(--err-bg),#2D1515)}
 .mode-quiz{background:#F3E8FF;color:#7C3AED}
 .mode-challenge{background:#FFF7ED;color:#C2410C}
 .mode-boss{background:#FEF3C7;color:#92400E}
@@ -1266,6 +1282,12 @@ function trackAnswer(rightCount, wrongCount, errorDetail) {
   const stats = S.sessionStats;
   if (!stats) return;
 
+  const now = Date.now();
+  const responseTime = S._exerciseStartTime ? now - S._exerciseStartTime : 0;
+  if (!stats.responseTimes) stats.responseTimes = [];
+  if (responseTime > 0 && responseTime < 300000) stats.responseTimes.push(responseTime);
+  S._exerciseStartTime = now;
+
   if (!stats.bySkill[skill]) stats.bySkill[skill] = { right: 0, wrong: 0 };
   stats.bySkill[skill].right += rightCount;
   stats.bySkill[skill].wrong += wrongCount;
@@ -1768,6 +1790,8 @@ function startWeeklyQuiz() {
   S.answered = false;
   S.currentAnswer = null;
   S.reachQueue = [];
+  S._exerciseStartTime = Date.now();
+  S._energyState = null;
   S._timerSeconds = 480;
   S._timerStart = Date.now();
   S._timerInterval = setInterval(updateTimer, 1000);
@@ -1797,6 +1821,8 @@ function startChallengeRound(tag) {
   S.answered = false;
   S.currentAnswer = null;
   S.reachQueue = [];
+  S._exerciseStartTime = Date.now();
+  S._energyState = null;
   S._timerSeconds = 90;
   S._timerStart = Date.now();
   S._timerInterval = setInterval(updateTimer, 1000);
@@ -1826,6 +1852,8 @@ function startBossBattle(chapter) {
   S.answered = false;
   S.currentAnswer = null;
   S.reachQueue = [];
+  S._exerciseStartTime = Date.now();
+  S._energyState = null;
   S._timerSeconds = 600;
   S._timerStart = Date.now();
   S._timerInterval = setInterval(updateTimer, 1000);
@@ -2042,6 +2070,190 @@ function renderSettings() {
     try { localStorage.removeItem('fdv3_claude_key'); } catch (e) { /* */ }
     render();
   };
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PHASE 8 — Smart Pressure System
+   ═══════════════════════════════════════════════════════════════ */
+
+function detectEnergy() {
+  const stats = S.sessionStats;
+  if (!stats) return 'neutral';
+  const totalRight = Object.values(stats.bySkill).reduce((s, d) => s + d.right, 0);
+  const totalWrong = Object.values(stats.bySkill).reduce((s, d) => s + d.wrong, 0);
+  const total = totalRight + totalWrong;
+  if (total < 3) return 'neutral';
+  const accuracy = totalRight / total;
+
+  const times = stats.responseTimes || [];
+  const recentTimes = times.slice(-3);
+  const avgTime = recentTimes.length > 0 ? recentTimes.reduce((s, t) => s + t, 0) / recentTimes.length : 0;
+  const isSlowResponding = avgTime > 20000;
+
+  if (accuracy > 0.85 && !isSlowResponding) return 'good';
+  if (accuracy < 0.5 || (accuracy < 0.65 && isSlowResponding)) return 'bad';
+  return 'neutral';
+}
+
+function checkEnergy() {
+  const mode = S.sessionMode || 'normal';
+  if (mode !== 'normal') return;
+  const total = S.sessionTotal;
+  if (total < 3 || total % 3 !== 0) return;
+
+  const energy = detectEnergy();
+  if (energy === S._energyState) return;
+  S._energyState = energy;
+
+  if (energy === 'good' && !S._energyGoodShown) {
+    S._energyGoodShown = true;
+    const bonus = Batch.all('grammar').filter(q => exercisePassesGate(q) && !S.queue.includes(q));
+    if (bonus.length >= 2) {
+      shuffle(bonus);
+      S.queue.push(...bonus.slice(0, 2));
+    }
+    S._showAdaptiveMsg = 'You\'re in the zone. Added bonus exercises. Push it.';
+  }
+  if (energy === 'bad' && !S._energyBadShown) {
+    S._energyBadShown = true;
+    if (S.queue.length - S.qi > 3) {
+      S.queue.length = S.qi + 2;
+    }
+    S._showAdaptiveMsg = 'Some days are harder. You showed up — that\'s what matters. Wrapping up soon.';
+  }
+}
+
+function streakRiskLevel() {
+  const streak = S.progress.streak.current;
+  if (streak < 3) return null;
+  const hour = new Date().getHours();
+  if (hour < 19) return null;
+  const lastSession = S.progress.sessions[S.progress.sessions.length - 1];
+  if (lastSession && lastSession.date === todayStr()) return null;
+  if (streak >= 7) return 'critical';
+  if (streak >= 5) return 'high';
+  return 'moderate';
+}
+
+function renderNudgeBannerEnhanced() {
+  const hour = new Date().getHours();
+  const lastSession = S.progress.sessions[S.progress.sessions.length - 1];
+  const todayDone = lastSession && lastSession.date === todayStr();
+  if (todayDone) return '';
+  if (hour < 18) return '';
+
+  const streak = S.progress.streak.current;
+  const risk = streakRiskLevel();
+
+  if (risk === 'critical') {
+    const isBest = streak >= S.progress.streak.best;
+    return `
+      <div class="nudge-banner nudge-urgent">
+        <div class="nudge-icon">\u{1F6A8}</div>
+        <div class="nudge-text">${isBest ? 'This is your longest streak ever.' : `You've built ${streak} days.`} 3 exercises. That's all it takes.</div>
+      </div>`;
+  }
+  if (risk === 'high') {
+    return `
+      <div class="nudge-banner nudge-urgent">
+        <div class="nudge-icon">\u{1F525}</div>
+        <div class="nudge-text">You've built ${streak} days. Don't let it slip.</div>
+      </div>`;
+  }
+  if (risk === 'moderate') {
+    return `
+      <div class="nudge-banner">
+        <div class="nudge-icon">\u{1F4AA}</div>
+        <div class="nudge-text">Your ${streak}-day streak is still alive. A quick 2-minute session keeps it going.</div>
+      </div>`;
+  }
+  return `
+    <div class="nudge-banner">
+      <div class="nudge-icon">\u{1F4AA}</div>
+      <div class="nudge-text">You haven't practiced today. A quick session keeps the streak alive.</div>
+    </div>`;
+}
+
+function renderWeeklyReport() {
+  const today = new Date();
+  if (today.getDay() !== 1) return '';
+
+  const sessions = S.progress.sessions || [];
+  if (sessions.length < 2) return '';
+
+  const todayStr_ = todayStr();
+  const oneWeekAgo = new Date(today);
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const weekAgoStr = oneWeekAgo.toISOString().slice(0, 10);
+  const twoWeeksAgo = new Date(today);
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+  const twoWeeksAgoStr = twoWeeksAgo.toISOString().slice(0, 10);
+
+  const thisWeek = sessions.filter(s => s.date >= weekAgoStr && s.date <= todayStr_);
+  const lastWeek = sessions.filter(s => s.date >= twoWeeksAgoStr && s.date < weekAgoStr);
+
+  if (thisWeek.length === 0) return '';
+
+  const thisCount = thisWeek.length;
+  const lastCount = lastWeek.length;
+  const thisAvgAcc = thisWeek.length > 0 ? Math.round(thisWeek.reduce((s, w) => s + (100 - w.errorRate), 0) / thisWeek.length) : 0;
+  const lastAvgAcc = lastWeek.length > 0 ? Math.round(lastWeek.reduce((s, w) => s + (100 - w.errorRate), 0) / lastWeek.length) : 0;
+  const thisExercises = thisWeek.reduce((s, w) => s + w.exercises, 0);
+  const streak = S.progress.streak.current;
+
+  const acc = skillAccuracy();
+  const improved = [];
+  const needsWork = [];
+  const labels = { grammar: 'Grammar', vocab: 'Vocab', reading: 'Reading', listening: 'Listening', writing: 'Writing', dictation: 'Dictation' };
+  for (const [sk, d] of Object.entries(acc)) {
+    if (d.attempts < 5) continue;
+    if (d.pct >= 75) improved.push(labels[sk] || sk);
+    else if (d.pct < 50) needsWork.push(labels[sk] || sk);
+  }
+
+  const accDiff = thisAvgAcc - lastAvgAcc;
+  const countDiff = thisCount - lastCount;
+
+  function changeIndicator(diff, suffix) {
+    if (diff === 0 || !lastCount) return '';
+    const cls = diff > 0 ? 'weekly-report-up' : 'weekly-report-down';
+    const arrow = diff > 0 ? '↑' : '↓';
+    return `<span class="weekly-report-change ${cls}">${arrow}${Math.abs(diff)}${suffix || ''}</span>`;
+  }
+
+  return `
+    <div class="weekly-report">
+      <div class="weekly-report-title">\u{1F4CA} Weekly Progress</div>
+      <div class="weekly-report-row">
+        <span class="weekly-report-label">Sessions</span>
+        <span class="weekly-report-val">${thisCount}${changeIndicator(countDiff)}</span>
+      </div>
+      <div class="weekly-report-row">
+        <span class="weekly-report-label">Exercises</span>
+        <span class="weekly-report-val">${thisExercises}</span>
+      </div>
+      <div class="weekly-report-row">
+        <span class="weekly-report-label">Avg Accuracy</span>
+        <span class="weekly-report-val">${thisAvgAcc}%${changeIndicator(accDiff, '%')}</span>
+      </div>
+      <div class="weekly-report-row">
+        <span class="weekly-report-label">Streak</span>
+        <span class="weekly-report-val">\u{1F525} ${streak} day${streak !== 1 ? 's' : ''}</span>
+      </div>
+      ${improved.length > 0 ? `
+        <div class="weekly-report-row">
+          <span class="weekly-report-label">Strong</span>
+          <span class="weekly-report-val" style="color:var(--ok)">${improved.join(', ')}</span>
+        </div>
+      ` : ''}
+      ${needsWork.length > 0 ? `
+        <div class="weekly-report-row">
+          <span class="weekly-report-label">Needs work</span>
+          <span class="weekly-report-val" style="color:var(--err)">${needsWork.join(', ')}</span>
+        </div>
+      ` : ''}
+    </div>`;
 }
 
 
@@ -2870,7 +3082,7 @@ function renderHome() {
 
       ${renderXPBar()}
 
-      ${renderNudgeBanner()}
+      ${renderNudgeBannerEnhanced()}
 
       ${todayDone ? `
         <div class="card card-ok" style="border-left:3px solid var(--ok)">
@@ -2878,6 +3090,8 @@ function renderHome() {
           <div class="card-sub">${lastSession.correct}/${lastSession.exercises} correct · ${formatDuration(lastSession.duration * 1000)}</div>
         </div>
       ` : ''}
+
+      ${renderWeeklyReport()}
 
       ${renderSectionProgress()}
 
@@ -3120,6 +3334,8 @@ function startSession() {
   S.answered = false;
   S.currentAnswer = null;
   S.reachQueue = [];
+  S._exerciseStartTime = Date.now();
+  S._energyState = null;
   if (S.queue.length === 0) { S.screen = 'home'; render(); return; }
   S.screen = 'session';
   render();
@@ -4094,6 +4310,7 @@ function advanceSession() {
   if (S.qi >= S.queue.length) {
     endSession();
   } else {
+    checkEnergy();
     if (checkAdaptiveTriggers()) return;
     const appEl = document.getElementById('app');
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
