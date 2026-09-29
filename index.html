@@ -1219,15 +1219,21 @@ function checkSmartClose() {
 
 function insertConfidenceBuilder(tag) {
   const allGrammar = Batch.all('grammar');
-  const easy = allGrammar.filter(q => {
+  const tagMatch = allGrammar.filter(q => {
     if (q.difficulty && q.difficulty > 1) return false;
     if (!q.tags || !q.tags.includes(tag)) return false;
     if (S.queue.some(qe => qe.id === q.id)) return false;
     const rec = S.progress.exercises[q.id];
     return rec && rec.correct > 0;
   });
-  if (easy.length === 0) return false;
-  const ex = { ...easy[Math.floor(Math.random() * easy.length)], _isConfidenceBuilder: true };
+  const pool = tagMatch.length > 0 ? tagMatch : allGrammar.filter(q => {
+    if (q.difficulty && q.difficulty > 1) return false;
+    if (S.queue.some(qe => qe.id === q.id)) return false;
+    const rec = S.progress.exercises[q.id];
+    return rec && rec.correct > 0;
+  });
+  if (pool.length === 0) return false;
+  const ex = { ...pool[Math.floor(Math.random() * pool.length)], _isConfidenceBuilder: true };
   S.queue.splice(S.qi + 1, 0, ex);
   return true;
 }
@@ -1272,6 +1278,7 @@ function checkAdaptiveTriggers() {
       if (insertConfidenceBuilder(tag)) {
         S._showAdaptiveMsg = 'encourage';
       }
+      tagStat.consWrong = 0;
       return false;
     }
     if (tagStat.consRight >= 3) {
@@ -2390,6 +2397,13 @@ function buildSessionQueue() {
   const focus = S._sessionFocus ? S._sessionFocus.skill : null;
   const isBonus = S._bonusRound;
   if (isBonus) { stage.cap = 5; S._bonusRound = false; }
+
+  if (isBonus) {
+    const hardGrammar = allGrammar.filter(q => (q.difficulty || 2) >= 3 && exercisePassesGate(q));
+    const medGrammar = hardGrammar.length >= 3 ? hardGrammar : allGrammar.filter(q => (q.difficulty || 2) >= 2 && exercisePassesGate(q));
+    shuffle(medGrammar);
+    return medGrammar.slice(0, 5);
+  }
 
   const queue = [...grammarPool];
 
