@@ -882,47 +882,91 @@ const TCF_TACHE_INFO = {
 
 
 /* ═══════════════════════════════════════════════════════════════
-   SPEECH SYNTHESIS — French TTS via Web Speech API
+   SPEECH — Google Cloud TTS (Chirp 3 HD, fr-CA) with browser fallback
    ═══════════════════════════════════════════════════════════════ */
 
 const Speech = {
-  voice: null,
-  ready: false,
-  hasFrenchVoice: false,
+  hasFrenchVoice: true,
+  _cache: {},
+  _audio: null,
+  _browserVoice: null,
+
   init() {
-    if (!window.speechSynthesis) return;
-    const pick = () => {
-      const voices = speechSynthesis.getVoices();
-      this.voice = voices.find(v => v.lang === 'fr-FR') ||
-                   voices.find(v => v.lang.startsWith('fr')) || null;
-      this.ready = voices.length > 0;
-      const hadVoice = this.hasFrenchVoice;
-      this.hasFrenchVoice = !!this.voice;
-      if (!hadVoice && this.hasFrenchVoice) {
-        document.querySelectorAll('.speak-btn-off').forEach(el => el.classList.remove('speak-btn-off'));
-        document.querySelectorAll('.speak-link-off').forEach(el => el.classList.remove('speak-link-off'));
-      }
-    };
-    pick();
-    if (speechSynthesis.onvoiceschanged !== undefined) {
-      speechSynthesis.onvoiceschanged = pick;
+    try {
+      const key = localStorage.getItem('fdv3_tts_key');
+      if (!key) this._storeKey();
+    } catch (e) { /* */ }
+    if (window.speechSynthesis) {
+      const pick = () => {
+        const voices = speechSynthesis.getVoices();
+        this._browserVoice = voices.find(v => v.lang === 'fr-FR') || voices.find(v => v.lang.startsWith('fr')) || null;
+      };
+      pick();
+      if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = pick;
     }
   },
-  _utterance: null,
-  speak(text, rate) {
-    if (!window.speechSynthesis || !text) return;
-    if (speechSynthesis.speaking) speechSynthesis.cancel();
-    if (!this.voice) {
-      const voices = speechSynthesis.getVoices();
-      this.voice = voices.find(v => v.lang === 'fr-FR') ||
-                   voices.find(v => v.lang.startsWith('fr')) || null;
+
+  _storeKey() {
+    try { localStorage.setItem('fdv3_tts_key', 'AIzaSyBM5uNiaktT9P1Okfwf1nYUikgmYG7vxPU'); } catch (e) { /* */ }
+  },
+
+  async speak(text, rate) {
+    if (!text) return;
+    const clean = text.replace(/_{2,}/g, '').replace(/\s{2,}/g, ' ').trim();
+    if (!clean) return;
+
+    if (this._audio) { this._audio.pause(); this._audio = null; }
+
+    let key = null;
+    try { key = localStorage.getItem('fdv3_tts_key'); } catch (e) { /* */ }
+
+    if (key) {
+      try {
+        const cacheKey = clean + (rate && rate !== 1 ? ':' + rate : '');
+        if (this._cache[cacheKey]) {
+          this._playBlob(this._cache[cacheKey]);
+          return;
+        }
+        const resp = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize?key=' + key, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            input: { text: clean },
+            voice: { languageCode: 'fr-CA', name: 'fr-CA-Chirp3-HD-Achernar' },
+            audioConfig: { audioEncoding: 'MP3', speakingRate: rate || 1.0 }
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.audioContent) {
+            const bin = atob(data.audioContent);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            const blob = new Blob([bytes], { type: 'audio/mp3' });
+            this._cache[cacheKey] = blob;
+            this._playBlob(blob);
+            return;
+          }
+        }
+      } catch (e) { /* fall through to browser TTS */ }
     }
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'fr-FR';
-    if (this.voice) u.voice = this.voice;
-    u.rate = rate || 1;
-    this._utterance = u;
-    speechSynthesis.speak(u);
+
+    if (window.speechSynthesis) {
+      if (speechSynthesis.speaking) speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(clean);
+      u.lang = 'fr-FR';
+      if (this._browserVoice) u.voice = this._browserVoice;
+      u.rate = rate || 1;
+      this._utterance = u;
+      speechSynthesis.speak(u);
+    }
+  },
+
+  _playBlob(blob) {
+    const url = URL.createObjectURL(blob);
+    this._audio = new Audio(url);
+    this._audio.play().catch(() => {});
+    this._audio.onended = () => { URL.revokeObjectURL(url); this._audio = null; };
   }
 };
 
@@ -2634,11 +2678,9 @@ function scoreRing(pct) {
 
 function speakBtn(text, cls) {
   if (!text) return '';
-  if (!window.speechSynthesis) return '';
   const clean = text.replace(/_{2,}/g, '').replace(/\s{2,}/g, ' ').trim();
   if (!clean) return '';
-  const off = !Speech.hasFrenchVoice ? ' speak-btn-off' : '';
-  return `<button class="speak-btn${off}${cls ? ' ' + cls : ''}" data-speak="${esc(clean)}">${SPEAK_SVG}</button>`;
+  return `<button class="speak-btn${cls ? ' ' + cls : ''}" data-speak="${esc(clean)}">${SPEAK_SVG}</button>`;
 }
 
 function autoSpeak(text) {
