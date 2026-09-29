@@ -2635,8 +2635,10 @@ function scoreRing(pct) {
 function speakBtn(text, cls) {
   if (!text) return '';
   if (!window.speechSynthesis) return '';
+  const clean = text.replace(/_{2,}/g, '').replace(/\s{2,}/g, ' ').trim();
+  if (!clean) return '';
   const off = !Speech.hasFrenchVoice ? ' speak-btn-off' : '';
-  return `<button class="speak-btn${off}${cls ? ' ' + cls : ''}" data-speak="${esc(text)}">${SPEAK_SVG}</button>`;
+  return `<button class="speak-btn${off}${cls ? ' ' + cls : ''}" data-speak="${esc(clean)}">${SPEAK_SVG}</button>`;
 }
 
 
