@@ -475,7 +475,7 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 </style>
 </head>
 <body>
-<div id="app"><div class="wrap center" style="padding-top:30vh"><div style="font-size:3rem;margin-bottom:.75rem">\u{1F1EB}\u{1F1F7}</div><div style="font-size:1.25rem;font-weight:700;letter-spacing:-.01em">French Drills</div><div class="spin" style="margin-top:1.5rem"></div></div></div>
+<div id="app"><div class="wrap center" style="padding-top:30vh"><div style="font-size:3rem;margin-bottom:.75rem">&#x1F1EB;&#x1F1F7;</div><div style="font-size:1.25rem;font-weight:700;letter-spacing:-.01em">French Drills</div><div class="spin" style="margin-top:1.5rem"></div></div></div>
 <script>
 'use strict';
 
@@ -2137,6 +2137,7 @@ function streakRiskLevel() {
 }
 
 function renderNudgeBannerEnhanced() {
+  if (S.progress.sessions.length === 0) return '';
   const hour = new Date().getHours();
   const lastSession = S.progress.sessions[S.progress.sessions.length - 1];
   const todayDone = lastSession && lastSession.date === todayStr();
@@ -3179,36 +3180,24 @@ function renderHome() {
         <div class="dash-section mt">
           <div class="dash-section-title">Fuel Status</div>
           <div class="card">
-            <div class="fuel-row">
-              <span class="type-badge type-grammar">Grammar</span>
-              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.grammar)}" style="width:${fuelBarPct(fuel.grammar, 25)}%"></div></div>
-              <span class="fuel-count">${fuel.grammar}</span>
-            </div>
-            <div class="fuel-row">
-              <span class="type-badge type-vocab">Vocab</span>
-              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.vocab)}" style="width:${fuelBarPct(fuel.vocab, 10)}%"></div></div>
-              <span class="fuel-count">${fuel.vocab}</span>
-            </div>
-            <div class="fuel-row">
-              <span class="type-badge type-reading">Reading</span>
-              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.reading)}" style="width:${fuelBarPct(fuel.reading, 2)}%"></div></div>
-              <span class="fuel-count">${fuel.reading}</span>
-            </div>
-            <div class="fuel-row">
-              <span class="type-badge type-writing">Writing</span>
-              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.writing)}" style="width:${fuelBarPct(fuel.writing, 2)}%"></div></div>
-              <span class="fuel-count">${fuel.writing}</span>
-            </div>
-            <div class="fuel-row">
-              <span class="type-badge type-dictation">Dictation</span>
-              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.dictation)}" style="width:${fuelBarPct(fuel.dictation, 5)}%"></div></div>
-              <span class="fuel-count">${fuel.dictation}</span>
-            </div>
-            <div class="fuel-row">
-              <span class="type-badge type-listening">Listening</span>
-              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.listening)}" style="width:${fuelBarPct(fuel.listening, 5)}%"></div></div>
-              <span class="fuel-count">${fuel.listening}</span>
-            </div>
+            ${(() => {
+              const st = sessionStage();
+              const rows = [
+                { key: 'grammar', label: 'Grammar', cls: 'type-grammar', max: 25, show: true },
+                { key: 'vocab', label: 'Vocab', cls: 'type-vocab', max: 10, show: st.vocab },
+                { key: 'reading', label: 'Reading', cls: 'type-reading', max: 2, show: st.reading },
+                { key: 'writing', label: 'Writing', cls: 'type-writing', max: 2, show: st.writing },
+                { key: 'dictation', label: 'Dictation', cls: 'type-dictation', max: 5, show: st.dictation },
+                { key: 'listening', label: 'Listening', cls: 'type-listening', max: 5, show: st.listening },
+              ];
+              return rows.filter(r => r.show).map(r => `
+                <div class="fuel-row">
+                  <span class="type-badge ${r.cls}">${r.label}</span>
+                  <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel[r.key])}" style="width:${fuelBarPct(fuel[r.key], r.max)}%"></div></div>
+                  <span class="fuel-count">${fuel[r.key]}</span>
+                </div>
+              `).join('');
+            })()}
           </div>
           ${Batch.needsRefuel() ? `
             <div class="card" style="border-left:3px solid var(--warn);margin-top:.5rem">
@@ -3225,9 +3214,9 @@ function renderHome() {
 
       ${renderAchievementPreview()}
 
-      ${renderStareContent()}
+      ${S.progress.sessions.length >= 3 ? renderStareContent() : ''}
 
-      ${renderSpeakingPrompt()}
+      ${sessionStage().writing ? renderSpeakingPrompt() : ''}
 
       <div class="dash-section mt">
         <button class="nav-link" id="ignition-btn">\u{1F3B8} Guitar Strings — people who did it</button>
