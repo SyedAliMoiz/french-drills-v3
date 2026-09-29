@@ -1286,6 +1286,7 @@ function checkAdaptiveTriggers() {
 }
 
 function skillAccuracy() {
+  if (!S.progress || !S.progress.sessions) return { grammar: { attempts: 0, correct: 0, pct: -1 }, vocab: { attempts: 0, correct: 0, pct: -1 }, reading: { attempts: 0, correct: 0, pct: -1 }, listening: { attempts: 0, correct: 0, pct: -1 }, writing: { attempts: 0, correct: 0, pct: -1 }, dictation: { attempts: 0, correct: 0, pct: -1 } };
   const sessions = S.progress.sessions.slice(-10);
   const result = {};
   const skills = ['grammar', 'vocab', 'reading', 'listening', 'writing', 'dictation'];
