@@ -2693,10 +2693,12 @@ function speakCorrectSentence(q) {
   if (!Speech.hasFrenchVoice) return;
   let sentence = '';
   if (q.context && q.options) {
-    sentence = q.context.replace(/_{2,}/, q.options[q.correct]);
+    const answer = q.options[q.correct];
+    sentence = q.context.replace(/_{2,}\s*/, answer.endsWith("'") ? answer : answer + ' ');
   } else if (q.options) {
     sentence = q.options[q.correct];
   }
+  sentence = sentence.replace(/\s{2,}/g, ' ').trim();
   if (sentence) setTimeout(() => Speech.speak(sentence), 300);
 }
 
@@ -3661,7 +3663,7 @@ function renderBlank(q, progress) {
       trackAnswer(ok ? 1 : 0, ok ? 0 : 1, !ok ? { wrong: val, correct: correctStr } : null);
       recordExercise(q.id, ok, q.tags);
       if (!ok && !q._isReach) queueReach(q.tags);
-      const fullSentence = q.context ? q.context.replace(/_{2,}/, correctStr) : correctStr;
+      const fullSentence = q.context ? q.context.replace(/_{2,}\s*/, correctStr.endsWith("'") ? correctStr : correctStr + ' ').replace(/\s{2,}/g, ' ').trim() : correctStr;
       setTimeout(() => Speech.speak(fullSentence), 300);
       render();
     };
