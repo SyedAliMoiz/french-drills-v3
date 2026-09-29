@@ -1,20 +1,1056 @@
 {
-  "v": 4,
-  "updated": "2026-09-24T04:36:36.618Z",
-  "exercises": {},
-  "srs": {},
-  "errorPatterns": {},
-  "tagMastery": {},
+  "v": 10,
+  "updated": "2026-09-29T17:27:28.934Z",
+  "exercises": {
+    "g023": {
+      "attempts": 1,
+      "correct": 1,
+      "streak": 1,
+      "lastSeen": "2026-09-29",
+      "nextDue": "2026-09-28",
+      "mastery": "learning"
+    },
+    "g015": {
+      "attempts": 1,
+      "correct": 0,
+      "streak": 0,
+      "lastSeen": "2026-09-29",
+      "nextDue": "2026-09-28",
+      "mastery": "learning"
+    },
+    "r-elision-1": {
+      "attempts": 1,
+      "correct": 0,
+      "streak": 0,
+      "lastSeen": "2026-09-29",
+      "nextDue": "2026-09-28",
+      "mastery": "learning"
+    },
+    "g168": {
+      "attempts": 1,
+      "correct": 1,
+      "streak": 1,
+      "lastSeen": "2026-09-29",
+      "nextDue": "2026-09-28",
+      "mastery": "learning"
+    }
+  },
+  "srs": {
+    "v001": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v002": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v003": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v004": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v005": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v006": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v007": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v008": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v009": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v010": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v011": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v012": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v013": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v014": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v015": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v016": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v017": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v018": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v019": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v020": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v021": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v022": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v023": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v024": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v025": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v026": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v027": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v028": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v029": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v030": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v031": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v032": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v033": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v034": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v035": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v036": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v037": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v038": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v039": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v040": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v041": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v042": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v043": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v044": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v045": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v046": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v047": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v048": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v049": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v050": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v051": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v052": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v053": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v054": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v055": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v056": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v057": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v058": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v059": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v060": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v061": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v062": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v063": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v064": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v065": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v066": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v067": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v068": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v069": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v070": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v071": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v072": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v073": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v074": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v075": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v076": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v077": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v078": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v079": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v080": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v081": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v082": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v083": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v084": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v085": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v086": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v087": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v088": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v089": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v090": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v091": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v092": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v093": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v094": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v095": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v096": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v097": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v098": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v099": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v100": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v101": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v102": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v103": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v104": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v105": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v106": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v107": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v108": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v109": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v110": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v111": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v112": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v113": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v114": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v115": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v116": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v117": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v118": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v119": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v120": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v121": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v122": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v123": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v124": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v125": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    },
+    "v126": {
+      "ef": 2.5,
+      "interval": 0,
+      "reps": 0,
+      "nextReview": null,
+      "lastReview": null
+    }
+  },
+  "errorPatterns": {
+    "elision": 2,
+    "mute-h": 1,
+    "definite-articles": 1,
+    "s1-gender": 2
+  },
+  "tagMastery": {
+    "gender": {
+      "mcq": {
+        "attempts": 1,
+        "correct": 1
+      }
+    },
+    "indefinite-articles": {
+      "mcq": {
+        "attempts": 1,
+        "correct": 1
+      }
+    },
+    "masculine": {
+      "mcq": {
+        "attempts": 1,
+        "correct": 1
+      }
+    },
+    "s1-gender": {
+      "mcq": {
+        "attempts": 3,
+        "correct": 2
+      },
+      "blank": {
+        "attempts": 1,
+        "correct": 0
+      }
+    },
+    "elision": {
+      "mcq": {
+        "attempts": 1,
+        "correct": 0
+      },
+      "blank": {
+        "attempts": 1,
+        "correct": 0
+      }
+    },
+    "mute-h": {
+      "mcq": {
+        "attempts": 1,
+        "correct": 0
+      }
+    },
+    "definite-articles": {
+      "mcq": {
+        "attempts": 1,
+        "correct": 0
+      }
+    },
+    "gender-patterns": {
+      "mcq": {
+        "attempts": 1,
+        "correct": 1
+      }
+    },
+    "why": {
+      "mcq": {
+        "attempts": 1,
+        "correct": 1
+      }
+    }
+  },
   "writingSubmissions": [],
-  "sessions": [],
+  "sessions": [
+    {
+      "date": "2026-09-29",
+      "duration": 93,
+      "exercises": 4,
+      "correct": 2,
+      "errorRate": 50,
+      "skills": {
+        "grammar": {
+          "a": 4,
+          "c": 2
+        }
+      }
+    }
+  ],
   "streak": {
-    "current": 0,
-    "best": 0,
-    "lastDate": null
+    "current": 1,
+    "best": 1,
+    "lastDate": "2026-09-29",
+    "freezeDays": 1,
+    "freezeUsed": []
   },
   "batch": {
-    "id": null,
-    "loaded": null
+    "id": "b-2026-09-29-ch2",
+    "loaded": "2026-09-29T17:25:51.926Z"
   },
-  "seenIds": []
+  "seenIds": [
+    "g023",
+    "g015",
+    "r-elision-1",
+    "g168"
+  ],
+  "curriculum": {
+    "chapter": 1,
+    "currentSection": "s1-gender",
+    "completedSections": [],
+    "chapterPhase": "LEARN"
+  },
+  "xp": {
+    "total": 20,
+    "level": 1
+  },
+  "achievements": {
+    "first-note": {
+      "unlocked": "2026-09-29T17:27:28.934Z",
+      "fresh": true
+    },
+    "night-owl": {
+      "unlocked": "2026-09-29T17:27:28.934Z",
+      "fresh": true
+    }
+  },
+  "speakingDone": [],
+  "weakTags": {
+    "elision": {
+      "count": 1,
+      "firstSeen": "2026-09-29",
+      "lastSeen": "2026-09-29"
+    }
+  },
+  "weeklyQuizzes": [],
+  "challengesDone": [],
+  "bossDefeated": []
 }
