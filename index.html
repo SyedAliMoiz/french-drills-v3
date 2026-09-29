@@ -1024,7 +1024,7 @@ function checkAnswer(given, correct, alternates) {
 
 function defaultProgress() {
   return {
-    v: 8,
+    v: 9,
     updated: null,
     exercises: {},
     srs: {},
@@ -1032,6 +1032,7 @@ function defaultProgress() {
     tagMastery: {},
     writingSubmissions: [],
     speakingDone: [],
+    weakTags: {},
     sessions: [],
     streak: { current: 0, best: 0, lastDate: null, freezeDays: 1, freezeUsed: [] },
     batch: { id: null, loaded: null },
@@ -1073,8 +1074,13 @@ function migrateProgress(p) {
   if (p.v <= 7) {
     p.v = 8;
   }
+  if (p.v <= 8) {
+    if (!p.weakTags) p.weakTags = {};
+    p.v = 9;
+  }
   if (!p.seenIds) p.seenIds = [];
   if (!p.tagMastery) p.tagMastery = {};
+  if (!p.weakTags) p.weakTags = {};
   if (!p.curriculum) p.curriculum = { chapter: 1, currentSection: 's1-gender', completedSections: [], chapterPhase: 'LEARN' };
   if (!p.xp) p.xp = { total: 0, level: 1 };
   if (!p.achievements) p.achievements = {};
@@ -1184,7 +1190,7 @@ function exerciseSkill(q) {
   return 'grammar';
 }
 
-function trackAnswer(rightCount, wrongCount) {
+function trackAnswer(rightCount, wrongCount, errorDetail) {
   const q = S.queue[S.qi];
   const skill = exerciseSkill(q);
   const stats = S.sessionStats;
@@ -1208,6 +1214,67 @@ function trackAnswer(rightCount, wrongCount) {
       t.consRight = 0;
     }
   }
+
+  if (errorDetail && wrongCount > 0) {
+    if (!stats.errors) stats.errors = [];
+    stats.errors.push({ tags, wrong: errorDetail.wrong, correct: errorDetail.correct, skill, id: q ? q.id : null });
+  }
+}
+
+function diagnoseErrors(tag) {
+  const stats = S.sessionStats;
+  if (!stats || !stats.errors) return null;
+  const errors = stats.errors.filter(e => e.tags && e.tags.includes(tag));
+  if (errors.length < 2) return null;
+
+  const wrongCounts = {};
+  errors.forEach(e => {
+    if (e.wrong) wrongCounts[e.wrong] = (wrongCounts[e.wrong] || 0) + 1;
+  });
+  const repeated = Object.entries(wrongCounts).find(([, count]) => count >= 2);
+  if (repeated) return `You keep choosing "${repeated[0]}." What makes it wrong here?`;
+
+  const accentOnly = errors.filter(e =>
+    e.wrong && e.correct &&
+    stripAccents(e.wrong.toLowerCase().trim()) === stripAccents(e.correct.toLowerCase().trim())
+  );
+  if (accentOnly.length >= 2) return 'You\'re close every time. Watch the accents.';
+
+  const nearMisses = errors.filter(e => {
+    if (!e.wrong || !e.correct) return false;
+    const w = e.wrong.toLowerCase().trim(), c = e.correct.toLowerCase().trim();
+    return w.length > 2 && c.length > 2 && (w.includes(c.slice(0, 3)) || c.includes(w.slice(0, 3)));
+  });
+  if (nearMisses.length >= 2) return 'You\'re close but mixing up similar forms. Slow down and check the ending.';
+
+  return null;
+}
+
+function updateWeakTags() {
+  if (!S.progress || !S.sessionStats || !S.sessionStats.byTag) return;
+  const wt = S.progress.weakTags;
+  const today = todayStr();
+  for (const [tag, data] of Object.entries(S.sessionStats.byTag)) {
+    const total = data.right + data.wrong;
+    if (total < 2) continue;
+    const errorRate = data.wrong / total;
+    if (errorRate > 0.5) {
+      if (!wt[tag]) wt[tag] = { count: 0, firstSeen: today, lastSeen: today };
+      wt[tag].count++;
+      wt[tag].lastSeen = today;
+    } else if (errorRate < 0.25 && wt[tag]) {
+      wt[tag].count--;
+      if (wt[tag].count <= 0) delete wt[tag];
+    }
+  }
+}
+
+function persistentWeakTags() {
+  if (!S.progress || !S.progress.weakTags) return [];
+  return Object.entries(S.progress.weakTags)
+    .filter(([, data]) => data.count >= 2)
+    .sort((a, b) => b[1].count - a[1].count)
+    .map(([tag, data]) => ({ tag, count: data.count, lastSeen: data.lastSeen }));
 }
 
 function checkSmartClose() {
@@ -1240,6 +1307,42 @@ function insertConfidenceBuilder(tag) {
 
 function tryEscalation(tags) {
   if (!tags || tags.length === 0) return false;
+  const prevQ = S.queue[S.qi - 1];
+  const skill = prevQ ? exerciseSkill(prevQ) : 'grammar';
+
+  if (skill === 'vocab') {
+    const vocab = Batch.all('vocabulary');
+    const prodCandidates = vocab.filter(q => {
+      if (S.queue.some(qe => qe.id === q.id)) return false;
+      const card = getVocabCard(q.id);
+      return card.reps >= 1 && card.reps < 2 && (q.sentence_blank_en || q.sentence_en);
+    });
+    if (prodCandidates.length > 0) {
+      const ex = { ...prodCandidates[0], _isEscalation: true };
+      S.queue.splice(S.qi + 1, 0, ex);
+      return true;
+    }
+    return false;
+  }
+
+  if (skill === 'listening') {
+    const listening = Batch.all('listening');
+    const currentTier = prevQ ? (prevQ.tier || 1) : 1;
+    const harder = listening.filter(q => {
+      if (!q.tier || q.tier <= currentTier) return false;
+      if (S.queue.some(qe => qe.id === q.id)) return false;
+      if (S.progress.exercises[q.id]) return false;
+      return true;
+    });
+    if (harder.length > 0) {
+      harder.sort((a, b) => (a.tier || 1) - (b.tier || 1));
+      const ex = { ...harder[0], _isListening: true, _isEscalation: true };
+      S.queue.splice(S.qi + 1, 0, ex);
+      return true;
+    }
+    return false;
+  }
+
   const nextIdx = S.qi + 1;
   if (nextIdx >= S.queue.length) return false;
   const nextQ = S.queue[nextIdx];
@@ -1261,6 +1364,13 @@ function tryEscalation(tags) {
   return true;
 }
 
+function adaptiveThreshold() {
+  const n = S.progress && S.progress.sessions ? S.progress.sessions.length : 0;
+  if (n <= 10) return 2;
+  if (n <= 30) return 3;
+  return 4;
+}
+
 function checkAdaptiveTriggers() {
   if (checkSmartClose()) {
     S._smartCloseReason = 'high_errors';
@@ -1270,18 +1380,20 @@ function checkAdaptiveTriggers() {
 
   const prevQ = S.queue[S.qi - 1];
   if (!prevQ || !prevQ.tags) return false;
+  const thresh = adaptiveThreshold();
 
   for (const tag of prevQ.tags) {
     const tagStat = S.sessionStats.byTag[tag];
     if (!tagStat) continue;
-    if (tagStat.consWrong >= 3) {
+    if (tagStat.consWrong >= thresh) {
+      const diag = diagnoseErrors(tag);
       if (insertConfidenceBuilder(tag)) {
-        S._showAdaptiveMsg = 'encourage';
+        S._showAdaptiveMsg = diag || 'encourage';
       }
       tagStat.consWrong = 0;
       return false;
     }
-    if (tagStat.consRight >= 3) {
+    if (tagStat.consRight >= thresh) {
       if (tryEscalation(prevQ.tags)) {
         S._showAdaptiveMsg = 'push';
       }
@@ -2180,6 +2292,11 @@ function renderHome() {
                 <div class="session-focus-sub">Your weakest area at ${weak.pct}% accuracy. The app will include more ${(labels[weak.skill] || weak.skill).toLowerCase()} exercises.</div>
               </div>
             ` : ''}
+            ${(() => {
+              const pwt = persistentWeakTags();
+              if (pwt.length === 0) return '';
+              return '<div class="session-focus" style="border-left-color:var(--err)"><div class="session-focus-title">Persistent trouble spots</div><div class="session-focus-sub">' + pwt.map(w => w.tag).join(', ') + ' (struggling across multiple sessions). Extra practice will be front-loaded.</div></div>';
+            })()}
           </div>`;
       })()}
 
@@ -2314,10 +2431,11 @@ function startSession() {
   S._lastBonus = false;
   S._usedFreeze = false;
   S._prevLevel = S.progress.xp ? S.progress.xp.level : 1;
-  S.sessionStats = { byTag: {}, bySkill: {} };
+  S.sessionStats = { byTag: {}, bySkill: {}, errors: [] };
   S._smartCloseReason = null;
   S._showAdaptiveMsg = null;
   S._sessionFocus = weakestSkill();
+  S._persistentWeak = persistentWeakTags();
   S.queue = buildSessionQueue();
   S.qi = 0;
   S.answered = false;
@@ -2387,7 +2505,17 @@ function buildSessionQueue() {
     return (ra.nextDue || '').localeCompare(rb.nextDue || '');
   });
 
+  const weakTagList = persistentWeakTags().map(w => w.tag);
+  const weakTagExercises = weakTagList.length > 0 ? allGrammar.filter(q => {
+    if (!q.tags) return false;
+    return q.tags.some(t => weakTagList.includes(t));
+  }).filter(q => {
+    const rec = S.progress.exercises[q.id];
+    return !rec || rec.streak === 0 || (rec.nextDue && rec.nextDue <= today);
+  }) : [];
+
   const grammarPool = [
+    ...interleaveByTag(weakTagExercises).slice(0, 3),
     ...interleaveByTag(errored).slice(0, 5),
     ...interleaveByTag(due).slice(0, 5),
     ...interleaveByTag(fresh).slice(0, 8),
@@ -2537,8 +2665,8 @@ function renderSessionHeader(progress, typeLabel, typeClass) {
         </div>
       </div>
       <div class="prog-track mt-sm"><div class="prog-fill" style="width:${progress}%"></div></div>
-      ${adaptiveMsg === 'encourage' ? '<div class="adaptive-msg adaptive-msg-encourage">You know this pattern. Try this easier one.</div>' : ''}
-      ${adaptiveMsg === 'push' ? '<div class="adaptive-msg adaptive-msg-push">You\'re on a roll. Here\'s a harder one.</div>' : ''}
+      ${adaptiveMsg === 'encourage' ? '<div class="adaptive-msg adaptive-msg-encourage">You know this pattern. Try this easier one.</div>' : adaptiveMsg === 'push' ? '<div class="adaptive-msg adaptive-msg-push">You\'re on a roll. Here\'s a harder one.</div>' : adaptiveMsg && adaptiveMsg !== 'push' && adaptiveMsg !== 'encourage' ? `<div class="adaptive-msg adaptive-msg-encourage">${esc(adaptiveMsg)} Try this one.</div>` : ''}
+      ${S.qi === 0 && S._persistentWeak && S._persistentWeak.length > 0 ? `<div class="adaptive-msg adaptive-msg-close">Last few sessions, ${esc(S._persistentWeak.map(w => w.tag).join(' and '))} ${S._persistentWeak.length === 1 ? 'has' : 'have'} been tough. Extra practice front-loaded.</div>` : ''}
     </div>`;
 }
 
@@ -2598,7 +2726,7 @@ function renderMCQ(q, progress) {
         const correct = i === q.correct;
         if (correct) S.sessionCorrect++;
         else S.selfExplainPhase = true;
-        trackAnswer(correct ? 1 : 0, correct ? 0 : 1);
+        trackAnswer(correct ? 1 : 0, correct ? 0 : 1, !correct ? { wrong: q.options[i], correct: q.options[q.correct] } : null);
         recordExercise(q.id, correct, q.tags);
         if (!correct && !q._isReach) queueReach(q.tags);
         render();
@@ -2667,7 +2795,7 @@ function renderBlank(q, progress) {
       S.sessionTotal++;
       if (ok) S.sessionCorrect++;
       else S.selfExplainPhase = true;
-      trackAnswer(ok ? 1 : 0, ok ? 0 : 1);
+      trackAnswer(ok ? 1 : 0, ok ? 0 : 1, !ok ? { wrong: val, correct: correctStr } : null);
       recordExercise(q.id, ok, q.tags);
       if (!ok && !q._isReach) queueReach(q.tags);
       render();
@@ -2761,7 +2889,7 @@ function renderDictation(q, progress) {
       S.sessionTotal++;
       if (ok) S.sessionCorrect++;
       else S.selfExplainPhase = true;
-      trackAnswer(ok ? 1 : 0, ok ? 0 : 1);
+      trackAnswer(ok ? 1 : 0, ok ? 0 : 1, !ok ? { wrong: val, correct: q.sentence_fr } : null);
       recordExercise(q.id, ok, q.tags || ['dictation']);
       render();
     };
@@ -2841,7 +2969,7 @@ function renderVocabRecognition(q, card, progress) {
         S.sessionTotal++;
         const ok = i === correctIdx;
         if (ok) S.sessionCorrect++;
-        trackAnswer(ok ? 1 : 0, ok ? 0 : 1);
+        trackAnswer(ok ? 1 : 0, ok ? 0 : 1, !ok ? { wrong: options[i], correct: q.meaning } : null);
         SRS.update(card, ok ? 4 : 1);
         saveLocal();
         render();
@@ -2904,7 +3032,7 @@ function renderVocabProduction(q, card, progress) {
       S.sessionTotal++;
       if (ok) S.sessionCorrect++;
       else S.selfExplainPhase = true;
-      trackAnswer(ok ? 1 : 0, ok ? 0 : 1);
+      trackAnswer(ok ? 1 : 0, ok ? 0 : 1, !ok ? { wrong: val, correct: q.word } : null);
       SRS.update(card, ok ? 4 : 1);
       saveLocal();
       render();
@@ -3196,7 +3324,8 @@ function renderListening(q, progress) {
       if (!S.progress.seenIds.includes(q.id)) S.progress.seenIds.push(q.id);
       S.sessionTotal++;
       if (correct) S.sessionCorrect++;
-      trackAnswer(correct ? 1 : 0, correct ? 0 : 1);
+      const listenOpts = q.options || q.statements || [];
+      trackAnswer(correct ? 1 : 0, correct ? 0 : 1, !correct ? { wrong: listenOpts[idx] || '', correct: listenOpts[q.correct] || '' } : null);
       recordExercise(q.id, correct, q.tags || []);
       const xp = calcExerciseXP(q, correct, q._isReach);
       addXP(xp);
@@ -3262,6 +3391,7 @@ function checkSectionAdvancement() {
 function endSession() {
   const duration = Date.now() - (S.sessionStartTime || Date.now());
   recordSession(S.sessionCorrect, S.sessionTotal, duration);
+  updateWeakTags();
   S._advancedSection = checkSectionAdvancement();
   S._newAchievements = checkAchievements();
   S._leveledUp = S.progress.xp && S.progress.xp.level > S._prevLevel;
