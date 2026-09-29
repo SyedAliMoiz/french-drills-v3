@@ -3482,7 +3482,7 @@ function renderMCQ(q, progress) {
         <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
           <div class="row gap-sm" style="align-items:flex-start">
             <div class="serif flex1">${esc(q.stem)}</div>
-            ${q.type !== 'why' ? speakBtn(q.stem) : ''}
+            ${q.type !== 'why' ? speakBtn(q.context || q.stem) : ''}
           </div>
           ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
         </div>
@@ -3557,7 +3557,7 @@ function renderBlank(q, progress) {
         <div class="card${showFull ? (isCorrect ? ' card-ok' : ' card-err') : isWrong ? ' card-err' : ''}">
           <div class="row gap-sm" style="align-items:flex-start">
             <div class="serif flex1">${esc(q.stem)}</div>
-            ${speakBtn(q.stem)}
+            ${speakBtn(q.context || q.stem)}
           </div>
           ${q.context ? `<div class="sub">${esc(q.context)}</div>` : ''}
         </div>
