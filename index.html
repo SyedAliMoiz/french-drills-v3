@@ -85,7 +85,7 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 button,input,select,textarea{color:inherit;font:inherit}
 body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-.wrap{max-width:640px;margin:0 auto;padding:1.25rem 1.5rem}
+.wrap{max-width:640px;margin:0 auto;padding:2rem 1.5rem}
 .serif{font-family:Georgia,"Times New Roman",serif}
 .hdr{font-size:1.375rem;font-weight:700;letter-spacing:-0.01em}
 .sub{font-size:.8125rem;color:var(--text-dim)}
@@ -389,13 +389,9 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 .skill-bar-label{width:60px;text-align:right;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
 .skill-bar-track{flex:1;height:6px;background:var(--bar-track);border-radius:3px;overflow:hidden}
 .skill-bar-fill{height:100%;border-radius:3px;transition:width .35s ease}
-.skill-bar-fill.bar-red{background:#DC2626}
-.skill-bar-fill.bar-yellow{background:#D97706}
-.skill-bar-fill.bar-green{background:#059669}
-@media(prefers-color-scheme:dark){.skill-bar-fill.bar-red{background:#F87171}.skill-bar-fill.bar-yellow{background:#FBBF24}.skill-bar-fill.bar-green{background:#34D399}}
-:root[data-theme="dark"] .skill-bar-fill.bar-red{background:#F87171}
-:root[data-theme="dark"] .skill-bar-fill.bar-yellow{background:#FBBF24}
-:root[data-theme="dark"] .skill-bar-fill.bar-green{background:#34D399}
+.skill-bar-fill.bar-red{background:var(--err)}
+.skill-bar-fill.bar-yellow{background:var(--warn)}
+.skill-bar-fill.bar-green{background:var(--ok)}
 .skill-bar-pct{width:32px;font-variant-numeric:tabular-nums;color:var(--text-dim)}
 .smart-close-card{background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:var(--radius-md);padding:1rem;margin-bottom:.75rem;text-align:center}
 .smart-close-card .card-title{color:var(--warn)}
@@ -2921,12 +2917,12 @@ function renderSectionProgress() {
   const pct = Math.round((completed / chapter.sections.length) * 100);
 
   return `
-    <div class="dash-section">
+    <div class="dash-section" style="margin-bottom:1rem">
       <div class="dash-section-title">Chapter ${cur.chapter} Progress</div>
-      <div class="card">
+      <div class="card" style="padding:1.25rem">
         <div class="sec-pills">${pills}</div>
-        <div class="prog-track mt-sm"><div class="prog-fill" style="width:${pct}%"></div></div>
-        <div class="sub mt-sm">${completed} of ${chapter.sections.length} sections complete</div>
+        <div class="prog-track" style="margin-top:.75rem"><div class="prog-fill" style="width:${pct}%"></div></div>
+        <div class="sub" style="margin-top:.5rem">${completed} of ${chapter.sections.length} sections complete</div>
       </div>
     </div>`;
 }
@@ -3075,7 +3071,7 @@ function renderHome() {
 
       ${renderNudgeBannerEnhanced()}
 
-      ${todayDone ? `<div class="sub" style="margin-bottom:.75rem;color:var(--ok)">Done today · ${lastSession.correct}/${lastSession.exercises} correct · ${formatDuration(lastSession.duration * 1000)}</div>` : ''}
+      ${todayDone ? `<div class="sub" style="margin-bottom:1.5rem;color:var(--ok)">Done today · ${lastSession.correct}/${lastSession.exercises} correct · ${formatDuration(lastSession.duration * 1000)}</div>` : ''}
 
       ${renderWeeklyReport()}
 
@@ -3085,14 +3081,14 @@ function renderHome() {
           <div class="card-sub">Generate a batch in Claude Code and push to the repo.</div>
         </div>
       ` : `
-        <button class="btn btn-p" id="start-btn" ${total === 0 ? 'disabled' : ''} style="margin-bottom:1.25rem">
+        <button class="btn btn-p" id="start-btn" ${total === 0 ? 'disabled' : ''} style="margin-bottom:1.5rem">
           ${todayDone ? 'Practice Again' : 'Start Session'}
         </button>
       `}
 
-      ${bossChapter ? `<button class="btn btn-g" id="boss-btn" style="margin-bottom:.5rem">Boss Battle — Chapters 1–${bossChapter}</button>` : ''}
-      ${quizReady ? `<button class="btn btn-g" id="quiz-btn" style="margin-bottom:.5rem">Weekly Quiz (${sessionsSinceLastQuiz()} sessions ready)</button>` : ''}
-      ${challenges.length > 0 ? challenges.map(ch => `<button class="btn btn-g btn-sm challenge-btn" data-tag="${esc(ch.tag)}" style="margin-bottom:.375rem;width:auto;display:inline-flex;margin-right:.375rem">Challenge: ${esc(ch.tag)} (${ch.pct}%)</button>`).join('') : ''}
+      ${bossChapter ? `<button class="btn btn-g" id="boss-btn" style="margin-bottom:.75rem">Boss Battle — Chapters 1–${bossChapter}</button>` : ''}
+      ${quizReady ? `<button class="btn btn-g" id="quiz-btn" style="margin-bottom:.75rem">Weekly Quiz (${sessionsSinceLastQuiz()} sessions ready)</button>` : ''}
+      ${challenges.length > 0 ? `<div style="margin-bottom:.75rem">${challenges.map(ch => `<button class="btn btn-g btn-sm challenge-btn" data-tag="${esc(ch.tag)}" style="width:auto;display:inline-flex;margin-right:.5rem;margin-bottom:.5rem">Challenge: ${esc(ch.tag)} (${ch.pct}%)</button>`).join('')}</div>` : ''}
 
       ${renderSectionProgress()}
 
@@ -3105,7 +3101,7 @@ function renderHome() {
         const weak = weakestSkill();
         const pwt = persistentWeakTags();
         return `
-          <div class="skill-bars" style="margin-bottom:.75rem">
+          <div class="skill-bars" style="margin:1.5rem 0 1rem">
             ${Object.entries(acc).filter(([,d]) => d.attempts > 0).map(([sk, d]) => `
               <div class="skill-bar-row">
                 <span class="skill-bar-label">${labels[sk] || sk}</span>
@@ -3114,13 +3110,13 @@ function renderHome() {
               </div>
             `).join('')}
           </div>
-          ${weak ? `<div class="sub" style="margin-bottom:.5rem">Focus: ${labels[weak.skill] || weak.skill} (${weak.pct}%)</div>` : ''}
-          ${pwt.length > 0 ? `<div class="sub" style="color:var(--err);margin-bottom:.5rem">Trouble spots: ${pwt.map(w => w.tag).join(', ')}</div>` : ''}
+          ${weak ? `<div class="sub" style="margin-bottom:.75rem">Focus: ${labels[weak.skill] || weak.skill} (${weak.pct}%)</div>` : ''}
+          ${pwt.length > 0 ? `<div class="sub" style="color:var(--err);margin-bottom:.75rem">Trouble spots: ${pwt.map(w => w.tag).join(', ')}</div>` : ''}
         `;
       })()}
 
       ${Batch.needsRefuel() ? `
-        <div class="card" style="border-left:3px solid var(--warn);margin-bottom:.75rem">
+        <div class="card" style="border-left:3px solid var(--warn);margin-bottom:1.5rem">
           <div class="card-title" style="color:var(--warn)">Exercises running low</div>
           <button class="btn btn-g btn-sm mt-sm" id="refuel-btn" style="width:auto">Copy REFUEL.md</button>
           <span class="sub" id="refuel-status" style="margin-left:.5rem"></span>
@@ -3132,7 +3128,7 @@ function renderHome() {
       ${sessionCount >= 3 ? renderStareContent() : ''}
       ${sessionStage().writing ? renderSpeakingPrompt() : ''}
 
-      <div style="margin-top:1.25rem;display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <div style="margin-top:2rem;padding-top:1.25rem;border-top:1px solid var(--line);display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap">
         <button class="btn-link" id="ignition-btn">Guitar Strings</button>
         <button class="btn-link" id="show-all-ach">Achievements</button>
         <button class="btn-link" id="settings-btn">Settings</button>
