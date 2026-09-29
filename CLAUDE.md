@@ -120,7 +120,7 @@ The app tracks mastery per chapter section and advances through the curriculum a
 - Once blanks are unlocked ("advancing" status), the app auto-advances to the next section
 - Progress is tracked in `PROGRESS.json` under the `curriculum` field
 
-### Progress schema (v8):
+### Progress schema (v9):
 ```json
 {
   "curriculum": { "chapter": 1, "currentSection": "s2-adjectives", "completedSections": ["s1-gender"], "chapterPhase": "LEARN" },
@@ -157,7 +157,11 @@ The app adjusts mid-session based on real-time performance:
 - **Bonus round**: error rate under 10% → offers optional 5-exercise challenge round at higher difficulty.
 - **Skill weakness detection**: tracks per-skill accuracy across last 10 sessions (grammar, vocab, reading, listening, writing, dictation). Shows skill accuracy bars on home screen (red/yellow/green). Weakest skill (under 70%) gets highlighted as session focus with increased exercise allocation.
 - Session records include `skills` field with per-skill breakdown: `{ grammar: { a: attempts, c: correct }, ... }`
-- Functions: `exerciseSkill()`, `trackAnswer()`, `checkSmartClose()`, `insertConfidenceBuilder()`, `tryEscalation()`, `checkAdaptiveTriggers()`, `skillAccuracy()`, `weakestSkill()`
+- **Error diagnosis**: stores actual wrong answers per tag. Detects repeated misconceptions ("You keep choosing X"), accent-only errors, and near-miss confusions. Diagnostic messages shown in confidence builders.
+- **Cross-session memory**: `progress.weakTags` persists struggling patterns across sessions. Tags with >50% errors get flagged; <25% clears them. Persistent weak tags shown on home screen and front-loaded in session queue.
+- **Adaptive thresholds**: consecutive trigger scales with experience (2 for sessions 1-10, 3 for 11-30, 4 for 31+).
+- **Multi-skill escalation**: vocab escalation pushes recognition → production. Listening escalation jumps to higher tier. Grammar uses difficulty-based escalation.
+- Functions: `exerciseSkill()`, `trackAnswer()`, `checkSmartClose()`, `insertConfidenceBuilder()`, `tryEscalation()`, `checkAdaptiveTriggers()`, `adaptiveThreshold()`, `diagnoseErrors()`, `updateWeakTags()`, `persistentWeakTags()`, `skillAccuracy()`, `weakestSkill()`
 
 ### XP & Levels
 - XP earned per correct answer: MCQ 10, blank 20, open 30, vocab recognition 10, vocab production 20, reading 15, writing 50, dictation 20, listening 15, REACH bonus +5
