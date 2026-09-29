@@ -42,12 +42,21 @@ All-in-one French learning app. Replaces V1 (grammar) and V2 (vocab SRS).
     { "id": "r001", "title": "...", "passage": "...", "level": "A1", "questions": [...], "vocab_highlights": {...} }
   ],
   "writing": [
-    { "id": "w001", "type": "essay", "prompt": "...", "guidelines": "...", "level": "A1", "template": "opinion_essay" },
-    { "id": "w002", "type": "micro", "prompt": "Write 2 sentences about...", "guidelines": "...", "level": "A1" },
-    { "id": "w003", "type": "translate", "prompt": "Translate to French", "source_en": "English text here.", "guidelines": "...", "level": "A1" }
+    { "id": "w001", "type": "tcf", "tcf_tache": 1, "message_from": "Lina", "message_text": "Salut! ...", "instruction": "Répondez...", "word_min": 60, "word_max": 120 },
+    { "id": "w002", "type": "tcf", "tcf_tache": 2, "context": "Newsletter...", "instruction": "Rédigez...", "word_min": 120, "word_max": 150 },
+    { "id": "w003", "type": "tcf", "tcf_tache": 3, "view_a": "Opinion A...", "view_b": "Opinion B...", "topic": "Technology", "instruction": "Summarize both views...", "word_min": 120, "word_max": 180 }
   ],
   "dictation": [
     { "id": "d001", "sentence_fr": "...", "sentence_en": "...", "level": "A1", "tags": [...], "alternates": ["..."] }
+  ],
+  "listening": [
+    { "id": "l001", "tier": 1, "tier_name": "Repérage", "audio": "audio/l001.mp3", "passage_text": "...", "situation": "...", "statements": ["A", "B", "C", "D"], "correct": 2, "level": "A1" },
+    { "id": "l002", "tier": 3, "tier_name": "Reportages", "audio": "audio/l002.mp3", "passage_text": "...", "question": "...", "options": ["A", "B", "C", "D"], "correct": 0, "level": "B1" }
+  ],
+  "speaking": [
+    { "id": "sp001", "tache": 1, "questions": ["Question 1?", "Question 2?", "Question 3?", "Question 4?"] },
+    { "id": "sp002", "tache": 2, "topic": "Logement", "scenario": "Vous téléphonez...", "prep_time_seconds": 120 },
+    { "id": "sp003", "tache": 3, "topic": "Technologie", "prompt": "Selon vous, les réseaux sociaux..." }
   ],
   "writing_feedback": [],
   "spaced_retrieval": ["section-ids-to-review"],
@@ -79,8 +88,14 @@ Key rules:
 - Exercise IDs must be unique and never reuse exhausted IDs (listed in REFUEL.md)
 - Grammar exercises need `id`, `type`, `stem`, `correct`, `rule`, `tags`
 - Vocab needs `id`, `word`, `meaning`, `gender` (for nouns)
-- Writing: 3 per batch, mixed types. `type`: essay (with `template`), micro (2-sentence prompt), translate (with `source_en`). Templates: opinion_essay, formal_email, letter_of_complaint, narrative.
+- Writing (TCF format): 3 per batch, one per tâche. `type`: "tcf", `tcf_tache`: 1/2/3.
+  - Tâche 1: `message_from`, `message_text`, `instruction`, `word_min: 60`, `word_max: 120`
+  - Tâche 2: `context`, `instruction`, `word_min: 120`, `word_max: 150`
+  - Tâche 3: `view_a`, `view_b`, `topic`, `instruction`, `word_min: 120`, `word_max: 180`
+- Legacy writing (backward compatible): `type`: essay/micro/translate still works
 - Writing feedback: include `rubric: { vocabulary: N, grammar: N, coherence: N, organization: N }` (each 1-5) and categorized errors with `category` field.
+- Listening: exercises with audio. `id`, `tier` (1-5), `tier_name`, `audio` (path to MP3), `passage_text`, `question`, `options` (array of 4), `correct` (index), `level`. Tier 1 uses `statements` + `situation` instead of `question` + `options`.
+- Speaking: prompts displayed on home screen (not in session queue). `id`, `tache` (1/2/3), `questions` (tâche 1), `scenario` + `prep_time_seconds` (tâche 2), `prompt` (tâche 3), `topic`.
 - Generate reach exercises for each weak error pattern
 - Difficulty 1-5 scale (1=recognition, 5=production with no hints)
 
@@ -105,13 +120,14 @@ The app tracks mastery per chapter section and advances through the curriculum a
 - Once blanks are unlocked ("advancing" status), the app auto-advances to the next section
 - Progress is tracked in `PROGRESS.json` under the `curriculum` field
 
-### Progress schema (v6):
+### Progress schema (v7):
 ```json
 {
   "curriculum": { "chapter": 1, "currentSection": "s2-adjectives", "completedSections": ["s1-gender"], "chapterPhase": "LEARN" },
   "xp": { "total": 1250, "level": 5 },
   "achievements": { "first-note": { "unlocked": "ISO-date", "fresh": false } },
-  "streak": { "current": 3, "best": 5, "lastDate": "2026-09-28", "freezeDays": 2, "freezeUsed": [] }
+  "streak": { "current": 3, "best": 5, "lastDate": "2026-09-28", "freezeDays": 2, "freezeUsed": [] },
+  "speakingDone": ["sp001"]
 }
 ```
 
@@ -120,8 +136,22 @@ Every grammar exercise MUST include its section tag in the `tags` array. The REF
 
 ## Stickiness Layer (Phase 3)
 
+### Progressive Session Length (Phase 4)
+Sessions ramp based on total sessions completed:
+- 0-5 sessions: 5 exercises max, grammar only
+- 6-12 sessions: 10 exercises, grammar + vocab
+- 13-25 sessions: 15 exercises, + dictation + reading
+- 26-50 sessions: 20 exercises, + writing (tâche 1 only) + listening (tier 1-2 only)
+- 51+ sessions: 30 exercises, full mix
+
+### Listening Comprehension (Phase 4)
+Audio-based MCQ exercises. Audio files stored as MP3s in `batches/audio/`. Generated via Google Cloud TTS Chirp 3 HD with fr-CA voices (`scripts/tts-batch.sh`). Tiers 1-5 match TCF Canada format. Tiers 1-3 allow replay; 4-5 do not. Falls back to transcript if no audio file.
+
+### Speaking Practice (Phase 4)
+Prompts displayed on home screen (not in drill session). Tracked via `speakingDone[]`. Actual speaking practice happens in Claude Code sessions.
+
 ### XP & Levels
-- XP earned per correct answer: MCQ 10, blank 20, open 30, vocab recognition 10, vocab production 20, reading 15, writing 50, dictation 20, REACH bonus +5
+- XP earned per correct answer: MCQ 10, blank 20, open 30, vocab recognition 10, vocab production 20, reading 15, writing 50, dictation 20, listening 15, REACH bonus +5
 - 15% chance of double XP on any correct answer (variable reward)
 - Level = floor(sqrt(totalXP / 50)) + 1
 - XP for next level = (level)^2 * 50

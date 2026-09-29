@@ -1,0 +1,228 @@
+{
+  "batch_id": "b-2026-09-29-ch2",
+  "generated": "2026-09-29",
+  "curriculum": { "chapter": 2, "section": "s1-etre", "phase": "LEARN" },
+  "grammar": [
+    { "id": "g101", "type": "mcq", "stem": "Je ___ étudiant. (I am a student.)", "options": ["suis", "es", "est", "sommes"], "correct": 0, "rule": "\"Je suis\" — first person singular of être. \"Es\" is for tu, \"est\" for il/elle, \"sommes\" for nous.", "tags": ["etre", "etre-conjugation", "s1-etre"], "difficulty": 1 },
+    { "id": "g102", "type": "mcq", "stem": "Tu ___ fatigué. (You are tired.)", "options": ["suis", "es", "est", "êtes"], "correct": 1, "rule": "\"Tu es\" — second person singular of être. \"Suis\" is for je, \"est\" for il/elle, \"êtes\" for vous.", "tags": ["etre", "etre-conjugation", "s1-etre"], "difficulty": 1 },
+    { "id": "g103", "type": "mcq", "stem": "Elle ___ canadienne. (She is Canadian.)", "options": ["suis", "es", "est", "sont"], "correct": 2, "rule": "\"Elle est\" — third person singular of être.", "tags": ["etre", "etre-conjugation", "s1-etre"], "difficulty": 1 },
+    { "id": "g104", "type": "mcq", "stem": "Nous ___ contents. (We are happy.)", "options": ["sommes", "êtes", "sont", "suis"], "correct": 0, "rule": "\"Nous sommes\" — first person plural of être.", "tags": ["etre", "etre-conjugation", "s1-etre"], "difficulty": 1 },
+    { "id": "g105", "type": "mcq", "stem": "Ils ___ au Canada. (They are in Canada.)", "options": ["est", "sommes", "êtes", "sont"], "correct": 3, "rule": "\"Ils sont\" — third person plural of être.", "tags": ["etre", "etre-conjugation", "s1-etre"], "difficulty": 1 },
+    { "id": "g106", "type": "mcq", "stem": "J'___ un chien. (I have a dog.)", "options": ["ai", "as", "a", "avons"], "correct": 0, "rule": "\"J'ai\" — first person singular of avoir. Note the elision: je + ai = j'ai.", "tags": ["avoir", "avoir-conjugation", "s2-avoir"], "difficulty": 1 },
+    { "id": "g107", "type": "mcq", "stem": "Tu ___ une sœur. (You have a sister.)", "options": ["ai", "as", "a", "avez"], "correct": 1, "rule": "\"Tu as\" — second person singular of avoir.", "tags": ["avoir", "avoir-conjugation", "s2-avoir"], "difficulty": 1 },
+    { "id": "g108", "type": "mcq", "stem": "Il ___ vingt ans. (He is twenty years old.)", "options": ["ai", "as", "a", "ont"], "correct": 2, "rule": "\"Il a\" — third person singular of avoir. French uses avoir (to have) for age: \"il a vingt ans\" = he has twenty years.", "tags": ["avoir", "avoir-conjugation", "s2-avoir"], "difficulty": 1 },
+    { "id": "g109", "type": "mcq", "stem": "Vous ___ trois enfants. (You have three children.)", "options": ["avons", "avez", "ont", "as"], "correct": 1, "rule": "\"Vous avez\" — second person plural/formal of avoir.", "tags": ["avoir", "avoir-conjugation", "s2-avoir"], "difficulty": 1 },
+    { "id": "g110", "type": "mcq", "stem": "Elles ___ des livres. (They have books.)", "options": ["a", "avons", "avez", "ont"], "correct": 3, "rule": "\"Elles ont\" — third person plural of avoir.", "tags": ["avoir", "avoir-conjugation", "s2-avoir"], "difficulty": 1 },
+    { "id": "g111", "type": "mcq", "stem": "J'___ faim. (I am hungry.)", "context": "In French, hunger uses avoir, not être.", "options": ["suis", "ai", "est", "as"], "correct": 1, "rule": "French says \"j'ai faim\" (I have hunger), not \"je suis faim\". Hunger, thirst, age, fear all use avoir.", "tags": ["etre-avoir-expressions", "s3-etre-avoir"], "difficulty": 1 },
+    { "id": "g112", "type": "mcq", "stem": "Elle ___ soif. (She is thirsty.)", "context": "Choose être or avoir.", "options": ["est", "a", "suis", "ai"], "correct": 1, "rule": "\"Avoir soif\" — thirst uses avoir in French. \"Elle a soif\" = she has thirst.", "tags": ["etre-avoir-expressions", "s3-etre-avoir"], "difficulty": 1 },
+    { "id": "g113", "type": "mcq", "stem": "Tu ___ raison. (You are right.)", "options": ["es", "as", "est", "a"], "correct": 1, "rule": "\"Avoir raison\" = to be right (literally: to have reason). Uses avoir, not être.", "tags": ["etre-avoir-expressions", "s3-etre-avoir"], "difficulty": 1 },
+    { "id": "g114", "type": "mcq", "stem": "Nous ___ peur. (We are afraid.)", "options": ["sommes", "avons", "êtes", "avez"], "correct": 1, "rule": "\"Avoir peur\" = to be afraid (literally: to have fear). Uses avoir.", "tags": ["etre-avoir-expressions", "s3-etre-avoir"], "difficulty": 2 },
+    { "id": "g115", "type": "mcq", "stem": "Il ___ chaud. (He is hot.)", "context": "The person feels hot (not the weather).", "options": ["est", "a", "fait", "suis"], "correct": 1, "rule": "\"Avoir chaud\" = to feel hot (a person). \"Il fait chaud\" = the weather is hot. For a person's sensation, use avoir.", "tags": ["etre-avoir-expressions", "s3-etre-avoir"], "difficulty": 2 },
+    { "id": "g116", "type": "mcq", "stem": "Je ___ suis ___ étudiant. (I am not a student.)", "options": ["ne ... pas", "ne ... plus", "ne ... jamais", "n' ... pas"], "correct": 0, "rule": "Basic negation wraps the verb: ne + verb + pas. \"Je ne suis pas\" = I am not.", "tags": ["negation", "ne-pas", "s4-negation"], "difficulty": 1 },
+    { "id": "g117", "type": "mcq", "stem": "Which is correct? \"She is not tired.\"", "options": ["Elle ne est pas fatiguée.", "Elle n'est pas fatiguée.", "Elle est ne pas fatiguée.", "Elle est pas fatiguée."], "correct": 1, "rule": "Before a vowel, \"ne\" becomes \"n'\". \"Elle n'est pas fatiguée.\" The negation always wraps the verb.", "tags": ["negation", "ne-pas", "s4-negation"], "difficulty": 1 },
+    { "id": "g118", "type": "mcq", "stem": "Il ___ a ___ de frères. (He doesn't have any brothers.)", "options": ["ne ... pas", "n' ... pas", "ne ... plus", "n' ... jamais"], "correct": 1, "rule": "Before a vowel (avoir starts with a), \"ne\" becomes \"n'\". \"Il n'a pas de frères.\" Note: after negation, \"des\" becomes \"de\".", "tags": ["negation", "ne-pas", "s4-negation"], "difficulty": 2 },
+    { "id": "g119", "type": "mcq", "stem": "Nous n'avons pas ___ argent. (We don't have any money.)", "options": ["de l'", "d'", "des", "du"], "correct": 1, "rule": "After negation, partitive articles (du, de la, de l', des) become \"de\" (or \"d'\" before a vowel). \"Nous n'avons pas d'argent.\"", "tags": ["negation", "ne-pas", "s4-negation"], "difficulty": 2 },
+    { "id": "g120", "type": "mcq", "stem": "Tu ___ es ___ prêt ? (You're not ready?)", "options": ["ne ... pas", "n' ... pas", "ne ... jamais", "ne ... plus"], "correct": 0, "rule": "\"Tu ne es\" does NOT elide because \"ne\" only elides before vowel sounds. Wait — actually \"ne\" before \"es\" DOES elide: \"Tu n'es pas prêt.\" Trick question: the correct form uses n'.", "tags": ["negation", "ne-pas", "s4-negation"], "difficulty": 2 },
+    { "id": "g121", "type": "mcq", "stem": "Complete: \"Vous ___ médecin.\" (You are a doctor.)", "context": "Note: French drops the article before professions with être.", "options": ["êtes", "avez", "sont", "sommes"], "correct": 0, "rule": "\"Vous êtes médecin.\" No article before professions after être. You don't say \"vous êtes un médecin\" (unlike English).", "tags": ["etre", "etre-conjugation", "s1-etre"], "difficulty": 2 },
+    { "id": "g122", "type": "mcq", "stem": "Mon frère ___ besoin d'aide. (My brother needs help.)", "options": ["est", "a", "fait", "va"], "correct": 1, "rule": "\"Avoir besoin de\" = to need (literally: to have need of). \"Mon frère a besoin d'aide.\"", "tags": ["etre-avoir-expressions", "s3-etre-avoir"], "difficulty": 2 },
+    { "id": "g123", "type": "why", "stem": "Why does French say \"j'ai vingt ans\" instead of \"je suis vingt ans\"?", "options": ["Because être is only for names", "Because French uses avoir (to have) for age — you 'have' years", "Because vingt is a number and numbers need avoir", "Because suis only works with adjectives"], "correct": 1, "rule": "French treats age as something you possess. You don't 'are' 20 years old, you 'have' 20 years. This is one of the key être/avoir expression differences.", "tags": ["etre-avoir-expressions", "s3-etre-avoir"], "difficulty": 2 },
+    { "id": "g124", "type": "why", "stem": "Why does \"ne\" become \"n'\" in \"je n'ai pas\"?", "options": ["Because 'ai' starts with a vowel — elision removes the 'e' from 'ne'", "Because 'n' is the negative form of avoir", "Because je already ends with a vowel", "Because pas requires the short form"], "correct": 0, "rule": "Elision: when \"ne\" comes before a vowel sound, the 'e' drops and is replaced by an apostrophe. Same rule as le→l', je→j'.", "tags": ["negation", "ne-pas", "s4-negation"], "difficulty": 2 },
+    { "id": "g125", "type": "mcq", "stem": "Nous ___ en retard. (We are late.)", "options": ["avons", "sommes", "faisons", "allons"], "correct": 1, "rule": "\"Être en retard\" = to be late. This one uses être, not avoir. States and conditions often use être.", "tags": ["etre", "etre-conjugation", "s1-etre"], "difficulty": 2 }
+  ],
+  "reach": {
+    "etre": [
+      { "id": "r-etre-1", "type": "mcq", "stem": "Elle ___ française. (She is French.)", "options": ["suis", "es", "est", "sont"], "correct": 2, "rule": "Elle est — third person singular.", "tags": ["etre", "s1-etre"], "difficulty": 1 },
+      { "id": "r-etre-2", "type": "mcq", "stem": "Tu ___ mon ami. (You are my friend.)", "options": ["suis", "es", "est", "êtes"], "correct": 1, "rule": "Tu es — second person singular.", "tags": ["etre", "s1-etre"], "difficulty": 1 },
+      { "id": "r-etre-3", "type": "mcq", "stem": "Nous ___ ici. (We are here.)", "options": ["suis", "sommes", "êtes", "sont"], "correct": 1, "rule": "Nous sommes — first person plural.", "tags": ["etre", "s1-etre"], "difficulty": 1 },
+      { "id": "r-etre-4", "type": "mcq", "stem": "Vous ___ gentil. (You are kind.)", "options": ["sommes", "êtes", "sont", "es"], "correct": 1, "rule": "Vous êtes — formal/plural you.", "tags": ["etre", "s1-etre"], "difficulty": 1 },
+      { "id": "r-etre-5", "type": "mcq", "stem": "Je ___ content. (I am happy.)", "options": ["suis", "es", "est", "ai"], "correct": 0, "rule": "Je suis — first person. Note: content (happy) uses être, not avoir.", "tags": ["etre", "s1-etre"], "difficulty": 1 }
+    ],
+    "avoir": [
+      { "id": "r-avoir-1", "type": "mcq", "stem": "J'___ deux chats. (I have two cats.)", "options": ["ai", "as", "a", "suis"], "correct": 0, "rule": "J'ai — first person of avoir with elision.", "tags": ["avoir", "s2-avoir"], "difficulty": 1 },
+      { "id": "r-avoir-2", "type": "mcq", "stem": "Nous ___ un problème. (We have a problem.)", "options": ["sommes", "avons", "avez", "ont"], "correct": 1, "rule": "Nous avons — first person plural of avoir.", "tags": ["avoir", "s2-avoir"], "difficulty": 1 },
+      { "id": "r-avoir-3", "type": "mcq", "stem": "Elle ___ une question. (She has a question.)", "options": ["est", "a", "as", "ai"], "correct": 1, "rule": "Elle a — third person singular of avoir.", "tags": ["avoir", "s2-avoir"], "difficulty": 1 },
+      { "id": "r-avoir-4", "type": "mcq", "stem": "Ils ___ faim. (They are hungry.)", "options": ["sont", "ont", "avons", "avez"], "correct": 1, "rule": "Ils ont — third person plural. Hunger uses avoir.", "tags": ["avoir", "s2-avoir"], "difficulty": 1 },
+      { "id": "r-avoir-5", "type": "mcq", "stem": "Tu ___ froid ? (Are you cold?)", "options": ["es", "as", "a", "ai"], "correct": 1, "rule": "Tu as froid — second person. Being cold uses avoir.", "tags": ["avoir", "s2-avoir"], "difficulty": 1 }
+    ],
+    "negation": [
+      { "id": "r-neg-1", "type": "mcq", "stem": "Je ___ suis ___ malade. (I am not sick.)", "options": ["ne ... pas", "n' ... pas", "ne ... plus", "pas ... ne"], "correct": 0, "rule": "Ne + verb + pas. Before consonant 's', ne stays as ne.", "tags": ["negation", "s4-negation"], "difficulty": 1 },
+      { "id": "r-neg-2", "type": "mcq", "stem": "Elle ___ est ___ contente. (She is not happy.)", "options": ["ne ... pas", "n' ... pas", "ne ... plus", "pas ... ne"], "correct": 1, "rule": "Before vowel 'e' in est, ne becomes n'.", "tags": ["negation", "s4-negation"], "difficulty": 1 },
+      { "id": "r-neg-3", "type": "mcq", "stem": "Nous ___ avons ___ de temps. (We don't have time.)", "options": ["ne ... pas", "n' ... pas", "ne ... plus", "ne ... jamais"], "correct": 1, "rule": "Before vowel 'a' in avons, ne becomes n'. After negation, du/de la becomes de.", "tags": ["negation", "s4-negation"], "difficulty": 1 },
+      { "id": "r-neg-4", "type": "mcq", "stem": "Tu ___ as ___ tort. (You are not wrong.)", "options": ["ne ... pas", "n' ... pas", "ne ... plus", "n' ... jamais"], "correct": 1, "rule": "Before vowel 'a', ne becomes n'. Avoir tort = to be wrong.", "tags": ["negation", "s4-negation"], "difficulty": 1 },
+      { "id": "r-neg-5", "type": "mcq", "stem": "Ils ___ sont ___ ici. (They are not here.)", "options": ["ne ... pas", "n' ... pas", "ne ... plus", "pas ... ne"], "correct": 0, "rule": "Before consonant 's' in sont, ne stays as ne.", "tags": ["negation", "s4-negation"], "difficulty": 1 }
+    ]
+  },
+  "vocabulary": [
+    { "id": "v101", "word": "fatigué", "gender": null, "meaning": "tired", "pronunciation": "/fa.ti.ɡe/ (fah-tee-GAY)", "sentence_fr": "Je suis très fatigué aujourd'hui.", "sentence_en": "I am very tired today.", "sentence_blank_en": "I am very ___ today.", "distractors": ["hungry", "afraid"], "tags": ["s1-etre", "adjective"] },
+    { "id": "v102", "word": "content", "gender": null, "meaning": "happy/glad", "pronunciation": "/kɔ̃.tɑ̃/ (kon-TAN)", "sentence_fr": "Nous sommes contents de vous voir.", "sentence_en": "We are happy to see you.", "sentence_blank_en": "We are ___ to see you.", "distractors": ["tired", "late"], "tags": ["s1-etre", "adjective"] },
+    { "id": "v103", "word": "malade", "gender": null, "meaning": "sick", "pronunciation": "/ma.lad/ (mah-LAHD)", "sentence_fr": "Elle est malade depuis lundi.", "sentence_en": "She has been sick since Monday.", "sentence_blank_en": "She has been ___ since Monday.", "distractors": ["happy", "afraid"], "tags": ["s1-etre", "adjective"] },
+    { "id": "v104", "word": "prêt", "gender": null, "meaning": "ready", "pronunciation": "/pʁɛ/ (PREH)", "sentence_fr": "Tu es prêt pour l'examen ?", "sentence_en": "Are you ready for the exam?", "sentence_blank_en": "Are you ___ for the exam?", "distractors": ["sick", "late"], "tags": ["s1-etre", "adjective"] },
+    { "id": "v105", "word": "en retard", "gender": null, "meaning": "late", "pronunciation": "/ɑ̃ ʁə.taʁ/ (on ruh-TAR)", "sentence_fr": "Je suis en retard pour le cours.", "sentence_en": "I am late for class.", "sentence_blank_en": "I am ___ for class.", "distractors": ["ready", "happy"], "tags": ["s1-etre", "expression"] },
+    { "id": "v106", "word": "faim", "gender": "f", "meaning": "hunger (avoir faim = to be hungry)", "pronunciation": "/fɛ̃/ (FAN)", "sentence_fr": "J'ai très faim après le sport.", "sentence_en": "I am very hungry after sports.", "sentence_blank_en": "I am very ___ after sports.", "distractors": ["thirsty", "cold"], "tags": ["s3-etre-avoir", "avoir-expression"] },
+    { "id": "v107", "word": "soif", "gender": "f", "meaning": "thirst (avoir soif = to be thirsty)", "pronunciation": "/swaf/ (SWAHF)", "sentence_fr": "Tu as soif ? Je peux te donner de l'eau.", "sentence_en": "Are you thirsty? I can give you water.", "sentence_blank_en": "Are you ___? I can give you water.", "distractors": ["hungry", "afraid"], "tags": ["s3-etre-avoir", "avoir-expression"] },
+    { "id": "v108", "word": "peur", "gender": "f", "meaning": "fear (avoir peur = to be afraid)", "pronunciation": "/pœʁ/ (PUR)", "sentence_fr": "Elle a peur du noir.", "sentence_en": "She is afraid of the dark.", "sentence_blank_en": "She is ___ of the dark.", "distractors": ["hungry", "cold"], "tags": ["s3-etre-avoir", "avoir-expression"] },
+    { "id": "v109", "word": "besoin", "gender": "m", "meaning": "need (avoir besoin de = to need)", "pronunciation": "/bə.zwɛ̃/ (buh-ZWAN)", "sentence_fr": "Nous avons besoin d'aide.", "sentence_en": "We need help.", "sentence_blank_en": "We ___ help.", "distractors": ["have", "want"], "tags": ["s3-etre-avoir", "avoir-expression"] },
+    { "id": "v110", "word": "raison", "gender": "f", "meaning": "reason (avoir raison = to be right)", "pronunciation": "/ʁɛ.zɔ̃/ (ray-ZON)", "sentence_fr": "Tu as raison, c'est une bonne idée.", "sentence_en": "You are right, it's a good idea.", "sentence_blank_en": "You are ___, it's a good idea.", "distractors": ["wrong", "afraid"], "tags": ["s3-etre-avoir", "avoir-expression"] }
+  ],
+  "reading": [
+    {
+      "id": "rd101",
+      "title": "Ma famille",
+      "passage": "Je m'appelle Sophie. Je suis canadienne. J'ai vingt-trois ans. J'ai un frère et une sœur. Mon frère est étudiant. Il a vingt ans. Ma sœur est petite. Elle a dix ans. Nous sommes une famille heureuse. Nous n'avons pas de chat, mais nous avons un chien.",
+      "level": "A1",
+      "questions": [
+        { "q": "How old is Sophie?", "options": ["20 years old", "23 years old", "10 years old", "30 years old"], "correct": 1 },
+        { "q": "What pet does the family have?", "options": ["A cat", "A cat and a dog", "A dog", "No pets"], "correct": 2 },
+        { "q": "What does Sophie's brother do?", "options": ["He works", "He is a student", "He is a teacher", "He is sick"], "correct": 1 }
+      ],
+      "vocab_highlights": { "canadienne": "Canadian (feminine)", "heureuse": "happy (feminine)", "chien": "dog" }
+    },
+    {
+      "id": "rd102",
+      "title": "Au bureau",
+      "passage": "Aujourd'hui, je suis au bureau. Je suis fatigué parce que je n'ai pas bien dormi. Mon collègue Marc est content parce qu'il a un nouveau projet. Nous avons une réunion à dix heures. Je n'ai pas faim, mais j'ai très soif. Marc a besoin de café.",
+      "level": "A1",
+      "questions": [
+        { "q": "Why is the narrator tired?", "options": ["Too much work", "Didn't sleep well", "Didn't eat", "The meeting is boring"], "correct": 1 },
+        { "q": "Why is Marc happy?", "options": ["He slept well", "He has a new project", "He has coffee", "He is not tired"], "correct": 1 }
+      ],
+      "vocab_highlights": { "bureau": "office", "collègue": "colleague", "réunion": "meeting", "dormi": "slept" }
+    },
+    {
+      "id": "rd103",
+      "title": "Le matin",
+      "passage": "Le matin, je n'ai pas beaucoup de temps. J'ai toujours faim, mais je ne suis pas toujours prêt à manger. Ma mère est en retard pour le travail. Mon père n'est pas content. Il a froid parce que la fenêtre est ouverte. Nous n'avons pas peur du froid, mais mon père a tort — il fait vraiment froid !",
+      "level": "A1-A2",
+      "questions": [
+        { "q": "Who is late for work?", "options": ["The narrator", "The father", "The mother", "Nobody"], "correct": 2 },
+        { "q": "Why is the father cold?", "options": ["No heating", "The window is open", "It's winter", "He is sick"], "correct": 1 },
+        { "q": "Does the narrator have time in the morning?", "options": ["Yes, a lot", "No, not much", "Only on weekends", "It depends"], "correct": 1 }
+      ],
+      "vocab_highlights": { "matin": "morning", "travail": "work", "fenêtre": "window", "ouverte": "open" }
+    }
+  ],
+  "writing": [
+    {
+      "id": "w101",
+      "type": "tcf",
+      "tcf_tache": 1,
+      "message_from": "Karim",
+      "message_text": "Salut ! Je suis malade aujourd'hui, je ne suis pas à l'université. Tu as mes notes du cours de français ? J'ai besoin des exercices pour demain. Tu es libre ce soir pour m'aider ?",
+      "instruction": "Répondez à Karim. Acceptez ou refusez sa demande et expliquez pourquoi.",
+      "word_min": 60,
+      "word_max": 120
+    },
+    {
+      "id": "w102",
+      "type": "tcf",
+      "tcf_tache": 2,
+      "context": "Vous écrivez un article pour le journal de votre quartier.",
+      "instruction": "Racontez une expérience positive que vous avez eue récemment dans votre quartier (un événement, une rencontre, une découverte). Décrivez ce qui s'est passé et expliquez pourquoi c'était important pour vous.",
+      "word_min": 120,
+      "word_max": 150
+    },
+    {
+      "id": "w103",
+      "type": "tcf",
+      "tcf_tache": 3,
+      "view_a": "Certaines personnes pensent que les cours en ligne sont meilleurs parce qu'on est libre de travailler à son rythme, on n'a pas besoin de transport, et on est plus confortable chez soi.",
+      "view_b": "D'autres personnes pensent que les cours en personne sont meilleurs parce qu'on a un contact direct avec le professeur, on n'est pas seul, et on est plus motivé avec les autres étudiants.",
+      "topic": "Éducation",
+      "instruction": "Première partie : résumez les deux points de vue (40–60 mots). Deuxième partie : donnez votre opinion personnelle et expliquez pourquoi (80–120 mots).",
+      "word_min": 120,
+      "word_max": 180
+    }
+  ],
+  "dictation": [
+    { "id": "d101", "sentence_fr": "Je suis étudiant.", "sentence_en": "I am a student.", "level": "A1", "tags": ["etre", "s1-etre"], "alternates": ["Je suis etudiant"] },
+    { "id": "d102", "sentence_fr": "Elle a vingt ans.", "sentence_en": "She is twenty years old.", "level": "A1", "tags": ["avoir", "s2-avoir"], "alternates": ["Elle a 20 ans"] },
+    { "id": "d103", "sentence_fr": "Nous n'avons pas de chat.", "sentence_en": "We don't have a cat.", "level": "A1", "tags": ["negation", "s4-negation"], "alternates": ["Nous n'avons pas de chat."] },
+    { "id": "d104", "sentence_fr": "Tu as faim ou tu as soif ?", "sentence_en": "Are you hungry or are you thirsty?", "level": "A1", "tags": ["etre-avoir-expressions", "s3-etre-avoir"], "alternates": ["Tu as faim ou tu as soif"] },
+    { "id": "d105", "sentence_fr": "Il n'est pas prêt pour l'examen.", "sentence_en": "He is not ready for the exam.", "level": "A1-A2", "tags": ["negation", "s4-negation"], "alternates": ["Il n'est pas pret pour l'examen"] }
+  ],
+  "listening": [
+    {
+      "id": "l101",
+      "tier": 1,
+      "tier_name": "Repérage d'informations",
+      "audio": "audio/l101.mp3",
+      "passage_text": "Je suis fatiguée et j'ai très faim.",
+      "situation": "a tired and hungry person",
+      "statements": ["La personne est contente et elle a soif.", "La personne est fatiguée et elle a faim.", "La personne est malade et elle a froid.", "La personne est prête et elle a chaud."],
+      "correct": 1,
+      "level": "A1"
+    },
+    {
+      "id": "l102",
+      "tier": 1,
+      "tier_name": "Repérage d'informations",
+      "audio": "audio/l102.mp3",
+      "passage_text": "Nous n'avons pas de voiture, mais nous avons deux vélos.",
+      "situation": "a family's transportation",
+      "statements": ["La famille a une voiture et un vélo.", "La famille n'a pas de vélo.", "La famille n'a pas de voiture mais a deux vélos.", "La famille a deux voitures."],
+      "correct": 2,
+      "level": "A1"
+    },
+    {
+      "id": "l103",
+      "tier": 2,
+      "tier_name": "Compréhension d'annonces",
+      "audio": "audio/l103.mp3",
+      "passage_text": "Bonjour, c'est Nadia. Je ne suis pas au bureau aujourd'hui parce que je suis malade. J'ai besoin du dossier pour la réunion de demain. Est-ce que tu as le temps de me l'envoyer par courriel ? Merci beaucoup.",
+      "question": "Pourquoi Nadia appelle-t-elle ?",
+      "options": ["Elle a besoin d'un dossier.", "Elle veut annuler la réunion.", "Elle cherche un nouveau travail.", "Elle invite un collègue au restaurant."],
+      "correct": 0,
+      "level": "A2"
+    },
+    {
+      "id": "l104",
+      "tier": 2,
+      "tier_name": "Compréhension d'annonces",
+      "audio": "audio/l104.mp3",
+      "passage_text": "Attention, le cours de français de ce soir n'est pas à la salle habituelle. Le professeur est en retard, donc le cours est dans la salle B au deuxième étage. Nous n'avons pas beaucoup de temps, alors soyez prêts à commencer tout de suite.",
+      "question": "Quel est le problème ?",
+      "options": ["Le cours est annulé.", "La salle a changé et le professeur est en retard.", "Les étudiants ne sont pas prêts.", "Le professeur est malade."],
+      "correct": 1,
+      "level": "A2"
+    },
+    {
+      "id": "l105",
+      "tier": 2,
+      "tier_name": "Compréhension d'annonces",
+      "audio": "audio/l105.mp3",
+      "passage_text": "Bonjour à tous. Je suis le docteur Martin. J'ai une information importante. Notre clinique n'est pas ouverte le samedi à partir de la semaine prochaine. Si vous avez besoin d'un rendez-vous urgent le samedi, vous n'êtes pas obligés d'aller à l'hôpital — nous avons un numéro de téléphone pour les urgences.",
+      "question": "Quelle est l'information principale ?",
+      "options": ["L'hôpital est fermé le samedi.", "La clinique ne sera plus ouverte le samedi.", "Le docteur Martin est en vacances.", "Il n'y a plus de numéro d'urgence."],
+      "correct": 1,
+      "level": "A2"
+    }
+  ],
+  "speaking": [
+    {
+      "id": "sp101",
+      "tache": 1,
+      "questions": [
+        "Est-ce que vous êtes étudiant ou est-ce que vous travaillez ? Décrivez votre situation.",
+        "Parlez-moi de votre famille. Vous avez des frères ou des sœurs ?",
+        "Qu'est-ce que vous aimez faire quand vous êtes libre le soir ?",
+        "Est-ce que vous avez peur de quelque chose ? De quoi et pourquoi ?"
+      ]
+    },
+    {
+      "id": "sp102",
+      "tache": 2,
+      "topic": "Inscription à un cours",
+      "scenario": "Vous téléphonez à une école de langues pour vous inscrire à un cours de français. Vous n'êtes pas sûr(e) du niveau. Vous avez besoin d'informations sur les horaires, le prix et les niveaux disponibles. Posez des questions pour trouver le bon cours.",
+      "prep_time_seconds": 120
+    },
+    {
+      "id": "sp103",
+      "tache": 3,
+      "topic": "L'apprentissage des langues",
+      "prompt": "Selon vous, est-ce qu'il est nécessaire d'avoir un professeur pour apprendre une langue, ou est-ce qu'on peut apprendre seul avec des applications et Internet ?"
+    }
+  ],
+  "writing_feedback": [],
+  "spaced_retrieval": [],
+  "stare": { "type": "youtube", "title": "Français avec Pierre — Être & Avoir", "url": "https://www.youtube.com/watch?v=o4jBmFb1EU0", "note": "Clear explanation of être and avoir conjugation with examples. Watch for the expressions with avoir." }
+}

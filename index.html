@@ -269,6 +269,14 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 @media(prefers-color-scheme:dark){.type-dictation{background:#083344;color:#22D3EE}}
 :root[data-theme="dark"] .type-dictation{background:#083344;color:#22D3EE}
 :root[data-theme="light"] .type-dictation{background:#ECFEFF;color:#0891B2}
+.type-listening{background:#FFF7ED;color:#C2410C}
+@media(prefers-color-scheme:dark){.type-listening{background:#431407;color:#FB923C}}
+:root[data-theme="dark"] .type-listening{background:#431407;color:#FB923C}
+:root[data-theme="light"] .type-listening{background:#FFF7ED;color:#C2410C}
+.type-speaking{background:#FDF2F8;color:#BE185D}
+@media(prefers-color-scheme:dark){.type-speaking{background:#500724;color:#F472B6}}
+:root[data-theme="dark"] .type-speaking{background:#500724;color:#F472B6}
+:root[data-theme="light"] .type-speaking{background:#FDF2F8;color:#BE185D}
 
 .tpl-toggle{display:flex;align-items:center;gap:.375rem;background:none;border:none;color:var(--accent);font-size:.8125rem;font-weight:600;cursor:pointer;padding:.375rem 0;-webkit-tap-highlight-color:transparent}
 .tpl-toggle svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;transition:transform .2s}
@@ -285,6 +293,33 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 .rubric-mid{color:var(--warn)}
 .rubric-lo{color:var(--err)}
 .writing-type{font-size:.75rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.25rem}
+.word-count{font-size:.8125rem;color:var(--text-dim);text-align:right;margin-top:.25rem;font-variant-numeric:tabular-nums}
+.word-count.over{color:var(--err);font-weight:600}
+.word-count.good{color:var(--ok)}
+.tcf-message{background:var(--accent-faint);border-radius:var(--radius-sm);padding:1rem;margin-top:.75rem;border-left:3px solid var(--accent)}
+.tcf-message-from{font-weight:600;margin-bottom:.375rem;font-size:.875rem}
+.tcf-message-text{font-size:.9375rem;line-height:1.6;font-style:italic}
+.tcf-views{display:flex;flex-direction:column;gap:.75rem;margin-top:.75rem}
+.tcf-view{background:var(--surface-elevated);border-radius:var(--radius-sm);padding:1rem;border-left:3px solid var(--text-dim)}
+.tcf-view-label{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);margin-bottom:.25rem}
+.audio-player{display:flex;align-items:center;gap:.75rem;padding:1rem;background:var(--surface-elevated);border-radius:var(--radius-md);margin:.75rem 0}
+.audio-play-btn{width:48px;height:48px;border-radius:50%;background:var(--accent);color:var(--accent-on);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.audio-play-btn:hover{background:var(--accent-hover)}
+.audio-play-btn:disabled{opacity:.4;cursor:not-allowed}
+.audio-play-btn svg{width:20px;height:20px}
+.audio-info{flex:1;min-width:0}
+.audio-tier{font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim)}
+.audio-status{font-size:.875rem;color:var(--text);margin-top:.125rem}
+.listening-passage{background:var(--surface-elevated);border-radius:var(--radius-sm);padding:1rem;margin-top:.75rem;font-size:.9375rem;line-height:1.6;border-left:3px solid var(--ok);display:none}
+.listening-passage.show{display:block}
+.speaking-home{margin-top:1rem}
+.speaking-prompt-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:1.25rem;border-left:3px solid #BE185D;box-shadow:var(--card-shadow)}
+.speaking-tache{font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#BE185D;margin-bottom:.375rem}
+@media(prefers-color-scheme:dark){.speaking-tache{color:#F472B6}}
+:root[data-theme="dark"] .speaking-tache{color:#F472B6}
+.speaking-scenario{font-size:.9375rem;line-height:1.6;margin-top:.5rem}
+.speaking-questions{list-style:decimal;padding-left:1.25rem;margin-top:.5rem;font-size:.9375rem;line-height:1.6}
+.speaking-questions li{margin-bottom:.375rem}
 #app{transition:opacity .15s ease}
 .speak-btn-off{opacity:.35;cursor:default}
 .speak-btn-off:hover{background:var(--accent-faint)}
@@ -578,7 +613,7 @@ function preprocessBatch(batch) {
    XP, ACHIEVEMENTS, GUITAR STRINGS — Phase 3 stickiness layer
    ═══════════════════════════════════════════════════════════════ */
 
-const XP_TABLE = { mcq: 10, blank: 20, open: 30, why: 10, vocab_rec: 10, vocab_prod: 20, reading: 15, writing: 50, dictation: 20, reach: 5 };
+const XP_TABLE = { mcq: 10, blank: 20, open: 30, why: 10, vocab_rec: 10, vocab_prod: 20, reading: 15, writing: 50, dictation: 20, listening: 15, reach: 5 };
 
 const ACHIEVEMENTS = {
   'first-note':      { name: 'First Note',       icon: '\u{1F3B5}', desc: 'Complete your first exercise' },
@@ -631,9 +666,10 @@ function calcExerciseXP(exercise, correct, isReach) {
   if (!correct) return 0;
   let base = 0;
   if (exercise._isDictation) base = XP_TABLE.dictation;
+  else if (exercise._isListening) base = XP_TABLE.listening;
   else if (exercise.word) base = (vocabMode(exercise) === 'production') ? XP_TABLE.vocab_prod : XP_TABLE.vocab_rec;
   else if (exercise.passage) base = XP_TABLE.reading;
-  else if (exercise.prompt && exercise.guidelines) base = XP_TABLE.writing;
+  else if (exercise.tcf_tache || (exercise.prompt && exercise.guidelines)) base = XP_TABLE.writing;
   else if (exercise.type === 'mcq' || exercise.type === 'why') base = XP_TABLE.mcq;
   else if (exercise.type === 'blank') base = XP_TABLE.blank;
   else if (exercise.type === 'open') base = XP_TABLE.open;
@@ -746,6 +782,12 @@ const TCF_TEMPLATES = {
       'Resolution: how it ended'
     ]
   }
+};
+
+const TCF_TACHE_INFO = {
+  1: { name: 'Tâche 1', desc: 'Reply to a personal message', wordRange: '60–120 words', tips: ['Informal register', 'Accept or refuse clearly', 'Give a reason'] },
+  2: { name: 'Tâche 2', desc: 'Write a short article', wordRange: '120–150 words', tips: ['Describe what happened', 'Use past tenses', 'Comment on its value'] },
+  3: { name: 'Tâche 3', desc: 'Summarize two views, give your position', wordRange: '120–180 words', tips: ['Part 1: Summarize both views (40–60 words)', 'Part 2: Your position (80–120 words)', 'Use formal connectors'] }
 };
 
 
@@ -952,13 +994,14 @@ function checkAnswer(given, correct, alternates) {
 
 function defaultProgress() {
   return {
-    v: 6,
+    v: 7,
     updated: null,
     exercises: {},
     srs: {},
     errorPatterns: {},
     tagMastery: {},
     writingSubmissions: [],
+    speakingDone: [],
     sessions: [],
     streak: { current: 0, best: 0, lastDate: null, freezeDays: 1, freezeUsed: [] },
     batch: { id: null, loaded: null },
@@ -993,6 +1036,10 @@ function migrateProgress(p) {
     if (!p.streak.freezeUsed) p.streak.freezeUsed = [];
     p.v = 6;
   }
+  if (p.v <= 6) {
+    if (!p.speakingDone) p.speakingDone = [];
+    p.v = 7;
+  }
   if (!p.seenIds) p.seenIds = [];
   if (!p.tagMastery) p.tagMastery = {};
   if (!p.curriculum) p.curriculum = { chapter: 1, currentSection: 's1-gender', completedSections: [], chapterPhase: 'LEARN' };
@@ -1000,6 +1047,7 @@ function migrateProgress(p) {
   if (!p.achievements) p.achievements = {};
   if (p.streak.freezeDays === undefined) p.streak.freezeDays = 1;
   if (!p.streak.freezeUsed) p.streak.freezeUsed = [];
+  if (!p.speakingDone) p.speakingDone = [];
   return p;
 }
 
@@ -1167,20 +1215,23 @@ const Batch = {
   },
 
   fuel() {
-    if (this.batches.length === 0) return { grammar: 0, vocab: 0, reading: 0, writing: 0, dictation: 0 };
+    if (this.batches.length === 0) return { grammar: 0, vocab: 0, reading: 0, writing: 0, dictation: 0, listening: 0, speaking: 0 };
     const seen = S.progress.seenIds;
+    const spDone = S.progress.speakingDone || [];
     return {
       grammar: this.all('grammar').filter(q => !seen.includes(q.id)).length,
       vocab: this.all('vocabulary').filter(q => !seen.includes(q.id)).length,
       reading: this.all('reading').filter(q => !seen.includes(q.id)).length,
       writing: this.all('writing').filter(q => !seen.includes(q.id)).length,
       dictation: this.all('dictation').filter(q => !seen.includes(q.id)).length,
+      listening: this.all('listening').filter(q => !seen.includes(q.id)).length,
+      speaking: this.all('speaking').filter(q => !spDone.includes(q.id)).length,
     };
   },
 
   totalFuel() {
     const f = this.fuel();
-    return f.grammar + f.vocab + f.reading + f.writing + f.dictation;
+    return f.grammar + f.vocab + f.reading + f.writing + f.dictation + f.listening;
   },
 
   getReachExercises(tag) {
@@ -1251,6 +1302,8 @@ function generateRefuel() {
   const readingTarget = Math.max(0, 2 - fuel.reading);
   const writingTarget = Math.max(0, 3 - fuel.writing);
   const dictationTarget = Math.max(0, 5 - (fuel.dictation || 0));
+  const listeningTarget = Math.max(0, 5 - (fuel.listening || 0));
+  const speakingTarget = Math.max(0, 3 - (fuel.speaking || 0));
 
   let difficultyDirective;
   const last3 = p.sessions.slice(-3);
@@ -1322,8 +1375,10 @@ ${tagMasteryLines || 'No tag data yet — generate MCQ-only for all patterns.'}
 - Grammar exercises remaining: ${fuel.grammar} ${fuel.grammar <= 5 ? '⚠️' : ''}
 - Vocab words remaining: ${fuel.vocab} ${fuel.vocab <= 3 ? '⚠️' : ''}
 - Reading passages remaining: ${fuel.reading} ${fuel.reading === 0 ? '⚠️' : ''}
-- Writing prompts remaining: ${fuel.writing} ${fuel.writing === 0 ? '⚠️' : ''}
+- Writing prompts remaining: ${fuel.writing} ${fuel.writing === 0 ? '⚠️' : ''} (TCF format: tâche 1/2/3)
 - Dictation sentences remaining: ${fuel.dictation || 0} ${(fuel.dictation || 0) <= 2 ? '⚠️' : ''}
+- Listening exercises remaining: ${fuel.listening || 0} ${(fuel.listening || 0) <= 2 ? '⚠️' : ''} (need audio MP3 files via OpenAI TTS)
+- Speaking prompts remaining: ${fuel.speaking || 0} ${(fuel.speaking || 0) <= 1 ? '⚠️' : ''}
 ${weakReachTags.length > 0 ? `- Reach bank low for: ${weakReachTags.join(', ')}` : ''}
 
 ## Vocabulary SRS State
@@ -1344,7 +1399,7 @@ ${(() => {
   })()}
 
 ## Batch Target
-Generate: ${grammarTarget} grammar (focused on section \`${cur.currentSection}\`), 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab (include distractors + sentence_blank_en for each), ${readingTarget} reading, ${writingTarget} writing (mix of essay with TCF template, micro 2-sentence, and translate), ${dictationTarget} dictation (sentence_fr + sentence_en + level + tags)${pendingWriting ? ', feedback for pending writing (include rubric: vocabulary/grammar/coherence/organization each 1-5)' : ''}.
+Generate: ${grammarTarget} grammar (focused on section \`${cur.currentSection}\`), 5 reach per weak pattern (${weakReachTags.join(', ') || 'none weak'}), ${vocabTarget} vocab (include distractors + sentence_blank_en for each), ${readingTarget} reading, ${writingTarget} writing (TCF format: type="tcf" with tcf_tache=1/2/3, one per tâche), ${dictationTarget} dictation (sentence_fr + sentence_en + level + tags), ${listeningTarget} listening (with audio MP3 via OpenAI TTS, tier 1-5), ${speakingTarget} speaking (one per TCF tâche)${pendingWriting ? ', feedback for pending writing (include rubric: vocabulary/grammar/coherence/organization each 1-5)' : ''}.
 Batches: ${Batch.batches.length} loaded (${Batch.batches.map(b => b.batch_id).join(', ')}).
 Push to: github.com/SyedAliMoiz/french-drills-v3 → batches/ (new batch file + update registry.json)
 `;
@@ -1822,6 +1877,37 @@ function renderAchievementPreview() {
     </div>`;
 }
 
+function renderSpeakingPrompt() {
+  const all = Batch.all('speaking');
+  if (all.length === 0) return '';
+  const done = S.progress.speakingDone || [];
+  const next = all.find(q => !done.includes(q.id));
+  if (!next) return '';
+  const info = TCF_TACHE_INFO[next.tache] || { name: 'Speaking', desc: '' };
+  let body = '';
+  if (next.tache === 1 && next.questions) {
+    body = `<ol class="speaking-questions">${next.questions.map(q => `<li>${esc(q)}</li>`).join('')}</ol>`;
+  } else if (next.tache === 2 && next.scenario) {
+    body = `<div class="speaking-scenario">${esc(next.scenario)}</div>`;
+    if (next.prep_time_seconds) body += `<div class="sub" style="margin-top:.375rem">Prep time: ${Math.round(next.prep_time_seconds / 60)} min</div>`;
+  } else if (next.tache === 3 && next.prompt) {
+    body = `<div class="speaking-scenario">${esc(next.prompt)}</div>`;
+  }
+  return `
+    <div class="speaking-home">
+      <div class="dash-section-title">Speaking Practice</div>
+      <div class="speaking-prompt-card">
+        <div class="speaking-tache">${esc(info.name)} — ${esc(info.desc)}</div>
+        ${next.topic ? `<div class="card-title">${esc(next.topic)}</div>` : ''}
+        ${body}
+        <div class="row gap-sm mt" style="justify-content:flex-end">
+          <button class="btn btn-sm btn-g" id="speaking-done-btn" style="width:auto;padding:.5rem 1rem">Mark as Done</button>
+        </div>
+      </div>
+      <div class="sub" style="margin-top:.375rem">${all.length - done.length} prompt${all.length - done.length !== 1 ? 's' : ''} remaining. Practice in a Claude Code session.</div>
+    </div>`;
+}
+
 function renderHome() {
   const fuel = Batch.fuel();
   const total = Batch.totalFuel();
@@ -1910,6 +1996,11 @@ function renderHome() {
               <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.dictation)}" style="width:${fuelBarPct(fuel.dictation, 5)}%"></div></div>
               <span class="fuel-count">${fuel.dictation}</span>
             </div>
+            <div class="fuel-row">
+              <span class="type-badge type-listening">Listening</span>
+              <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel.listening)}" style="width:${fuelBarPct(fuel.listening, 5)}%"></div></div>
+              <span class="fuel-count">${fuel.listening}</span>
+            </div>
           </div>
           ${Batch.needsRefuel() ? `
             <div class="card" style="border-left:3px solid var(--warn);margin-top:.5rem">
@@ -1931,6 +2022,8 @@ function renderHome() {
       ${renderAchievementPreview()}
 
       ${renderStareContent()}
+
+      ${renderSpeakingPrompt()}
 
       <div class="dash-section mt">
         <button class="nav-link" id="ignition-btn">\u{1F3B8} Guitar Strings — people who did it</button>
@@ -1968,6 +2061,12 @@ function renderHome() {
   document.querySelectorAll('.dismiss-fb').forEach(el => {
     el.onclick = () => { el.closest('.writing-fb-card').remove(); };
   });
+  if ($('speaking-done-btn')) $('speaking-done-btn').onclick = () => {
+    const all = Batch.all('speaking');
+    const done = S.progress.speakingDone || [];
+    const next = all.find(q => !done.includes(q.id));
+    if (next) { S.progress.speakingDone.push(next.id); saveLocal(); syncToGitHub(); render(); }
+  };
   if ($('ignition-btn')) $('ignition-btn').onclick = () => { S.screen = 'ignition'; render(); };
   if ($('show-all-ach')) $('show-all-ach').onclick = () => { S.screen = 'achievements'; render(); };
   $('logout-btn').onclick = () => {
@@ -2004,11 +2103,21 @@ function startSession() {
   render();
 }
 
+function sessionStage() {
+  const n = S.progress.sessions.length;
+  if (n <= 5) return { cap: 5, grammar: true, vocab: false, dictation: false, reading: false, writing: false, listening: false, maxListenTier: 0, maxWriteTache: 0 };
+  if (n <= 12) return { cap: 10, grammar: true, vocab: true, dictation: false, reading: false, writing: false, listening: false, maxListenTier: 0, maxWriteTache: 0 };
+  if (n <= 25) return { cap: 15, grammar: true, vocab: true, dictation: true, reading: true, writing: false, listening: false, maxListenTier: 0, maxWriteTache: 0 };
+  if (n <= 50) return { cap: 20, grammar: true, vocab: true, dictation: true, reading: true, writing: true, listening: true, maxListenTier: 2, maxWriteTache: 1 };
+  return { cap: 30, grammar: true, vocab: true, dictation: true, reading: true, writing: true, listening: true, maxListenTier: 5, maxWriteTache: 3 };
+}
+
 function buildSessionQueue() {
   if (Batch.batches.length === 0) return [];
   const today = todayStr();
   const cur = S.progress.curriculum;
   const chapter = CURRICULUM[cur.chapter];
+  const stage = sessionStage();
 
   const activeSections = [];
   if (chapter) {
@@ -2060,33 +2169,55 @@ function buildSessionQueue() {
     ...shuffle(reviewDue).slice(0, 3)
   ];
 
-  const vocab = Batch.all('vocabulary');
-  const reading = Batch.all('reading');
-  const writing = Batch.all('writing');
-  const dictation = Batch.all('dictation');
+  const queue = [...grammarPool];
 
-  const dueVocab = vocab.filter(q => SRS.isDue(getVocabCard(q.id)));
-  shuffle(dueVocab);
-  const newVocab = vocab.filter(q => !getVocabCard(q.id).lastReview && !dueVocab.includes(q));
+  if (stage.vocab) {
+    const vocab = Batch.all('vocabulary');
+    const dueVocab = vocab.filter(q => SRS.isDue(getVocabCard(q.id)));
+    shuffle(dueVocab);
+    const newVocab = vocab.filter(q => !getVocabCard(q.id).lastReview && !dueVocab.includes(q));
+    queue.push(...dueVocab.slice(0, 5), ...newVocab.slice(0, 3));
+  }
 
-  const writingFb = Batch.batches.flatMap(b => b.writing_feedback || []);
-  const hasPendingWriting = S.progress.writingSubmissions.some(ws => {
-    return !writingFb.find(f => f.id === ws.id);
-  });
+  if (stage.dictation) {
+    const dictation = Batch.all('dictation');
+    const dictPool = dictation.filter(q => !S.progress.exercises[q.id]).slice(0, 3);
+    dictPool.forEach(q => { q._isDictation = true; });
+    queue.push(...dictPool);
+  }
 
-  const dictPool = dictation.filter(q => !S.progress.exercises[q.id]).slice(0, 3);
-  dictPool.forEach(q => { q._isDictation = true; });
+  if (stage.reading) {
+    const reading = Batch.all('reading');
+    queue.push(...reading.filter(q => !S.progress.exercises[q.id]).slice(0, 1));
+  }
 
-  const queue = [
-    ...grammarPool,
-    ...dueVocab.slice(0, 5),
-    ...newVocab.slice(0, 3),
-    ...dictPool,
-    ...reading.filter(q => !S.progress.exercises[q.id]).slice(0, 1),
-    ...(!hasPendingWriting ? writing.filter(q => !S.progress.exercises[q.id]).slice(0, 3) : [])
-  ];
+  if (stage.writing) {
+    const writing = Batch.all('writing');
+    const writingFb = Batch.batches.flatMap(b => b.writing_feedback || []);
+    const hasPendingWriting = S.progress.writingSubmissions.some(ws => {
+      return !writingFb.find(f => f.id === ws.id);
+    });
+    if (!hasPendingWriting) {
+      let pool = writing.filter(q => !S.progress.exercises[q.id]);
+      if (stage.maxWriteTache > 0 && stage.maxWriteTache < 3) {
+        pool = pool.filter(q => !q.tcf_tache || q.tcf_tache <= stage.maxWriteTache);
+      }
+      queue.push(...pool.slice(0, 3));
+    }
+  }
 
-  return queue;
+  if (stage.listening) {
+    const listening = Batch.all('listening');
+    let pool = listening.filter(q => !S.progress.exercises[q.id]);
+    if (stage.maxListenTier > 0 && stage.maxListenTier < 5) {
+      pool = pool.filter(q => !q.tier || q.tier <= stage.maxListenTier);
+    }
+    const listPool = pool.slice(0, 2);
+    listPool.forEach(q => { q._isListening = true; });
+    queue.push(...listPool);
+  }
+
+  return queue.slice(0, stage.cap);
 }
 
 function interleaveByTag(exercises) {
@@ -2139,8 +2270,10 @@ function renderSession() {
   else if (q.type === 'blank' || q.type === 'open') renderBlank(q, progress);
   else if (q.type === 'why') renderMCQ(q, progress);
   else if (q._isDictation) renderDictation(q, progress);
+  else if (q._isListening) renderListening(q, progress);
   else if (q.word) renderVocabCard(q, progress);
   else if (q.passage) renderReading(q, progress);
+  else if (q.tcf_tache) renderWriting(q, progress);
   else if (q.prompt && q.guidelines) renderWriting(q, progress);
   else advanceSession();
 }
@@ -2628,25 +2761,68 @@ function renderWritingTemplate(q) {
     </div>`;
 }
 
+function renderTCFPrompt(q) {
+  const info = TCF_TACHE_INFO[q.tcf_tache] || {};
+  if (q.tcf_tache === 1) {
+    return `
+      <div class="writing-type">${esc(info.name)} — ${esc(info.desc)}</div>
+      <div class="tcf-message">
+        <div class="tcf-message-from">De : ${esc(q.message_from || 'Un(e) ami(e)')}</div>
+        <div class="tcf-message-text">${esc(q.message_text || '')}</div>
+      </div>
+      <div class="serif mt-sm" style="font-size:1.0625rem">${esc(q.instruction || '')}</div>
+      <div class="sub mt-sm">${esc(info.wordRange)}</div>`;
+  }
+  if (q.tcf_tache === 2) {
+    return `
+      <div class="writing-type">${esc(info.name)} — ${esc(info.desc)}</div>
+      <div class="sub mt-sm">${esc(q.context || '')}</div>
+      <div class="serif mt-sm" style="font-size:1.0625rem">${esc(q.instruction || '')}</div>
+      <div class="sub mt-sm">${esc(info.wordRange)}</div>`;
+  }
+  if (q.tcf_tache === 3) {
+    return `
+      <div class="writing-type">${esc(info.name)} — ${esc(info.desc)}</div>
+      <div class="tcf-views">
+        <div class="tcf-view"><div class="tcf-view-label">Point de vue A</div>${esc(q.view_a || '')}</div>
+        <div class="tcf-view"><div class="tcf-view-label">Point de vue B</div>${esc(q.view_b || '')}</div>
+      </div>
+      <div class="serif mt-sm" style="font-size:1.0625rem">${esc(q.instruction || '')}</div>
+      <div class="sub mt-sm">${esc(info.wordRange)}</div>`;
+  }
+  return `<div class="writing-type">Writing</div><div class="serif">${esc(q.instruction || q.prompt || '')}</div>`;
+}
+
 function renderWriting(q, progress) {
-  const wtype = q.type || 'essay';
-  const rows = wtype === 'micro' ? 3 : wtype === 'translate' ? 4 : 6;
+  const isTCF = !!q.tcf_tache;
+  const wtype = isTCF ? 'tcf' : (q.type || 'essay');
+  const rows = isTCF ? 8 : (wtype === 'micro' ? 3 : wtype === 'translate' ? 4 : 6);
   const placeholder = wtype === 'translate' ? 'Write the French translation...' : 'Write in French...';
-  const typeLabel = wtype === 'micro' ? 'Quick Write' : wtype === 'translate' ? 'Translation' : 'Writing';
+  const typeLabel = isTCF ? (TCF_TACHE_INFO[q.tcf_tache] || {}).name || 'Writing' : (wtype === 'micro' ? 'Quick Write' : wtype === 'translate' ? 'Translation' : 'Writing');
+  const wordMin = q.word_min || 0;
+  const wordMax = q.word_max || 0;
+
+  const promptHTML = isTCF ? renderTCFPrompt(q) : `
+    <div class="writing-type">${esc(typeLabel)}</div>
+    <div class="serif" style="font-size:1.25rem">${esc(q.prompt)}</div>
+    ${q.guidelines ? `<div class="sub mt-sm">${esc(q.guidelines)}</div>` : ''}
+    <div class="sub" style="margin-top:.25rem">Level: ${esc(q.level || 'A1')}</div>
+    ${wtype === 'translate' && q.source_en ? `<div class="source-text">${esc(q.source_en)}</div>` : ''}
+    ${renderWritingTemplate(q)}`;
 
   app().innerHTML = `
     <div class="dp">
       ${renderSessionHeader(progress, typeLabel, 'type-writing')}
       <div class="dp-body">
-        <div class="card">
-          <div class="writing-type">${esc(typeLabel)}</div>
-          <div class="serif" style="font-size:1.25rem">${esc(q.prompt)}</div>
-          ${q.guidelines ? `<div class="sub mt-sm">${esc(q.guidelines)}</div>` : ''}
-          <div class="sub" style="margin-top:.25rem">Level: ${esc(q.level || 'A1')}</div>
-          ${wtype === 'translate' && q.source_en ? `<div class="source-text">${esc(q.source_en)}</div>` : ''}
-          ${renderWritingTemplate(q)}
-        </div>
+        <div class="card">${promptHTML}</div>
+        ${isTCF ? `
+          <div class="tpl-toggle" id="tpl-toggle">${CHEVRON_SVG} Writing Tips</div>
+          <div class="tpl-body" id="tpl-body">
+            <ul style="padding-left:1.25rem;margin:0">${(TCF_TACHE_INFO[q.tcf_tache] || {tips:[]}).tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+          </div>
+        ` : ''}
         <textarea class="field mt" id="writing-area" rows="${rows}" placeholder="${placeholder}" style="resize:vertical;font-size:1rem;line-height:1.6"></textarea>
+        ${wordMin || wordMax ? `<div class="word-count" id="word-count">0 words</div>` : ''}
         ${renderAccentBar(false)}
         <button class="btn btn-p mt" id="submit-writing-btn">Submit</button>
         <button class="btn-link" id="skip-writing-btn">Skip for now</button>
@@ -2661,16 +2837,118 @@ function renderWriting(q, progress) {
       body.classList.toggle('show');
     };
   }
+
+  const wcEl = $('word-count');
+  if (wcEl) {
+    $('writing-area').addEventListener('input', () => {
+      const words = $('writing-area').value.trim().split(/\s+/).filter(w => w.length > 0).length;
+      wcEl.textContent = words + ' word' + (words !== 1 ? 's' : '');
+      wcEl.className = 'word-count' + (wordMax && words > wordMax ? ' over' : (wordMin && words >= wordMin && (!wordMax || words <= wordMax) ? ' good' : ''));
+    });
+  }
+
   $('submit-writing-btn').onclick = () => {
     const text = $('writing-area').value.trim();
     if (!text) return;
-    S.progress.writingSubmissions.push({ id: q.id, type: wtype, text, submitted: new Date().toISOString() });
+    S.progress.writingSubmissions.push({ id: q.id, type: wtype, tache: q.tcf_tache || null, text, submitted: new Date().toISOString() });
     if (!S.progress.seenIds.includes(q.id)) S.progress.seenIds.push(q.id);
     S.sessionTotal++;
     S.sessionCorrect++;
+    const xp = calcExerciseXP(q, true, q._isReach);
+    addXP(xp);
+    S._sessionXP = (S._sessionXP || 0) + xp;
     advanceSession();
   };
   $('skip-writing-btn').onclick = advanceSession;
+}
+
+function renderListening(q, progress) {
+  const tierInfo = q.tier_name || ('Tier ' + (q.tier || '?'));
+  const canReplay = !q.tier || q.tier <= 3;
+  const PLAY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
+  const optionCount = q.options ? q.options.length : (q.statements ? q.statements.length : 0);
+  const options = q.options || q.statements || [];
+  const question = q.question || (q.situation ? 'Quelle situation correspond ?' : 'Choose the correct answer.');
+
+  app().innerHTML = `
+    <div class="dp">
+      ${renderSessionHeader(progress, 'Listening', 'type-listening')}
+      <div class="dp-body">
+        <div class="audio-player">
+          <button class="audio-play-btn" id="audio-play">${PLAY_SVG}</button>
+          <div class="audio-info">
+            <div class="audio-tier">${esc(tierInfo)} · ${esc(q.level || '')}</div>
+            <div class="audio-status" id="audio-status">Press play to listen</div>
+          </div>
+        </div>
+        <div id="listening-question" style="display:none">
+          <div class="card">
+            <div class="card-title">${esc(question)}</div>
+            <div class="opts mt-sm" id="listening-opts">
+              ${options.map((opt, i) => `<button class="opt" data-idx="${i}">${esc(opt)}</button>`).join('')}
+            </div>
+          </div>
+          <div class="listening-passage" id="listening-passage">
+            <div class="label" style="margin-bottom:.375rem">Transcript</div>
+            ${esc(q.passage_text || '')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  let played = 0;
+  const audioEl = q.audio ? new Audio(q.audio) : null;
+  const playBtn = $('audio-play');
+  const statusEl = $('audio-status');
+
+  playBtn.onclick = () => {
+    if (audioEl) {
+      played++;
+      if (!canReplay && played > 1) { statusEl.textContent = 'No replay allowed at this tier'; return; }
+      if (played > 2) { statusEl.textContent = 'Maximum replays reached'; return; }
+      statusEl.textContent = 'Playing...';
+      playBtn.disabled = true;
+      audioEl.play().catch(() => { statusEl.textContent = 'Audio not available — read the transcript'; showQuestion(); });
+      audioEl.onended = () => {
+        playBtn.disabled = false;
+        statusEl.textContent = canReplay && played < 2 ? 'Listen again?' : 'Now answer the question';
+        showQuestion();
+      };
+    } else {
+      statusEl.textContent = 'No audio file — read the transcript';
+      showQuestion();
+      $('listening-passage').classList.add('show');
+    }
+  };
+
+  function showQuestion() {
+    $('listening-question').style.display = 'block';
+  }
+
+  const optsEl = $('listening-opts');
+  optsEl.querySelectorAll('.opt').forEach(btn => {
+    btn.onclick = () => {
+      if (S.answered) return;
+      S.answered = true;
+      const idx = parseInt(btn.dataset.idx);
+      const correct = idx === q.correct;
+      optsEl.querySelectorAll('.opt').forEach(o => o.classList.add('opt-locked'));
+      btn.classList.add(correct ? 'opt-right' : 'opt-wrong');
+      if (!correct) {
+        optsEl.querySelector(`[data-idx="${q.correct}"]`).classList.add('opt-right');
+      }
+      $('listening-passage').classList.add('show');
+      if (!S.progress.seenIds.includes(q.id)) S.progress.seenIds.push(q.id);
+      S.sessionTotal++;
+      if (correct) S.sessionCorrect++;
+      recordExercise(q.id, correct, q.tags || []);
+      const xp = calcExerciseXP(q, correct, q._isReach);
+      addXP(xp);
+      S._sessionXP = (S._sessionXP || 0) + xp;
+      if (!correct) queueReach(q.tags || []);
+      setTimeout(advanceSession, correct ? 1200 : 2500);
+    };
+  });
 }
 
 function advanceSession() {
