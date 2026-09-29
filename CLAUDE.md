@@ -120,7 +120,7 @@ The app tracks mastery per chapter section and advances through the curriculum a
 - Once blanks are unlocked ("advancing" status), the app auto-advances to the next section
 - Progress is tracked in `PROGRESS.json` under the `curriculum` field
 
-### Progress schema (v7):
+### Progress schema (v8):
 ```json
 {
   "curriculum": { "chapter": 1, "currentSection": "s2-adjectives", "completedSections": ["s1-gender"], "chapterPhase": "LEARN" },
@@ -149,6 +149,15 @@ Audio-based MCQ exercises. Audio files stored as MP3s in `batches/audio/`. Gener
 
 ### Speaking Practice (Phase 4)
 Prompts displayed on home screen (not in drill session). Tracked via `speakingDone[]`. Actual speaking practice happens in Claude Code sessions.
+
+### Adaptive Session Engine (Phase 5)
+The app adjusts mid-session based on real-time performance:
+- **Mid-session difficulty**: tracks running accuracy per tag. 3 wrong in a row on same pattern → inserts easier "confidence builder" exercise. 3 right in a row → inserts harder "challenge" exercise. Visual badges show which type.
+- **Smart session close**: error rate hits 35% (after min 4 exercises) → session ends early with supportive message. Prevents frustration buildup.
+- **Bonus round**: error rate under 10% → offers optional 5-exercise challenge round at higher difficulty.
+- **Skill weakness detection**: tracks per-skill accuracy across last 10 sessions (grammar, vocab, reading, listening, writing, dictation). Shows skill accuracy bars on home screen (red/yellow/green). Weakest skill (under 70%) gets highlighted as session focus with increased exercise allocation.
+- Session records include `skills` field with per-skill breakdown: `{ grammar: { a: attempts, c: correct }, ... }`
+- Functions: `exerciseSkill()`, `trackAnswer()`, `checkSmartClose()`, `insertConfidenceBuilder()`, `tryEscalation()`, `checkAdaptiveTriggers()`, `skillAccuracy()`, `weakestSkill()`
 
 ### XP & Levels
 - XP earned per correct answer: MCQ 10, blank 20, open 30, vocab recognition 10, vocab production 20, reading 15, writing 50, dictation 20, listening 15, REACH bonus +5
