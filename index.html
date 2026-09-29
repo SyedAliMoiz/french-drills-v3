@@ -3052,23 +3052,21 @@ function renderHome() {
       <div class="row between">
         <div>
           <div class="hdr">French Drills</div>
-          <div class="sub">${(() => {
+          <div class="sub">Currently learning: ${(() => {
             const cur = S.progress.curriculum;
             const ch = CURRICULUM[cur.chapter];
-            if (!ch) return 'Practice';
+            if (!ch) return 'French basics';
             const sec = ch.sections.find(s => s.id === cur.currentSection);
-            return 'Ch ' + cur.chapter + ' · ' + (sec ? sec.name : cur.currentSection);
+            return sec ? sec.name : cur.currentSection;
           })()}</div>
         </div>
-        <div class="sub" style="text-align:right;font-variant-numeric:tabular-nums">
-          ${streak > 0 ? `\u{1F525} ${streak}d` : ''}${streak > 0 && prog.level > 1 ? ' · ' : ''}${prog.level > 1 ? 'Lv ' + prog.level : ''}
-        </div>
+        ${streak > 0 ? `<div class="sub" style="font-variant-numeric:tabular-nums">\u{1F525} ${streak} day${streak !== 1 ? 's' : ''}</div>` : ''}
       </div>
 
       ${renderNudgeBannerEnhanced()}
 
       <div>
-        ${todayDone ? `<div class="sub" style="margin-bottom:.75rem;color:var(--ok)">Done today · ${lastSession.correct}/${lastSession.exercises} correct · ${formatDuration(lastSession.duration * 1000)}</div>` : ''}
+        ${todayDone ? `<div class="sub" style="margin-bottom:.75rem;color:var(--ok)">Practiced today: ${lastSession.correct} out of ${lastSession.exercises} correct</div>` : ''}
         ${!hasBatch ? `
           <div class="card card-err" style="border-left:3px solid var(--err)">
             <div class="card-title">No exercises loaded</div>
@@ -3080,15 +3078,16 @@ function renderHome() {
           </button>
         `}
         ${bossChapter ? `<button class="btn btn-g" id="boss-btn" style="margin-top:.75rem">Boss Battle — Chapters 1–${bossChapter}</button>` : ''}
-        ${quizReady ? `<button class="btn btn-g" id="quiz-btn" style="margin-top:.75rem">Weekly Quiz (${sessionsSinceLastQuiz()} sessions ready)</button>` : ''}
+        ${quizReady ? `<button class="btn btn-g" id="quiz-btn" style="margin-top:.75rem">Weekly Quiz</button>` : ''}
         ${challenges.length > 0 ? `<div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap">${challenges.map(ch => `<button class="btn btn-g btn-sm challenge-btn" data-tag="${esc(ch.tag)}" style="width:auto">Challenge: ${esc(ch.tag)}</button>`).join('')}</div>` : ''}
       </div>
 
       ${renderWeeklyReport()}
 
-      ${renderSectionProgress()}
+      ${sessionCount >= 5 ? renderSectionProgress() : ''}
 
       ${(() => {
+        if (sessionCount < 3) return '';
         const acc = skillAccuracy();
         const hasData = Object.values(acc).some(s => s.attempts > 0);
         if (!hasData) return '';
@@ -3098,6 +3097,7 @@ function renderHome() {
         const pwt = persistentWeakTags();
         return `
           <div>
+            <div class="sub" style="margin-bottom:.5rem;font-weight:600">Accuracy (last 10 sessions)</div>
             <div class="skill-bars">
               ${Object.entries(acc).filter(([,d]) => d.attempts > 0).map(([sk, d]) => `
                 <div class="skill-bar-row">
@@ -3107,8 +3107,8 @@ function renderHome() {
                 </div>
               `).join('')}
             </div>
-            ${weak ? `<div class="sub" style="margin-top:.5rem">Focus: ${labels[weak.skill] || weak.skill} (${weak.pct}%)</div>` : ''}
-            ${pwt.length > 0 ? `<div class="sub" style="color:var(--err);margin-top:.25rem">Trouble spots: ${pwt.map(w => w.tag).join(', ')}</div>` : ''}
+            ${weak ? `<div class="sub" style="margin-top:.5rem">Focus next: ${(labels[weak.skill] || weak.skill).toLowerCase()}</div>` : ''}
+            ${pwt.length > 0 ? `<div class="sub" style="color:var(--err);margin-top:.25rem">Struggling with: ${pwt.map(w => w.tag).join(', ')}</div>` : ''}
           </div>
         `;
       })()}
