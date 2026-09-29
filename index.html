@@ -3052,9 +3052,12 @@ function renderHome() {
   const challenges = challengeableSkills();
   const bossChapter = canBossBattle();
 
+  const prog = xpProgress(S.progress.xp ? S.progress.xp.total : 0);
+  const sessionCount = S.progress.sessions.length;
+
   app().innerHTML = `
-    <div class="wrap stagger">
-      <div class="row between mb">
+    <div class="wrap">
+      <div class="row between" style="margin-bottom:1.25rem">
         <div>
           <div class="hdr">French Drills</div>
           <div class="sub">${(() => {
@@ -3065,97 +3068,16 @@ function renderHome() {
             return 'Ch ' + cur.chapter + ' · ' + (sec ? sec.name : cur.currentSection);
           })()}</div>
         </div>
-        <div class="row gap-sm">
-          ${freezeDays > 0 ? `<div class="freeze-badge">\u{2744}\u{FE0F} ${freezeDays}</div>` : ''}
-          ${streak > 0 ? `<div class="streak-badge">\u{1F525} ${streak} day${streak > 1 ? 's' : ''}</div>` : ''}
+        <div class="sub" style="text-align:right;font-variant-numeric:tabular-nums">
+          ${streak > 0 ? `\u{1F525} ${streak}d` : ''}${streak > 0 && prog.level > 1 ? ' · ' : ''}${prog.level > 1 ? 'Lv ' + prog.level : ''}
         </div>
       </div>
 
-      ${renderXPBar()}
-
       ${renderNudgeBannerEnhanced()}
 
-      ${todayDone ? `
-        <div class="card card-ok" style="border-left:3px solid var(--ok)">
-          <div class="card-title">Done for today</div>
-          <div class="card-sub">${lastSession.correct}/${lastSession.exercises} correct · ${formatDuration(lastSession.duration * 1000)}</div>
-        </div>
-      ` : ''}
+      ${todayDone ? `<div class="sub" style="margin-bottom:.75rem;color:var(--ok)">Done today · ${lastSession.correct}/${lastSession.exercises} correct · ${formatDuration(lastSession.duration * 1000)}</div>` : ''}
 
       ${renderWeeklyReport()}
-
-      ${renderSectionProgress()}
-
-      ${(() => {
-        const acc = skillAccuracy();
-        const hasData = Object.values(acc).some(s => s.attempts > 0);
-        if (!hasData) return '';
-        const weak = weakestSkill();
-        const labels = { grammar: 'Grammar', vocab: 'Vocab', reading: 'Reading', listening: 'Listen', writing: 'Writing', dictation: 'Dictation' };
-        const barColor = pct => pct < 50 ? 'bar-red' : pct < 75 ? 'bar-yellow' : 'bar-green';
-        return `
-          <div class="dash-section">
-            <div class="dash-section-title">Skill Progress</div>
-            <div class="card">
-              <div class="skill-bars">
-                ${Object.entries(acc).filter(([,d]) => d.attempts > 0).map(([sk, d]) => `
-                  <div class="skill-bar-row">
-                    <span class="skill-bar-label">${labels[sk] || sk}</span>
-                    <div class="skill-bar-track"><div class="skill-bar-fill ${barColor(d.pct)}" style="width:${d.pct}%"></div></div>
-                    <span class="skill-bar-pct">${d.pct}%</span>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-            ${weak ? `
-              <div class="session-focus">
-                <div class="session-focus-title">Next session focus: ${labels[weak.skill] || weak.skill}</div>
-                <div class="session-focus-sub">Your weakest area at ${weak.pct}% accuracy. The app will include more ${(labels[weak.skill] || weak.skill).toLowerCase()} exercises.</div>
-              </div>
-            ` : ''}
-            ${(() => {
-              const pwt = persistentWeakTags();
-              if (pwt.length === 0) return '';
-              return '<div class="session-focus" style="border-left-color:var(--err)"><div class="session-focus-title">Persistent trouble spots</div><div class="session-focus-sub">' + pwt.map(w => w.tag).join(', ') + ' (struggling across multiple sessions). Extra practice will be front-loaded.</div></div>';
-            })()}
-          </div>`;
-      })()}
-
-      ${bossChapter ? `
-        <div class="boss-card">
-          <div class="boss-card-title">\u{1F409} Boss Battle Available</div>
-          <div class="boss-card-sub">Test everything from Chapters 1–${bossChapter}. 15 exercises, timed, higher difficulty. Need 70% to win.</div>
-          <button class="btn btn-p mt-sm" id="boss-btn" style="background:linear-gradient(180deg,#D97706,#B45309);max-width:250px;margin:0 auto">Fight the Boss</button>
-        </div>
-      ` : ''}
-
-      ${quizReady ? `
-        <div class="quiz-card">
-          <div class="quiz-card-title">\u{1F4CB} Weekly Quiz Ready</div>
-          <div class="quiz-card-sub">${sessionsSinceLastQuiz()} sessions since last quiz. 10 questions across all skills, 8 minutes.</div>
-          ${(() => {
-            const quizzes = S.progress.weeklyQuizzes || [];
-            const last = quizzes.length > 0 ? quizzes[quizzes.length - 1] : null;
-            return last ? `<div class="quiz-card-sub">Last quiz: ${last.pct}% (${last.score}/${last.total})</div>` : '';
-          })()}
-          <button class="btn btn-p mt-sm" id="quiz-btn" style="max-width:250px;margin:0 auto">Take Weekly Quiz</button>
-        </div>
-      ` : ''}
-
-      ${challenges.length > 0 ? `
-        <div class="dash-section">
-          <div class="dash-section-title">Skill Challenges</div>
-          ${challenges.map((ch, i) => `
-            <div class="challenge-offer">
-              <div class="challenge-offer-info">
-                <div class="challenge-offer-tag">\u{26A1} ${esc(ch.tag)} (${ch.pct}%)</div>
-                <div class="challenge-offer-desc">Go 5/5 in 90 seconds. +50 XP if you win.</div>
-              </div>
-              <button class="btn btn-g btn-sm challenge-offer-btn challenge-btn" data-tag="${esc(ch.tag)}" style="width:auto;padding:.5rem .875rem">Go</button>
-            </div>
-          `).join('')}
-        </div>
-      ` : ''}
 
       ${!hasBatch ? `
         <div class="card card-err" style="border-left:3px solid var(--err)">
@@ -3163,90 +3085,58 @@ function renderHome() {
           <div class="card-sub">Generate a batch in Claude Code and push to the repo.</div>
         </div>
       ` : `
-        <button class="btn btn-p" id="start-btn" ${total === 0 ? 'disabled' : ''}>
+        <button class="btn btn-p" id="start-btn" ${total === 0 ? 'disabled' : ''} style="margin-bottom:1.25rem">
           ${todayDone ? 'Practice Again' : 'Start Session'}
         </button>
-
-        <div class="dash-section mt">
-          <div class="dash-section-title">Fuel Status</div>
-          <div class="card">
-            ${(() => {
-              const st = sessionStage();
-              const rows = [
-                { key: 'grammar', label: 'Grammar', cls: 'type-grammar', max: 25, show: true },
-                { key: 'vocab', label: 'Vocab', cls: 'type-vocab', max: 10, show: st.vocab },
-                { key: 'reading', label: 'Reading', cls: 'type-reading', max: 2, show: st.reading },
-                { key: 'writing', label: 'Writing', cls: 'type-writing', max: 2, show: st.writing },
-                { key: 'dictation', label: 'Dictation', cls: 'type-dictation', max: 5, show: st.dictation },
-                { key: 'listening', label: 'Listening', cls: 'type-listening', max: 5, show: st.listening },
-              ];
-              return rows.filter(r => r.show).map(r => `
-                <div class="fuel-row">
-                  <span class="type-badge ${r.cls}">${r.label}</span>
-                  <div class="fuel-bar"><div class="fuel-bar-fill ${fuelClass(fuel[r.key])}" style="width:${fuelBarPct(fuel[r.key], r.max)}%"></div></div>
-                  <span class="fuel-count">${fuel[r.key]}</span>
-                </div>
-              `).join('');
-            })()}
-          </div>
-          ${Batch.needsRefuel() ? `
-            <div class="card" style="border-left:3px solid var(--warn);margin-top:.5rem">
-              <div class="card-title" style="color:var(--warn)">Time to refuel</div>
-              <div class="card-sub">Exercises are running low. Copy the refuel file and paste it into a Claude Code session.</div>
-              <button class="btn btn-g btn-sm mt-sm" id="refuel-btn" style="width:auto;padding:.5rem 1rem">Copy REFUEL.md</button>
-              <span class="sub" id="refuel-status" style="margin-left:.5rem"></span>
-            </div>
-          ` : ''}
-        </div>
       `}
 
-      ${zoneHTML ? `<div class="mt">${zoneHTML}</div>` : ''}
+      ${bossChapter ? `<button class="btn btn-g" id="boss-btn" style="margin-bottom:.5rem">Boss Battle — Chapters 1–${bossChapter}</button>` : ''}
+      ${quizReady ? `<button class="btn btn-g" id="quiz-btn" style="margin-bottom:.5rem">Weekly Quiz (${sessionsSinceLastQuiz()} sessions ready)</button>` : ''}
+      ${challenges.length > 0 ? challenges.map(ch => `<button class="btn btn-g btn-sm challenge-btn" data-tag="${esc(ch.tag)}" style="margin-bottom:.375rem;width:auto;display:inline-flex;margin-right:.375rem">Challenge: ${esc(ch.tag)} (${ch.pct}%)</button>`).join('') : ''}
 
-      ${renderAchievementPreview()}
+      ${renderSectionProgress()}
 
-      ${S.progress.sessions.length >= 3 ? renderStareContent() : ''}
-
-      ${sessionStage().writing ? renderSpeakingPrompt() : ''}
-
-      <div class="dash-section mt">
-        <button class="nav-link" id="ignition-btn">\u{1F3B8} Guitar Strings — people who did it</button>
-      </div>
-
-      ${S.progress.sessions.length > 1 ? `
-        <div class="dash-section mt">
-          <div class="dash-section-title">Recent Sessions</div>
-          <div class="card">
-            ${S.progress.sessions.slice(-5).reverse().map(s => `
-              <div class="fuel-row">
-                <span class="sub">${s.date.slice(5)}</span>
-                <div class="fuel-bar"><div class="fuel-bar-fill ${s.errorRate <= 25 ? 'fuel-ok' : 'fuel-low'}" style="width:${100 - s.errorRate}%"></div></div>
-                <span class="fuel-count">${s.correct}/${s.exercises}</span>
+      ${(() => {
+        const acc = skillAccuracy();
+        const hasData = Object.values(acc).some(s => s.attempts > 0);
+        if (!hasData) return '';
+        const labels = { grammar: 'Grammar', vocab: 'Vocab', reading: 'Reading', listening: 'Listen', writing: 'Writing', dictation: 'Dictation' };
+        const barColor = pct => pct < 50 ? 'bar-red' : pct < 75 ? 'bar-yellow' : 'bar-green';
+        const weak = weakestSkill();
+        const pwt = persistentWeakTags();
+        return `
+          <div class="skill-bars" style="margin-bottom:.75rem">
+            ${Object.entries(acc).filter(([,d]) => d.attempts > 0).map(([sk, d]) => `
+              <div class="skill-bar-row">
+                <span class="skill-bar-label">${labels[sk] || sk}</span>
+                <div class="skill-bar-track"><div class="skill-bar-fill ${barColor(d.pct)}" style="width:${d.pct}%"></div></div>
+                <span class="skill-bar-pct">${d.pct}%</span>
               </div>
             `).join('')}
           </div>
-        </div>
-      ` : ''}
+          ${weak ? `<div class="sub" style="margin-bottom:.5rem">Focus: ${labels[weak.skill] || weak.skill} (${weak.pct}%)</div>` : ''}
+          ${pwt.length > 0 ? `<div class="sub" style="color:var(--err);margin-bottom:.5rem">Trouble spots: ${pwt.map(w => w.tag).join(', ')}</div>` : ''}
+        `;
+      })()}
 
-      ${(S.progress.weeklyQuizzes || []).length > 0 ? `
-        <div class="dash-section mt">
-          <div class="dash-section-title">Quiz History</div>
-          <div class="card">
-            ${S.progress.weeklyQuizzes.slice(-5).reverse().map(q => `
-              <div class="fuel-row">
-                <span class="sub">${q.date.slice(5)}</span>
-                <div class="fuel-bar"><div class="fuel-bar-fill ${q.pct >= 75 ? 'fuel-ok' : q.pct >= 50 ? 'fuel-low' : 'fuel-empty'}" style="width:${q.pct}%"></div></div>
-                <span class="fuel-count">${q.score}/${q.total}</span>
-              </div>
-            `).join('')}
-          </div>
+      ${Batch.needsRefuel() ? `
+        <div class="card" style="border-left:3px solid var(--warn);margin-bottom:.75rem">
+          <div class="card-title" style="color:var(--warn)">Exercises running low</div>
+          <button class="btn btn-g btn-sm mt-sm" id="refuel-btn" style="width:auto">Copy REFUEL.md</button>
+          <span class="sub" id="refuel-status" style="margin-left:.5rem"></span>
         </div>
       ` : ''}
 
       ${renderWritingFeedback()}
 
-      <div class="mt center" style="display:flex;justify-content:center;gap:1rem">
-        <button class="btn-link" id="settings-btn">\u{2699}\u{FE0F} Settings</button>
-        <button class="btn-link" id="logout-btn">Lock app</button>
+      ${sessionCount >= 3 ? renderStareContent() : ''}
+      ${sessionStage().writing ? renderSpeakingPrompt() : ''}
+
+      <div style="margin-top:1.25rem;display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn-link" id="ignition-btn">Guitar Strings</button>
+        <button class="btn-link" id="show-all-ach">Achievements</button>
+        <button class="btn-link" id="settings-btn">Settings</button>
+        <button class="btn-link" id="logout-btn">Lock</button>
       </div>
     </div>`;
 
