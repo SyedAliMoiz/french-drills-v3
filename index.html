@@ -4480,178 +4480,52 @@ function renderResults() {
       </div>`;
   }
 
-  app().innerHTML = `
-    <div class="wrap" style="padding-top:6vh">
-      ${smartClose && mode === 'normal' ? `
-        <div class="smart-close-card fade-up">
-          <div class="card-title">Session ended early</div>
-          <div class="card-sub">Good effort today. Shorter sessions build stronger habits. The research is clear: pushing through a rough session builds frustration, not skill.</div>
-        </div>
-      ` : ''}
+  const tagSummary = (() => {
+    const ss = S.sessionStats;
+    if (!ss || !ss.byTag) return '';
+    const struggled = [];
+    for (const [tag, d] of Object.entries(ss.byTag)) {
+      const t = d.right + d.wrong;
+      if (t >= 2 && d.right / t < 0.5) struggled.push(tag);
+    }
+    return struggled.length > 0 ? '<div class="sub mt-sm center"><span style="color:var(--err)">' + struggled.join(', ') + ' needs work</span></div>' : '';
+  })();
 
+  app().innerHTML = `
+    <div class="wrap" style="padding-top:8vh">
       ${modeHeader}
 
-      ${mode === 'normal' ? `
-        <div class="center mb fade-up">
-          ${scoreRing(pct)}
-          <div class="res-msg mt-sm">${correct} of ${total} correct · ${formatDuration(duration)}</div>
-        </div>
-      ` : mode !== 'quiz' ? `
-        <div class="center mb fade-up">
-          ${scoreRing(pct)}
-          <div class="res-msg mt-sm">${correct} of ${total} correct · ${formatDuration(duration)}</div>
-        </div>
-      ` : ''}
-
-      ${sessionXP > 0 ? `
-        <div class="center fade-up" style="margin-bottom:.75rem">
-          <div class="xp-earned">+${sessionXP} XP</div>
-          <div class="xp-wrap" style="max-width:280px;margin:0 auto">
-            <div class="xp-level">${prog.level}</div>
-            <div class="xp-info">
-              <div class="xp-label">${prog.current}/${prog.needed} to Level ${prog.level + 1}</div>
-              <div class="xp-track"><div class="xp-fill" style="width:${prog.pct}%"></div></div>
-            </div>
-          </div>
-        </div>
-      ` : ''}
-
-      ${S._leveledUp ? `
-        <div class="level-up-card fade-up">
-          <div class="xp-level">${prog.level}</div>
-          <div style="font-weight:700;font-size:1.125rem">Level Up!</div>
-          <div class="sub">You reached Level ${prog.level}</div>
-        </div>
-      ` : ''}
-
-      ${S._advancedSection ? `
-        <div class="card card-ok fade-up" style="border-left:3px solid var(--ok);margin-bottom:.75rem">
-          <div class="card-title" style="color:var(--ok)">Section Complete</div>
-          <div class="card-sub">${esc((() => {
-            const ch = CURRICULUM[S.progress.curriculum.chapter];
-            const sec = ch && ch.sections.find(s => s.id === S._advancedSection);
-            return sec ? sec.name : S._advancedSection;
-          })())} mastered. Moving to ${esc((() => {
-            const ch = CURRICULUM[S.progress.curriculum.chapter];
-            const sec = ch && ch.sections.find(s => s.id === S.progress.curriculum.currentSection);
-            return sec ? sec.name : S.progress.curriculum.currentSection;
-          })())}.</div>
-        </div>
-      ` : ''}
-
-      ${S._usedFreeze ? `
-        <div class="card fade-up" style="border-left:3px solid #0891B2;margin-bottom:.75rem">
-          <div class="card-title" style="color:#0891B2">\u{2744}\u{FE0F} Streak Freeze Used</div>
-          <div class="card-sub">You missed a day, but a freeze day saved your streak. ${S.progress.streak.freezeDays} freeze${S.progress.streak.freezeDays !== 1 ? 's' : ''} remaining.</div>
-        </div>
-      ` : ''}
-
-      ${newAch.length > 0 ? `
-        <div class="dash-section fade-up" style="margin-bottom:.75rem">
-          <div class="dash-section-title">Achievements Unlocked</div>
-          <div class="ach-grid">
-            ${newAch.map(id => {
-              const a = ACHIEVEMENTS[id];
-              return a ? `<div class="ach-card ach-new"><div class="ach-icon">${a.icon}</div><div class="ach-name">${esc(a.name)}</div><div class="ach-desc">${esc(a.desc)}</div></div>` : '';
-            }).join('')}
-          </div>
-        </div>
-      ` : ''}
-
-      ${mode === 'normal' ? `
-        <div class="zone-indicator ${zoneClass}">${zoneLabel}</div>
-        <div class="sub mt-sm center">Coyle's 20% Rule: aim for 15–25% errors. That's where growth happens.</div>
-      ` : ''}
-
-      ${S.progress.streak.current > 0 ? `
-        <div class="center mt">
-          <div class="streak-badge">\u{1F525} ${S.progress.streak.current} day streak</div>
-        </div>
-      ` : ''}
-
-      <div class="stat-row mt">
-        <div class="stat-box">
-          <div class="stat-val">${errorRate}%</div>
-          <div class="stat-label">Error Rate</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-val">${total}</div>
-          <div class="stat-label">Exercises</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-val">${formatDuration(duration)}</div>
-          <div class="stat-label">Time</div>
-        </div>
+      <div class="center mb fade-up">
+        ${scoreRing(pct)}
+        <div class="res-msg mt-sm">${correct} of ${total} correct · ${formatDuration(duration)}</div>
+        ${smartClose && mode === 'normal' ? '<div class="sub mt-sm">Session ended early. Shorter sessions build stronger habits.</div>' : ''}
+        ${sessionXP > 0 ? `<div class="sub mt-sm" style="color:var(--accent)">+${sessionXP} XP${S._leveledUp ? ' · Level ' + prog.level + '!' : ''}</div>` : ''}
+        ${S.progress.streak.current > 0 ? `<div class="sub mt-sm">\u{1F525} ${S.progress.streak.current} day streak</div>` : ''}
       </div>
 
-      ${(() => {
-        const ss = S.sessionStats;
-        if (!ss || !ss.bySkill) return '';
-        const skillNames = { grammar: 'Grammar', vocab: 'Vocab', reading: 'Reading', listening: 'Listening', writing: 'Writing', dictation: 'Dictation' };
-        const entries = Object.entries(ss.bySkill).filter(([,d]) => d.right + d.wrong > 0);
-        if (entries.length <= 1) return '';
-        return `
-          <div class="card mt fade-up">
-            <div class="card-title" style="font-size:.8125rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:.5rem">Per-Skill Breakdown</div>
-            ${entries.map(([sk, d]) => {
-              const t = d.right + d.wrong;
-              const pct = Math.round((d.right / t) * 100);
-              const cls = pct >= 75 ? 'bar-green' : pct >= 50 ? 'bar-yellow' : 'bar-red';
-              return `<div class="skill-bar-row" style="margin-bottom:.25rem"><span class="skill-bar-label">${skillNames[sk] || sk}</span><div class="skill-bar-track"><div class="skill-bar-fill ${cls}" style="width:${pct}%"></div></div><span class="skill-bar-pct">${d.right}/${t}</span></div>`;
-            }).join('')}
-          </div>`;
-      })()}
+      ${tagSummary}
 
-      ${(() => {
-        const ss = S.sessionStats;
-        if (!ss || !ss.byTag) return '';
-        const improved = [], struggled = [];
-        for (const [tag, d] of Object.entries(ss.byTag)) {
-          const t = d.right + d.wrong;
-          if (t < 2) continue;
-          const pct = d.right / t;
-          if (pct >= 0.8 && t >= 3) improved.push(tag);
-          else if (pct < 0.5) struggled.push(tag);
-        }
-        const parts = [];
-        if (improved.length > 0) parts.push('<span style="color:var(--ok)">' + improved.join(', ') + ' went well</span>');
-        if (struggled.length > 0) parts.push('<span style="color:var(--err)">' + struggled.join(', ') + ' needs work</span>');
-        if (parts.length === 0) return '';
-        return '<div class="sub mt-sm center">' + parts.join(' · ') + '</div>';
-      })()}
+      ${S._advancedSection ? `<div class="sub center fade-up" style="color:var(--ok);margin-bottom:.75rem">${esc((() => {
+        const ch = CURRICULUM[S.progress.curriculum.chapter];
+        const sec = ch && ch.sections.find(s => s.id === S._advancedSection);
+        return sec ? sec.name : S._advancedSection;
+      })())} complete. Moving on.</div>` : ''}
 
-      ${mode === 'normal' && Batch.needsRefuel() ? `
-        <div class="card mt" style="border-left:3px solid var(--warn)">
-          <div class="card-title" style="color:var(--warn)">Fuel is low</div>
-          <div class="card-sub">Copy the refuel file and paste it into Claude Code to generate more exercises.</div>
-          <button class="btn btn-g btn-sm mt-sm" id="res-refuel-btn" style="width:auto;padding:.5rem 1rem">Copy REFUEL.md</button>
-          <span class="sub" id="res-refuel-status" style="margin-left:.5rem"></span>
-        </div>
-      ` : ''}
+      ${newAch.length > 0 ? `<div class="sub center fade-up" style="margin-bottom:.75rem">${newAch.map(id => { const a = ACHIEVEMENTS[id]; return a ? a.icon + ' ' + esc(a.name) : ''; }).filter(Boolean).join(' · ')}</div>` : ''}
+
+      ${S._usedFreeze ? '<div class="sub center fade-up" style="margin-bottom:.75rem">\u{2744}\u{FE0F} Streak freeze used. ' + S.progress.streak.freezeDays + ' remaining.</div>' : ''}
 
       ${offerBonus ? `
-        <div class="bonus-offer fade-up">
-          <div class="bonus-offer-text">That was easy for you. Ready for a harder round?</div>
-          <button class="btn btn-ok btn-sm" id="bonus-btn">Challenge Round (5 harder exercises)</button>
-        </div>
+        <button class="btn btn-g mt" id="bonus-btn">Challenge Round (5 harder exercises)</button>
       ` : ''}
 
-      <button class="btn btn-p mt" id="home-btn">Back to Home</button>
+      <button class="btn btn-p mt" id="home-btn">Done</button>
       ${mode === 'normal' && Batch.totalFuel() > 0 ? '<button class="btn btn-g mt-sm" id="again-btn">Practice More</button>' : ''}
-      <div class="center mt-sm">
-        <button class="share-btn" id="share-btn">\u{1F4E4} Share Progress</button>
-      </div>
     </div>`;
 
   $('home-btn').onclick = () => { S.sessionMode = 'normal'; S.screen = 'home'; render(); };
   if ($('again-btn')) $('again-btn').onclick = startSession;
   if ($('bonus-btn')) $('bonus-btn').onclick = () => { S._bonusRound = true; startSession(); };
-  if ($('res-refuel-btn')) $('res-refuel-btn').onclick = async () => {
-    const ok = await copyRefuel();
-    $('res-refuel-status').textContent = ok ? 'Copied!' : 'Copy failed';
-    $('res-refuel-btn').textContent = ok ? 'Copied' : 'Try again';
-  };
-  if ($('share-btn')) $('share-btn').onclick = shareProgress;
 }
 
 
