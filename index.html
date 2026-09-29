@@ -377,6 +377,36 @@ body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;ba
 .share-btn{display:inline-flex;align-items:center;gap:.375rem;background:none;border:1.5px solid var(--line);color:var(--text-dim);font-weight:600;font-size:.8125rem;padding:.5rem 1rem;border-radius:var(--radius-pill);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s,color .15s}
 .share-btn:hover{border-color:var(--accent);color:var(--accent)}
 .nav-link{display:inline-flex;align-items:center;gap:.375rem;background:none;border:none;color:var(--accent);font-weight:600;font-size:.875rem;cursor:pointer;padding:.5rem 0;-webkit-tap-highlight-color:transparent}
+
+.adaptive-msg{padding:.625rem .875rem;border-radius:var(--radius-sm);font-size:.8125rem;line-height:1.4;margin-bottom:.5rem;animation:fadeUp .3s ease-out both}
+.adaptive-msg-encourage{background:var(--ok-bg);border:1px solid var(--ok-border);color:var(--ok)}
+.adaptive-msg-push{background:var(--accent-faint);border:1px solid var(--accent);color:var(--accent)}
+.adaptive-msg-close{background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn)}
+.type-confidence{background:#ECFDF5;color:#059669;font-size:.6875rem;padding:2px 8px;border-radius:var(--radius-pill);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.type-escalation{background:#FEF2F2;color:#DC2626;font-size:.6875rem;padding:2px 8px;border-radius:var(--radius-pill);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+@media(prefers-color-scheme:dark){.type-confidence{background:#0D2818;color:#34D399}.type-escalation{background:#2D1515;color:#F87171}}
+:root[data-theme="dark"] .type-confidence{background:#0D2818;color:#34D399}
+:root[data-theme="dark"] .type-escalation{background:#2D1515;color:#F87171}
+.session-focus{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:var(--radius-md);padding:.875rem 1rem;margin-bottom:.75rem;box-shadow:var(--card-shadow)}
+.session-focus-title{font-weight:600;font-size:.875rem}
+.session-focus-sub{font-size:.8125rem;color:var(--text-dim);margin-top:.125rem}
+.skill-bars{display:flex;flex-direction:column;gap:.375rem;margin-top:.5rem}
+.skill-bar-row{display:flex;align-items:center;gap:.5rem;font-size:.75rem}
+.skill-bar-label{width:60px;text-align:right;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.skill-bar-track{flex:1;height:6px;background:var(--bar-track);border-radius:3px;overflow:hidden}
+.skill-bar-fill{height:100%;border-radius:3px;transition:width .35s ease}
+.skill-bar-fill.bar-red{background:#DC2626}
+.skill-bar-fill.bar-yellow{background:#D97706}
+.skill-bar-fill.bar-green{background:#059669}
+@media(prefers-color-scheme:dark){.skill-bar-fill.bar-red{background:#F87171}.skill-bar-fill.bar-yellow{background:#FBBF24}.skill-bar-fill.bar-green{background:#34D399}}
+:root[data-theme="dark"] .skill-bar-fill.bar-red{background:#F87171}
+:root[data-theme="dark"] .skill-bar-fill.bar-yellow{background:#FBBF24}
+:root[data-theme="dark"] .skill-bar-fill.bar-green{background:#34D399}
+.skill-bar-pct{width:32px;font-variant-numeric:tabular-nums;color:var(--text-dim)}
+.smart-close-card{background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:var(--radius-md);padding:1rem;margin-bottom:.75rem;text-align:center}
+.smart-close-card .card-title{color:var(--warn)}
+.bonus-offer{background:var(--accent-faint);border:1px solid var(--accent);border-radius:var(--radius-md);padding:1rem;margin-top:.75rem;text-align:center}
+.bonus-offer-text{font-size:.875rem;color:var(--text-dim);margin-bottom:.5rem}
 </style>
 </head>
 <body>
@@ -994,7 +1024,7 @@ function checkAnswer(given, correct, alternates) {
 
 function defaultProgress() {
   return {
-    v: 7,
+    v: 8,
     updated: null,
     exercises: {},
     srs: {},
@@ -1039,6 +1069,9 @@ function migrateProgress(p) {
   if (p.v <= 6) {
     if (!p.speakingDone) p.speakingDone = [];
     p.v = 7;
+  }
+  if (p.v <= 7) {
+    p.v = 8;
   }
   if (!p.seenIds) p.seenIds = [];
   if (!p.tagMastery) p.tagMastery = {};
@@ -1141,6 +1174,149 @@ function exercisePassesGate(exercise) {
   return typeRank[exType] <= typeRank[maxUnlocked];
 }
 
+function exerciseSkill(q) {
+  if (!q) return 'grammar';
+  if (q._isDictation) return 'dictation';
+  if (q._isListening) return 'listening';
+  if (q.word) return 'vocab';
+  if (q.passage) return 'reading';
+  if (q.tcf_tache || (q.prompt && q.guidelines)) return 'writing';
+  return 'grammar';
+}
+
+function trackAnswer(rightCount, wrongCount) {
+  const q = S.queue[S.qi];
+  const skill = exerciseSkill(q);
+  const stats = S.sessionStats;
+  if (!stats) return;
+
+  if (!stats.bySkill[skill]) stats.bySkill[skill] = { right: 0, wrong: 0 };
+  stats.bySkill[skill].right += rightCount;
+  stats.bySkill[skill].wrong += wrongCount;
+
+  const tags = q && q.tags ? q.tags : [];
+  for (const tag of tags) {
+    if (!stats.byTag[tag]) stats.byTag[tag] = { right: 0, wrong: 0, consRight: 0, consWrong: 0 };
+    const t = stats.byTag[tag];
+    t.right += rightCount;
+    t.wrong += wrongCount;
+    if (wrongCount === 0) {
+      t.consRight++;
+      t.consWrong = 0;
+    } else {
+      t.consWrong++;
+      t.consRight = 0;
+    }
+  }
+}
+
+function checkSmartClose() {
+  const total = S.sessionTotal;
+  if (total < 4) return false;
+  const errorRate = ((total - S.sessionCorrect) / total) * 100;
+  return errorRate >= 35;
+}
+
+function insertConfidenceBuilder(tag) {
+  const allGrammar = Batch.all('grammar');
+  const easy = allGrammar.filter(q => {
+    if (q.difficulty && q.difficulty > 1) return false;
+    if (!q.tags || !q.tags.includes(tag)) return false;
+    if (S.queue.some(qe => qe.id === q.id)) return false;
+    const rec = S.progress.exercises[q.id];
+    return rec && rec.correct > 0;
+  });
+  if (easy.length === 0) return false;
+  const ex = { ...easy[Math.floor(Math.random() * easy.length)], _isConfidenceBuilder: true };
+  S.queue.splice(S.qi + 1, 0, ex);
+  return true;
+}
+
+function tryEscalation(tags) {
+  if (!tags || tags.length === 0) return false;
+  const nextIdx = S.qi + 1;
+  if (nextIdx >= S.queue.length) return false;
+  const nextQ = S.queue[nextIdx];
+  const nextDiff = nextQ.difficulty || 2;
+
+  const allGrammar = Batch.all('grammar');
+  const harder = allGrammar.filter(q => {
+    if (!q.difficulty || q.difficulty <= nextDiff) return false;
+    if (!q.tags) return false;
+    const hasTag = tags.some(t => q.tags.includes(t));
+    if (!hasTag) return false;
+    if (S.queue.some(qe => qe.id === q.id)) return false;
+    if (!exercisePassesGate(q)) return false;
+    return true;
+  });
+  if (harder.length === 0) return false;
+  harder.sort((a, b) => (a.difficulty || 2) - (b.difficulty || 2));
+  S.queue.splice(nextIdx, 0, { ...harder[0], _isEscalation: true });
+  return true;
+}
+
+function checkAdaptiveTriggers() {
+  if (checkSmartClose()) {
+    S._smartCloseReason = 'high_errors';
+    endSession();
+    return true;
+  }
+
+  const prevQ = S.queue[S.qi - 1];
+  if (!prevQ || !prevQ.tags) return false;
+
+  for (const tag of prevQ.tags) {
+    const tagStat = S.sessionStats.byTag[tag];
+    if (!tagStat) continue;
+    if (tagStat.consWrong >= 3) {
+      if (insertConfidenceBuilder(tag)) {
+        S._showAdaptiveMsg = 'encourage';
+      }
+      return false;
+    }
+    if (tagStat.consRight >= 3) {
+      if (tryEscalation(prevQ.tags)) {
+        S._showAdaptiveMsg = 'push';
+      }
+      tagStat.consRight = 0;
+      return false;
+    }
+  }
+  return false;
+}
+
+function skillAccuracy() {
+  const sessions = S.progress.sessions.slice(-10);
+  const result = {};
+  const skills = ['grammar', 'vocab', 'reading', 'listening', 'writing', 'dictation'];
+  for (const sk of skills) result[sk] = { attempts: 0, correct: 0, pct: -1 };
+  for (const sess of sessions) {
+    if (!sess.skills) continue;
+    for (const sk of skills) {
+      if (sess.skills[sk]) {
+        result[sk].attempts += sess.skills[sk].a || 0;
+        result[sk].correct += sess.skills[sk].c || 0;
+      }
+    }
+  }
+  for (const sk of skills) {
+    result[sk].pct = result[sk].attempts > 0 ? Math.round((result[sk].correct / result[sk].attempts) * 100) : -1;
+  }
+  return result;
+}
+
+function weakestSkill() {
+  const acc = skillAccuracy();
+  let weakest = null, lowest = 101;
+  for (const [skill, data] of Object.entries(acc)) {
+    if (data.attempts >= 5 && data.pct < lowest) {
+      lowest = data.pct;
+      weakest = skill;
+    }
+  }
+  return weakest && lowest < 70 ? { skill: weakest, pct: lowest } : null;
+}
+
 function getVocabCard(wordId) {
   if (!S.progress.srs[wordId]) S.progress.srs[wordId] = SRS.defaultCard();
   return S.progress.srs[wordId];
@@ -1178,12 +1354,19 @@ function updateStreak() {
 
 function recordSession(correct, total, durationMs) {
   const errorRate = total > 0 ? Math.round(((total - correct) / total) * 100) : 0;
+  const skills = {};
+  if (S.sessionStats && S.sessionStats.bySkill) {
+    for (const [sk, data] of Object.entries(S.sessionStats.bySkill)) {
+      skills[sk] = { a: data.right + data.wrong, c: data.right };
+    }
+  }
   S.progress.sessions.push({
     date: todayStr(),
     duration: Math.round(durationMs / 1000),
     exercises: total,
     correct: correct,
-    errorRate: errorRate
+    errorRate: errorRate,
+    skills: skills
   });
   if (S.progress.sessions.length > 30) S.progress.sessions = S.progress.sessions.slice(-30);
   updateStreak();
@@ -1962,6 +2145,36 @@ function renderHome() {
 
       ${renderSectionProgress()}
 
+      ${(() => {
+        const acc = skillAccuracy();
+        const hasData = Object.values(acc).some(s => s.attempts > 0);
+        if (!hasData) return '';
+        const weak = weakestSkill();
+        const labels = { grammar: 'Grammar', vocab: 'Vocab', reading: 'Reading', listening: 'Listen', writing: 'Writing', dictation: 'Dictation' };
+        const barColor = pct => pct < 50 ? 'bar-red' : pct < 75 ? 'bar-yellow' : 'bar-green';
+        return `
+          <div class="dash-section">
+            <div class="dash-section-title">Skill Accuracy (last 10 sessions)</div>
+            <div class="card">
+              <div class="skill-bars">
+                ${Object.entries(acc).filter(([,d]) => d.attempts > 0).map(([sk, d]) => `
+                  <div class="skill-bar-row">
+                    <span class="skill-bar-label">${labels[sk] || sk}</span>
+                    <div class="skill-bar-track"><div class="skill-bar-fill ${barColor(d.pct)}" style="width:${d.pct}%"></div></div>
+                    <span class="skill-bar-pct">${d.pct}%</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            ${weak ? `
+              <div class="session-focus">
+                <div class="session-focus-title">Next session focus: ${labels[weak.skill] || weak.skill}</div>
+                <div class="session-focus-sub">Your weakest area at ${weak.pct}% accuracy. The app will include more ${(labels[weak.skill] || weak.skill).toLowerCase()} exercises.</div>
+              </div>
+            ` : ''}
+          </div>`;
+      })()}
+
       ${!hasBatch ? `
         <div class="card card-err" style="border-left:3px solid var(--err)">
           <div class="card-title">No exercises loaded</div>
@@ -2093,6 +2306,10 @@ function startSession() {
   S._lastBonus = false;
   S._usedFreeze = false;
   S._prevLevel = S.progress.xp ? S.progress.xp.level : 1;
+  S.sessionStats = { byTag: {}, bySkill: {} };
+  S._smartCloseReason = null;
+  S._showAdaptiveMsg = null;
+  S._sessionFocus = weakestSkill();
   S.queue = buildSessionQueue();
   S.qi = 0;
   S.answered = false;
@@ -2169,6 +2386,10 @@ function buildSessionQueue() {
     ...shuffle(reviewDue).slice(0, 3)
   ];
 
+  const focus = S._sessionFocus ? S._sessionFocus.skill : null;
+  const isBonus = S._bonusRound;
+  if (isBonus) { stage.cap = 5; S._bonusRound = false; }
+
   const queue = [...grammarPool];
 
   if (stage.vocab) {
@@ -2176,19 +2397,23 @@ function buildSessionQueue() {
     const dueVocab = vocab.filter(q => SRS.isDue(getVocabCard(q.id)));
     shuffle(dueVocab);
     const newVocab = vocab.filter(q => !getVocabCard(q.id).lastReview && !dueVocab.includes(q));
-    queue.push(...dueVocab.slice(0, 5), ...newVocab.slice(0, 3));
+    const dueLimit = focus === 'vocab' ? 8 : 5;
+    const newLimit = focus === 'vocab' ? 5 : 3;
+    queue.push(...dueVocab.slice(0, dueLimit), ...newVocab.slice(0, newLimit));
   }
 
   if (stage.dictation) {
     const dictation = Batch.all('dictation');
-    const dictPool = dictation.filter(q => !S.progress.exercises[q.id]).slice(0, 3);
+    const dictLimit = focus === 'dictation' ? 5 : 3;
+    const dictPool = dictation.filter(q => !S.progress.exercises[q.id]).slice(0, dictLimit);
     dictPool.forEach(q => { q._isDictation = true; });
     queue.push(...dictPool);
   }
 
   if (stage.reading) {
     const reading = Batch.all('reading');
-    queue.push(...reading.filter(q => !S.progress.exercises[q.id]).slice(0, 1));
+    const readLimit = focus === 'reading' ? 2 : 1;
+    queue.push(...reading.filter(q => !S.progress.exercises[q.id]).slice(0, readLimit));
   }
 
   if (stage.writing) {
@@ -2212,7 +2437,8 @@ function buildSessionQueue() {
     if (stage.maxListenTier > 0 && stage.maxListenTier < 5) {
       pool = pool.filter(q => !q.tier || q.tier <= stage.maxListenTier);
     }
-    const listPool = pool.slice(0, 2);
+    const listenLimit = focus === 'listening' ? 4 : 2;
+    const listPool = pool.slice(0, listenLimit);
     listPool.forEach(q => { q._isListening = true; });
     queue.push(...listPool);
   }
@@ -2281,16 +2507,23 @@ function renderSession() {
 function renderSessionHeader(progress, typeLabel, typeClass) {
   const q = S.queue[S.qi];
   const isReach = q && q._isReach;
+  const isConfidence = q && q._isConfidenceBuilder;
+  const isEscalation = q && q._isEscalation;
+  const adaptiveMsg = S._showAdaptiveMsg;
   return `
     <div class="dp-top">
       <div class="row between">
         <div class="dp-count">${S.qi + 1} / ${S.queue.length}</div>
         <div class="row gap-sm">
           ${isReach ? '<span class="type-badge type-reach">REACH</span>' : ''}
+          ${isConfidence ? '<span class="type-confidence">CONFIDENCE</span>' : ''}
+          ${isEscalation ? '<span class="type-escalation">CHALLENGE</span>' : ''}
           <span class="type-badge ${typeClass}">${typeLabel}</span>
         </div>
       </div>
       <div class="prog-track mt-sm"><div class="prog-fill" style="width:${progress}%"></div></div>
+      ${adaptiveMsg === 'encourage' ? '<div class="adaptive-msg adaptive-msg-encourage">You know this pattern. Try this easier one.</div>' : ''}
+      ${adaptiveMsg === 'push' ? '<div class="adaptive-msg adaptive-msg-push">You\'re on a roll. Here\'s a harder one.</div>' : ''}
     </div>`;
 }
 
@@ -2350,6 +2583,7 @@ function renderMCQ(q, progress) {
         const correct = i === q.correct;
         if (correct) S.sessionCorrect++;
         else S.selfExplainPhase = true;
+        trackAnswer(correct ? 1 : 0, correct ? 0 : 1);
         recordExercise(q.id, correct, q.tags);
         if (!correct && !q._isReach) queueReach(q.tags);
         render();
@@ -2418,6 +2652,7 @@ function renderBlank(q, progress) {
       S.sessionTotal++;
       if (ok) S.sessionCorrect++;
       else S.selfExplainPhase = true;
+      trackAnswer(ok ? 1 : 0, ok ? 0 : 1);
       recordExercise(q.id, ok, q.tags);
       if (!ok && !q._isReach) queueReach(q.tags);
       render();
@@ -2511,6 +2746,7 @@ function renderDictation(q, progress) {
       S.sessionTotal++;
       if (ok) S.sessionCorrect++;
       else S.selfExplainPhase = true;
+      trackAnswer(ok ? 1 : 0, ok ? 0 : 1);
       recordExercise(q.id, ok, q.tags || ['dictation']);
       render();
     };
@@ -2590,6 +2826,7 @@ function renderVocabRecognition(q, card, progress) {
         S.sessionTotal++;
         const ok = i === correctIdx;
         if (ok) S.sessionCorrect++;
+        trackAnswer(ok ? 1 : 0, ok ? 0 : 1);
         SRS.update(card, ok ? 4 : 1);
         saveLocal();
         render();
@@ -2652,6 +2889,7 @@ function renderVocabProduction(q, card, progress) {
       S.sessionTotal++;
       if (ok) S.sessionCorrect++;
       else S.selfExplainPhase = true;
+      trackAnswer(ok ? 1 : 0, ok ? 0 : 1);
       SRS.update(card, ok ? 4 : 1);
       saveLocal();
       render();
@@ -2741,6 +2979,7 @@ function renderReading(q, progress) {
       S.answered = true;
       S.sessionTotal += rq.length || 1;
       S.sessionCorrect += correct || (rq.length === 0 ? 1 : 0);
+      trackAnswer(correct || (rq.length === 0 ? 1 : 0), (rq.length || 1) - (correct || (rq.length === 0 ? 1 : 0)));
       if (!S.progress.seenIds.includes(q.id)) S.progress.seenIds.push(q.id);
       recordExercise(q.id, correct === rq.length, ['reading']);
       render();
@@ -2854,6 +3093,7 @@ function renderWriting(q, progress) {
     if (!S.progress.seenIds.includes(q.id)) S.progress.seenIds.push(q.id);
     S.sessionTotal++;
     S.sessionCorrect++;
+    trackAnswer(1, 0);
     const xp = calcExerciseXP(q, true, q._isReach);
     addXP(xp);
     S._sessionXP = (S._sessionXP || 0) + xp;
@@ -2941,6 +3181,7 @@ function renderListening(q, progress) {
       if (!S.progress.seenIds.includes(q.id)) S.progress.seenIds.push(q.id);
       S.sessionTotal++;
       if (correct) S.sessionCorrect++;
+      trackAnswer(correct ? 1 : 0, correct ? 0 : 1);
       recordExercise(q.id, correct, q.tags || []);
       const xp = calcExerciseXP(q, correct, q._isReach);
       addXP(xp);
@@ -2958,9 +3199,11 @@ function advanceSession() {
   S.selfExplainPhase = false;
   S.readingSelections = {};
   S._lastTyped = '';
+  S._showAdaptiveMsg = null;
   if (S.qi >= S.queue.length) {
     endSession();
   } else {
+    if (checkAdaptiveTriggers()) return;
     const appEl = document.getElementById('app');
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       appEl.style.opacity = '0';
@@ -3033,8 +3276,17 @@ function renderResults() {
   else if (errorRate < 15) { zoneClass = 'zone-easy'; zoneLabel = 'Too easy — difficulty should increase'; }
   else { zoneClass = 'zone-hard'; zoneLabel = 'Too hard — review the basics first'; }
 
+  const smartClose = S._smartCloseReason === 'high_errors';
+  const offerBonus = !smartClose && errorRate < 10 && total >= 4 && S.progress.sessions.length > 5 && Batch.totalFuel() > 0;
+
   app().innerHTML = `
     <div class="wrap" style="padding-top:6vh">
+      ${smartClose ? `
+        <div class="smart-close-card fade-up">
+          <div class="card-title">Session ended early</div>
+          <div class="card-sub">Good effort today. Shorter sessions build stronger habits. The research is clear: pushing through a rough session builds frustration, not skill.</div>
+        </div>
+      ` : ''}
       <div class="center mb fade-up">
         ${scoreRing(pct)}
         <div class="res-msg mt-sm">${correct} of ${total} correct · ${formatDuration(duration)}</div>
@@ -3128,6 +3380,13 @@ function renderResults() {
         </div>
       ` : ''}
 
+      ${offerBonus ? `
+        <div class="bonus-offer fade-up">
+          <div class="bonus-offer-text">That was easy for you. Ready for a harder round?</div>
+          <button class="btn btn-ok btn-sm" id="bonus-btn">Challenge Round (5 harder exercises)</button>
+        </div>
+      ` : ''}
+
       <button class="btn btn-p mt" id="home-btn">Back to Home</button>
       ${Batch.totalFuel() > 0 ? '<button class="btn btn-g mt-sm" id="again-btn">Practice More</button>' : ''}
       <div class="center mt-sm">
@@ -3137,6 +3396,7 @@ function renderResults() {
 
   $('home-btn').onclick = () => { S.screen = 'home'; render(); };
   if ($('again-btn')) $('again-btn').onclick = startSession;
+  if ($('bonus-btn')) $('bonus-btn').onclick = () => { S._bonusRound = true; startSession(); };
   if ($('res-refuel-btn')) $('res-refuel-btn').onclick = async () => {
     const ok = await copyRefuel();
     $('res-refuel-status').textContent = ok ? 'Copied!' : 'Copy failed';
